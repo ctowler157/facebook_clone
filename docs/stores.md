@@ -1,49 +1,51 @@
 # Flux Stores
 
-### NoteStore
+### PostStore
 
-Holds all persisted note data.
-
-##### Actions:
-- `receiveAllNotes`
-- `receiveSingleNote`
-- `removeNote`
-
-##### Listeners:
-- `NotesIndex` (passes to `NoteIndexItem` via props)
-- `NoteDetail`
-
-### NoteFormStore
-
-Holds un-persisted note data to send to the API.
+Holds all persisted post data.
 
 ##### Actions:
-- `receiveNoteFormParams`
+- `receiveAllStatuses`
+- `receiveSingleStatus`
+- `removeStatus`
+- `receiveAllPosts`
+- `receiveSinglePost`
+- `removePost`
+- `receiveAllComments`
+- `receiveSingleComment`
+- `removeComment`
+- `receiveAllLikes`
+- `receiveSingleLike`
+- `removeLike`
 
 ##### Listeners:
-- `NoteForm`
+- `FeedIndex`
 
-### NotebookStore
+### FriendStore
 
-Holds all persisted notebook data.
+Holds Friend information for a given timeline
 
 ##### Actions:
-- `receiveAllNotebooks`
-- `receiveSingleNotebook`
-- `removeNotebook`
+- `receiveAllFriendships`
+- `receiveSingleFriendship`
+- `removeFriendship`
 
 ##### Listeners:
-- `NotebookIndex`
+- `FriendIndex`
+- `FriendRequestButton
 
-### NotebookFormStore
+### NotificationStore
 
-Holds un-persisted notebook data to send to the API.
+Holds all notification information
 
 ##### Actions:
-- `receiveNotebookFormParams`
+- `receiveAllNotifications`
+- `receiveSingleNotification`
+- `editNotification`
 
 ##### Listeners:
-- `NotebookForm`
+- `NotificationButton`
+- `NotificationIndex`
 
 ### SearchStore
 

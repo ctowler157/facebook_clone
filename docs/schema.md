@@ -23,6 +23,7 @@ column name | data type | details
 id          | integer   | not null, primary key
 requester_id| integer   | not null, foreign key (references users), indexed
 requested_id| integer   | not null, foreign key (references users), indexed
+status      | string    | not null
 
 ## followables
 column name    | data type | details
