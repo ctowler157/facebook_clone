@@ -1,46 +1,60 @@
 # Schema Information
 
-## notes
-column name | data type | details
-------------|-----------|-----------------------
-id          | integer   | not null, primary key
-title       | string    | not null
-body        | text      | not null
-author_id   | integer   | not null, foreign key (references users), indexed
-notebook_id | integer   | not null, foreign key (references notebooks), indexed
-archived    | boolean   | not null, default: false
-
-## notebooks
-column name | data type | details
-------------|-----------|-----------------------
-id          | integer   | not null, primary key
-author_id   | integer   | not null, foreign key (references users), indexed
-title       | string    | not null
-description | string    | 
-
-## reminders
+## bios
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
 user_id     | integer   | not null, foreign key (references users), indexed
-note_id     | string    | not null, foreign key (references notes), indexed
-date        | datetime  | not null
-type        | string    | not null
-prev_id     | integer   | foreign key (references reminders), indexed
+first_name  | string    | not null
+last_name   | string    | not null
 
-## tags
+## comments
+column name       | data type | details
+------------------|-----------|-----------------------
+id                | integer   | not null, primary key
+commentable_id    | integer   | not null, foreign key (references commentable), indexed
+author_id         | integer   | not null, foreign key (references users), indexed
+commentable_type  | string    | not null
+body              | string    | not null
+
+## friendships
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
-name        | string    | not null
+requester_id| integer   | not null, foreign key (references users), indexed
+requested_id| integer   | not null, foreign key (references users), indexed
 
-## taggings
+## followables
+column name    | data type | details
+---------------|-----------|-----------------------
+id             | integer   | not null, primary key
+followable_id  | integer   | not null, foreign key (references followable), indexed
+user_id        | integer   | not null, foreign key (references users), indexed
+followable_type| string    | not null
+
+## likes
+column name    | data type | details
+---------------|-----------|-----------------------
+id             | integer   | not null, primary key
+likeable_id    | integer   | not null, foreign key (references likeable), indexed
+user_id        | integer   | not null, foreign key (references users), indexed
+likeable_type  | string    | not null
+body           | string    | not null
+
+## posts
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
-name        | string    | not null
-note_id     | integer   | not null, foreign key (references notes), indexed, unique [tag_id]
-tag_id      | integer   | not null, foreign key (references tags), indexed
+body        | text      | not null
+author_id   | integer   | not null, foreign key (references users), indexed
+timeline_id | integer   | not null, foreign key (references users), indexed
+
+## statuses
+column name | data type | details
+------------|-----------|-----------------------
+id          | integer   | not null, primary key
+body        | text      | not null
+author_id   | integer   | not null, foreign key (references users), indexed
 
 ## users
 column name     | data type | details

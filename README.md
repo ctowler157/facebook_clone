@@ -1,23 +1,44 @@
-# FresherNote
+# #TBD#
 
-[Heroku link][heroku] **NB:** This should be a link to your production site
+[Heroku link]https://evening-headland-97216.herokuapp.com/
 
 [heroku]: http://www.herokuapp.com
 
 ## Minimum Viable Product
 
-FresherNote is a web application inspired by Evernote built using Ruby on Rails
-and React.js. FresherNote allows users to:
+#TBD# is a web application inspired by facebook built using Ruby on Rails
+and React.js. #TBD# allows users to:
 
 <!-- This is a Markdown checklist. Use it to keep track of your
 progress. Put an x between the brackets for a checkmark: [x] -->
 
 - [ ] Create an account
 - [ ] Log in / Log out
-- [ ] Create, read, edit, and delete notes
-- [ ] Organize notes within Notebooks
-- [ ] Tag notes with multiple tags
-- [ ] Apply complex styling to notes while editing
+
+- [ ] Create, read, and edit a profile/bio
+- [ ] Upload an image file as a profile picture
+
+- [ ] Create, read, edit, and delete statuses
+
+- [ ] Search for other users by name
+
+- [ ] Request a friendship with another user (creates pending friendship)
+- [ ] Approve or reject pending friendship requests (reject deletes friendship)
+- [ ] View a friend's bio and a list of that friend's statuses (timeline)
+- [ ] Create, read, edit, and delete posts on that friend's timeline
+
+- [ ] View a feed of the most recent updates within their circle of friends
+
+- [ ] Create, read, edit, and delete comments on statuses and profile pictures
+- [ ] "Like" statuses, comments, and profile pictures
+
+- [ ] Users receive notifications whenever someone:
+      - comments on one of their statuses
+      - likes one of their statuses
+      - comments on a status that they have commented on
+      - likes one of their comments
+      - accepts their friend request
+      - sends them a friend request
 
 ## Design Docs
 * [View Wireframes][views]
@@ -44,32 +65,33 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 - [ ] user signup/signin pages
 - [ ] blank landing page after signin
 
-### Phase 2: Notes Model, API, and basic APIUtil (1.5 days)
+### Phase 2: Status Model, API, and basic APIUtil (1 day)
 
-**Objective:** Notes can be created, read, edited and destroyed through
-the API.
+**Objective:** Statuses can be created, read, edited and destroyed through
+the API.  Statuses belong to the user that created them.
 
-- [ ] create `Note` model
+- [ ] create `Status` model
 - [ ] seed the database with a small amount of test data
-- [ ] CRUD API for notes (`NotesController`)
-- [ ] jBuilder views for notes
+- [ ] CRUD API for statuses (`StatusesController`)
+- [ ] jBuilder views for Feed
+- [ ] jBuilder views for statuses (reusable partial)
 - [ ] setup Webpack & Flux scaffold
-- [ ] setup `APIUtil` to interact with the API
+- [ ] setup `APIUtil` to interact with the APIs
 - [ ] test out API interaction in the console.
 
-### Phase 3: Flux Architecture and Router (1.5 days)
+### Phase 3: Flux Architecture and Router (1 days)
 
-**Objective:** Notes can be created, read, edited and destroyed with the
-user interface.
+**Objective:** Statuses can be created, read, edited and destroyed with the
+user interface.  News feed is an index of the users statuses.
 
 - [ ] setup the flux loop with skeleton files
 - [ ] setup React Router
-- implement each note component, building out the flux loop as needed.
-  - [ ] `NotesIndex`
-  - [ ] `NoteIndexItem`
-  - [ ] `NoteForm`
-- [ ] save Notes to the DB when the form loses focus or is left idle
-  after editing.
+- implement each status component, building out the flux loop as needed.
+  - [ ] `StatusIndex`
+  - [ ] `StatusIndexItem`
+  - [ ] `StatusForm`
+- [ ] save Statuses to the DB when the form loses focus or is left idle
+  after editing.  ##Ask about this##
 
 ### Phase 4: Start Styling (0.5 days)
 
@@ -79,40 +101,60 @@ user interface.
 - [ ] position elements on the page
 - [ ] add basic colors & styles
 
-### Phase 5: Notebooks (1 day)
+### Phase 5: Timeline model and Profile Picture model (1 day)
 
-**Objective:** Notes belong to Notebooks, and can be viewed by notebook.
+**Objective:** Timeline displays a users profile picture, biographical info, and
+an index of their statuses
 
-- [ ] create `Notebook` model
+- [ ] create `Timeline` model
+- [ ] create `ProfilePicture` model
+- [ ] seed the database with a small amount of test data
+- [ ] CRUD API for timeline bio information
+- [ ] CRUD API for notes (`StatusesController`)
+- [ ] jBuilder views for timeline
+- [ ] jBuilder views for bio information
+- [ ] Build out Flux loops and components for the Timeline, bio, and picture
+
+- [ ] Use CSS to style new views
+
+### Phase 6: Friendships (1.5 days)
+
+**Objective:** Friendships can be created.  When approved, users can view each
+others' timelines.  A users' friends' statuses also appear in their News feed.
+A users' timeline also includes a friends total and an index of a users friend
+
+- [ ] create `Friendship` model and join table
 - build out API, Flux loop, and components for:
-  - [ ] Notebook CRUD
-  - [ ] adding notes requires a notebook
-  - [ ] moving notes to a different notebook
-  - [ ] viewing notes by notebook
-- Use CSS to style new views
-
-Phase 3 adds organization to the Notes. Notes belong to a Notebook,
-which has its own `Index` view.
-
-### Phase 6: Tags (1.5 days)
-
-**Objective:** Notes can be tagged with multiple tags, and tags are searchable.
-
-- [ ] create `Tag` model and join table
-- build out API, Flux loop, and components for:
-  - [ ] fetching tags for notebook
-  - [ ] adding tags to notebook
-  - [ ] creating tags while adding to notebooks
-  - [ ] searching notebooks by tag
+  - [ ] requesting friendship
+  - [ ] approving friendship
+  - [ ] friends index
+  - [ ] posting on a friend's wall
+  - [ ] searching for friends
+- [ ] Update timeline to include friends index
+- [ ] Update news feed to include friends' statuses
 - [ ] Style new elements
 
-### Phase 7: Allow Complex Styling in Notes (0.5 days)
+### Phase 7: Likes, Comments, and Notifications (1.5 days)
 
-**objective:** Enable complex styling of notes.
+**objective:** Users can comment on a status, post, or picture.  Users can like
+statuses, posts, pictures, and comments.  Users receive notifications whenever one
+of their statuses, comments, posts, or pictures receives a comment or new like.
+In addition, if a user has commented on another users commentable and someone else
+comments on the same commentable, the user receives a notifications as well
 
-- [ ] Integrate `react-quill` (based on Quill.js).
-- [ ] Use Rails helpers to sanitize HTML before rendering.
-- [ ] Style the new Quill elements.
+- [ ] Create Comment Model and polymorphic join table
+- [ ] Create Like Model and polymorphic join table
+- [ ] Build out API, Flux loop, and components for:
+  - [ ] Comment CRUD functionality
+  - [ ] Like CRUD functionality
+
+- [ ] Create FollowedItems model and polymorphic join table
+- [ ] Create Notifications model (belongs to a user)
+- [ ] Build out API, Flux loop, and components for:
+  - [ ] Notifications index
+  - [ ] Deleting FollowedItems
+- [ ] Update Timeline to include notifications
+
 
 ### Phase 8: Styling Cleanup and Seeding (1 day)
 
@@ -123,11 +165,19 @@ which has its own `Index` view.
 - [ ] Add modals, transitions, and other styling flourishes.
 
 ### Bonus Features (TBD)
-- [ ] Search through notes for blocks of text
-- [ ] Pagination / infinite scroll for Notes Index
-- [ ] Set reminders on notes
-- [ ] Changelogs for Notes
-- [ ] Multiple sessions
+- [ ] News feed also contains events (friendships, commented-ons, etc)
+
+- [ ] Upload photos
+- [ ] Create, edit, and delete tags on photos
+- [ ] Photos a user was tagged in appear on their profile
+
+- [ ] Create and send messages to other users
+- [ ] Read, delete, and reply to messages from other users
+
+- [ ] Search bar autocompletes with existing users
+
+- [ ] Suggest friends based on mutual friends
+- [ ] Suggest friends based on bio info
 
 [phase-one]: ./docs/phases/phase1.md
 [phase-two]: ./docs/phases/phase2.md

@@ -2,17 +2,11 @@
 
 ## Rails
 ### Models
-* Notebook
-* Tag
-* Tagging
 
 ### Controllers
-* Api::NotebooksController (create, destroy, index, show, update)
 
 ### Views
-* notebooks/index.json.jbuilder
-* notebooks/show.json.jbuilder
-* tags/show.json.jbuilder
+* statuses/index.json.jbuilder
 
 ## Flux
 ### Views (React Components)
@@ -21,24 +15,26 @@
 * NotebookForm
 * SearchIndex
 
+
 ### Stores
-* Notebook
+* Status
 
 ### Actions
-* ApiActions.receiveAllNotebooks -> triggered by ApiUtil
-* ApiActions.receiveSingleNotebook
-* ApiActions.deleteNotebook
-* NotebookActions.fetchAllNotebooks -> triggers ApiUtil
-* NotebookActions.fetchSingleNotebook
-* NotebookActions.createNotebook
-* NotebookActions.editNotebook
-* NotebookActions.destroyNotebook
+* ApiActions.receiveAllStatuses -> triggered by ApiUtil
+* ApiActions.receiveSingleStatus
+* ApiActions.deleteStatus
+* StatusActions.fetchAllStatuses -> triggers ApiUtil
+* StatusActions.fetchSingleStatus
+* StatusActions.createStatus
+* StatusActions.editStatus
+* StatusActions.destroyStatus
 
 ### ApiUtil
-* ApiUtil.fetchAllNotebooks
-* ApiUtil.fetchSingleNotebook
-* ApiUtil.createNotebook
-* ApiUtil.editNotebook
-* ApiUtil.destroyNotebook
+* ApiUtil.fetchAllStatuses
+* ApiUtil.fetchSingleStatus
+* ApiUtil.createStatus
+* ApiUtil.editStatus
+* ApiUtil.destroyStatus
 
 ## Gems/Libraries
+* Flux Dispatcher (npm)
