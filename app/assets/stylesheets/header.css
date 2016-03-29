@@ -1,0 +1,66 @@
+header {
+  height: 82px;
+  background: #3a5795;
+  font-size: 12px;
+}
+
+header > a {
+
+}
+.header-nav {
+  margin: 0 auto;
+  width: 980px;
+  padding-top:  13px;
+
+  color: #fff;
+  font-family: helvetica, arial, sans-serif;
+}
+
+.header-nav-logo {
+  float: left;
+  border-collapse: separate;
+}
+
+.header-nav-login-form {
+  float: right;
+}
+
+.login-form-table {
+  display: table-row-group;
+  vertical-align: middle;
+}
+
+tr {
+  vertical-align: top;
+}
+
+td {
+  /*padding: 0 0 0 14px;*/
+}
+
+ .login-input {
+  border-color: #bdc7d8;
+  border: 1px solid #1d2a5b;
+  padding-bottom: 4px;
+  width: 142px;
+}
+
+/*May need to refactor this as a separate button styling*/
+
+.login-button {
+  background: #5b74a8;
+  border: 1px solid #999;
+  border-color: #2f477a #29447e #1a356e;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+
+  display: inline-block;
+  cursor: pointer;
+  padding: 3px 6px 4px;
+  white-space: nowrap;
+
+  /* Check out the background image shenanigans*/
+}

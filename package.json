@@ -1,0 +1,40 @@
+{
+  "name": "facebook_clone",
+  "version": "1.0.0",
+  "description": "[Heroku link]https://evening-headland-97216.herokuapp.com/",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./node_modules/.bin/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctowler157/facebook_clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ctowler157/facebook_clone/issues"
+  },
+  "homepage": "https://github.com/ctowler157/facebook_clone#readme",
+  "dependencies": {
+    "babel-core": "^6.7.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-react": "^6.5.0",
+    "flux": "^2.1.1",
+    "react": "^0.14.8",
+    "react-dom": "^0.14.8",
+    "react-router": "^2.0.1",
+    "webpack": "^1.12.14"
+  },
+
+  "engines": {
+   "node": "5.1.0",
+   "npm": "3.3.12"
+  }
+}

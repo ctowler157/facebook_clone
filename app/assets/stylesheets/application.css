@@ -13,3 +13,27 @@
  *= require_tree .
  *= require_self
  */
+
+body, header, a, div, button {
+  margin: 0;
+  border: 0;
+  outline: 0;
+  padding: 0;
+
+  /*font: inherit;*/
+  text-decoration: inherit;
+  text-align: inherit;
+}
+ .clear-fix {
+  content: "";
+  clear: both;
+  display: block;
+ }
+
+ a {
+   color: inherit;
+ }
+
+ button {
+
+ }
