@@ -5,9 +5,11 @@
 Holds all persisted post data.
 
 ##### Actions:
+<!--
+  Statuses should just be posts on your own timeline
 - `receiveAllStatuses`
 - `receiveSingleStatus`
-- `removeStatus`
+- `removeStatus` -->
 - `receiveAllPosts`
 - `receiveSinglePost`
 - `removePost`

@@ -21,13 +21,15 @@
 
 ## JSON API
 
+<!--
+Statuses are going to be posts on your own timeline
 ### Statuses
 
 - `GET /api/statuses`
 - `POST /api/statuses`
 - `GET /api/statuses/:id`
 - `PATCH /api/statuses/:id`
-- `DELETE /api/statuses/:id`
+- `DELETE /api/statuses/:id` -->
 
 ### Friendships
 - `GET /api/users/:id/friendships/`

@@ -10,9 +10,6 @@
 
 ## Flux
 ### Views (React Components)
-* NotebooksIndex
-  - NotebookIndexItem
-* NotebookForm
 * SearchIndex
 
 

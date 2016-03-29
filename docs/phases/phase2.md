@@ -3,7 +3,7 @@
 
 ## Rails
 ### Models
-* Status
+* Post
 
 ### Controllers
 * Api::StatusesController (create, destroy, index, show, update)
@@ -12,9 +12,9 @@
 
 ## Flux
 ### Views (React Components)
-* NotesIndex
-  - NotesIndexItem
-* NoteForm
+* PostIndex
+  - PostsIndexItem
+* PostForm
 
 ### Stores
 

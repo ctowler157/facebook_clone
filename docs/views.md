@@ -7,10 +7,9 @@
 ![new-session]
 
 ## FeedIndex / FeedIndexItem / FeedForm
-![statuses]
 ![posts]
 
-##Timeline 
+##Timeline
 
 ## FriendsIndex / FriendsIndexItem
 ![Friends]

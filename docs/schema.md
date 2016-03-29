@@ -50,12 +50,14 @@ body        | text      | not null
 author_id   | integer   | not null, foreign key (references users), indexed
 timeline_id | integer   | not null, foreign key (references users), indexed
 
+<!--
+Statuses should just be posts on your own timeline.
 ## statuses
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
 body        | text      | not null
-author_id   | integer   | not null, foreign key (references users), indexed
+author_id   | integer   | not null, foreign key (references users), indexed -->
 
 ## users
 column name     | data type | details
