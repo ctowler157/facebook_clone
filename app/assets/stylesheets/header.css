@@ -2,6 +2,9 @@ header {
   height: 82px;
   background: #3a5795;
   font-size: 12px;
+	border-bottom: 1px solid #000;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .15);
+	font-family: helvetica, arial, sans-serif;
 }
 
 header > a {
@@ -10,7 +13,7 @@ header > a {
 .header-nav {
   margin: 0 auto;
   width: 980px;
-  padding-top:  13px;
+  padding-top:  10px;
 
   color: #fff;
   font-family: helvetica, arial, sans-serif;
@@ -19,10 +22,13 @@ header > a {
 .header-nav-logo {
   float: left;
   border-collapse: separate;
+	padding-top: 13px;
+	font-size: 43px;
 }
 
 .header-nav-login-form {
   float: right;
+	border-spacing: 10px 4px;
 }
 
 .login-form-table {
@@ -41,8 +47,9 @@ td {
  .login-input {
   border-color: #bdc7d8;
   border: 1px solid #1d2a5b;
-  padding-bottom: 4px;
+  padding: 2px 0 4px 3px;
   width: 142px;
+	font: 12px helvetica, arial, sans-serif;
 }
 
 /*May need to refactor this as a separate button styling*/

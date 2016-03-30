@@ -1,10 +1,36 @@
 var React = require('react');
+var AuthUtil = require('../../util/authUtil.js');
+var ApiUtil = require('../../util/apiUtil.js');
 
 var LogIn = React.createClass({
-  tryLogIn: function () {},
+	getInitialState: function () {
+		return { email: "", password: "" };
+	},
+
+	updateEmail: function (event) {
+		this.setState({ email: event.currentTarget.value });
+	},
+
+	updatePassword: function (event) {
+		this.setState({ password: event.currentTarget.value });
+	},
+
+	handleClick: function (e) {
+		if(this.state.email !== "" && this.state.password !== ""){
+			this.tryLogIn();
+		}
+	},
+
+  tryLogIn: function () {
+		var formData = new FormData();
+		formData.append("user[email]", this.state.email);
+		formData.append("user[password]", this.state.password);
+		// formData.append("authenticity_token", ApiUtil._getAuthToken());
+
+		AuthUtil.tryLogIn(formData);
+	},
 
   render: function () {
-
     return (
       <table cellSpacing="0" role="presentation" className="header-nav-login-form">
         <tbody className="login-form-table-body">
@@ -18,13 +44,13 @@ var LogIn = React.createClass({
             </tr>
             <tr>
               <td>
-                  <input className="login-input" type="text" name="user[email]"/>
+                  <input className="login-input" type="text" name="user[email]" value={this.state.email} onChange={this.updateEmail}/>
               </td>
               <td>
-                  <input className="login-input" type="password" name="user[password]"/>
+                  <input className="login-input" type="password" name="user[password]" value={this.state.password} onChange={this.updatePassword}/>
               </td>
               <td>
-                <button className="login-button">Log In</button>
+                <button className="login-button" onClick={this.handleClick}>Log In</button>
               </td>
             </tr>
         </tbody>

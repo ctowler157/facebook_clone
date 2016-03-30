@@ -4,8 +4,11 @@ class User < ActiveRecord::Base
 
   attr_reader :password
 
-  # has_many :posts
+  has_many :posts, foreign_key: :author_id
 
+
+	has_many :timeline_posts,	class_name: "Post", foreign_key: :timeline_id
+	
 
   after_initialize :ensure_session_token
 

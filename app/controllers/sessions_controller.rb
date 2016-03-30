@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
 
     if user
       sign_in(user)
-      redirect_to root_url
+      render :json => { userId: user.id, email: user.email }
     else
       render :new
     end
@@ -18,6 +18,6 @@ class SessionsController < ApplicationController
 
   def destroy
     sign_out
-    redirect_to new_session_url
+    render :json => {}
   end
 end
