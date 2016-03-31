@@ -34,10 +34,13 @@ var ApiUtil = {
     request.onreadystatechange = function() {
         if (request.readyState == XMLHttpRequest.DONE ) {
           if(request.status == 200){
-              options.success(request.response);
+              options.success(JSON.parse(request.response));
           } else {
             options.error(request.response);
           }
+					if (options.complete) {
+						options.complete();
+					}
         }
     };
 

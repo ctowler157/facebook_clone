@@ -1,5 +1,5 @@
 var React = require('react');
-var AuthUtil = require('../../util/authUtil.js');
+var SessionUtil = require('../../util/sessionUtil.js');
 var ApiUtil = require('../../util/apiUtil.js');
 
 var LogIn = React.createClass({
@@ -27,12 +27,12 @@ var LogIn = React.createClass({
 		formData.append("user[password]", this.state.password);
 		// formData.append("authenticity_token", ApiUtil._getAuthToken());
 
-		AuthUtil.tryLogIn(formData);
+		SessionUtil.tryLogIn(formData);
 	},
 
   render: function () {
     return (
-      <table cellSpacing="0" role="presentation" className="header-nav-login-form">
+      <table cellSpacing="0" role="presentation" className="login-form">
         <tbody className="login-form-table-body">
             <tr>
               <td>

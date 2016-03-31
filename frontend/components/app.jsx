@@ -1,21 +1,21 @@
 var React = require('react');
 var LoggedOutHeader = require('./headers/loggedOutHeader');
 var LoggedInHeader = require('./headers/loggedInHeader');
-var AuthStore = require('../stores/authStore');
-var AuthUtil = require('../util/authUtil.js');
+var SessionStore = require('../stores/sessionStore');
+var SessionUtil = require('../util/sessionUtil.js');
 var Display = require('./display');
 
 
 module.exports = React.createClass({
 	getInitialState: function () {
-		var loggedIn = AuthStore.isLoggedIn();
+		var loggedIn = SessionStore.isLoggedIn();
 		return({loggedIn: loggedIn});
 	},
 
 	componentDidMount: function () {
 
-		this.logInListener = AuthStore.addListener(this._onChange);
-		AuthUtil.fetchCurrentUser();
+		this.logInListener = SessionStore.addListener(this._onChange);
+		SessionUtil.fetchCurrentUser();
 		//fetch bio info??
 	},
 
@@ -24,12 +24,12 @@ module.exports = React.createClass({
 	},
 
 	_onChange: function () {
-		var loggedIn = AuthStore.isLoggedIn();
+		var loggedIn = SessionStore.isLoggedIn();
 		this.setState({ loggedIn: loggedIn });
 	},
 
   render: function() {
-		var user = AuthStore.getCurrentUser();
+		var user = SessionStore.getCurrentUser();
 		var header;
 		if (user.online) {
 			header = <LoggedInHeader user={ user }/>;

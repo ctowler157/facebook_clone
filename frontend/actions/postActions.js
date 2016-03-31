@@ -11,7 +11,7 @@ var PostActions = {
 	receiveAllPosts: function (posts) {
     Dispatcher.dispatch({
       actionType: PostConstants.ALL_POSTS_RECEIVED,
-      posts: post
+      posts: posts
     });
   },
 	postDeleted: function (post) {

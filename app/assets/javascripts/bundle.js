@@ -53,15 +53,45 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(216);
+	var LogIn = __webpack_require__(218);
+	var SessionStore = __webpack_require__(229);
+	var SessionUtil = __webpack_require__(219);
 	
-	var routes = React.createElement(Route, { path: '/', component: App });
+	var routes = React.createElement(
+		Route,
+		{ path: '/', component: App, onEntry: this.checkLoggedIn },
+		React.createElement(Route, { path: '/login', component: LogIn })
+	);
+	
+	var checkLoggedIn = function (nextState, replace, completion) {
+		if (SessionStore.userFetched()) {
+			completion();
+		} else {
+			SessionUtil.fetchCurrentUser(completion);
+		}
+	};
+	
+	var ensureLoggedIn = function (nextState, replace, completion) {
+		if (SessionStore.userFetched()) {
+			_redirectIfNotLoggedIn();
+		} else {
+			SessionUtil.fetchCurrentUser(_redirectIfNotLoggedIn);
+		}
+	
+		function _redirectIfNotLoggedIn() {
+			if (!SessionStore.isLoggedIn()) {
+				replace("/login");
+			}
+			completion();
+		}
+	};
 	
 	document.addEventListener("DOMContentLoaded", function (event) {
-	  ReactDOM.render(React.createElement(
-	    Router,
-	    { history: hashHistory },
-	    routes
-	  ), document.getElementById('root'));
+		ReactDOM.render(React.createElement(
+			Router,
+			{ history: hashHistory },
+			routes
+		), document.getElementById('root'));
 	});
 
 /***/ },
@@ -24739,22 +24769,22 @@
 	var React = __webpack_require__(1);
 	var LoggedOutHeader = __webpack_require__(217);
 	var LoggedInHeader = __webpack_require__(228);
-	var AuthStore = __webpack_require__(229);
-	var AuthUtil = __webpack_require__(219);
+	var SessionStore = __webpack_require__(229);
+	var SessionUtil = __webpack_require__(219);
 	var Display = __webpack_require__(247);
 	
 	module.exports = React.createClass({
 		displayName: 'exports',
 	
 		getInitialState: function () {
-			var loggedIn = AuthStore.isLoggedIn();
+			var loggedIn = SessionStore.isLoggedIn();
 			return { loggedIn: loggedIn };
 		},
 	
 		componentDidMount: function () {
 	
-			this.logInListener = AuthStore.addListener(this._onChange);
-			AuthUtil.fetchCurrentUser();
+			this.logInListener = SessionStore.addListener(this._onChange);
+			SessionUtil.fetchCurrentUser();
 			//fetch bio info??
 		},
 	
@@ -24763,12 +24793,12 @@
 		},
 	
 		_onChange: function () {
-			var loggedIn = AuthStore.isLoggedIn();
+			var loggedIn = SessionStore.isLoggedIn();
 			this.setState({ loggedIn: loggedIn });
 		},
 	
 		render: function () {
-			var user = AuthStore.getCurrentUser();
+			var user = SessionStore.getCurrentUser();
 			var header;
 			if (user.online) {
 				header = React.createElement(LoggedInHeader, { user: user });
@@ -24863,7 +24893,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var AuthUtil = __webpack_require__(219);
+	var SessionUtil = __webpack_require__(219);
 	var ApiUtil = __webpack_require__(220);
 	
 	var LogIn = React.createClass({
@@ -24893,13 +24923,13 @@
 	    formData.append("user[password]", this.state.password);
 	    // formData.append("authenticity_token", ApiUtil._getAuthToken());
 	
-	    AuthUtil.tryLogIn(formData);
+	    SessionUtil.tryLogIn(formData);
 	  },
 	
 	  render: function () {
 	    return React.createElement(
 	      'table',
-	      { cellSpacing: '0', role: 'presentation', className: 'header-nav-login-form' },
+	      { cellSpacing: '0', role: 'presentation', className: 'login-form' },
 	      React.createElement(
 	        'tbody',
 	        { className: 'login-form-table-body' },
@@ -24960,31 +24990,46 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var ApiUtil = __webpack_require__(220);
-	var AuthActions = __webpack_require__(221);
+	var SessionActions = __webpack_require__(221);
 	
-	console.log("Loaded AuthUtil!");
+	console.log("Loaded SessionUtil!");
 	
-	var AuthUtil = {
-		// getCurrentUser: function () {
-		//
-		// },
-		fetchCurrentUser: function () {
-			//do this, maybe fetch from cookie?
+	var SessionUtil = {
+		fetchCurrentUser: function (completion) {
+			ApiUtil.ajax({
+				url: "/api/session",
+				method: "GET",
+				success: function (user) {
+					if (user.message === "Not logged in") {
+						SessionActions.receiveNoCurrentUser();
+					} else {
+						SessionActions.receiveCurrentUser(user);
+					}
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				},
+				complete: function () {
+					if (completion) {
+						completion();
+					}
+				}
+			});
 		},
 	
 		tryLogIn: function (formData) {
 	
-			console.log("Made it to tryLogIn in AuthUtil!");
+			console.log("Made it to tryLogIn in SessionUtil!");
 	
 			ApiUtil.ajax({
-				url: "/session",
+				url: "/api/session",
 				method: "POST",
 				form: true,
 				data: formData,
 				contentType: false,
 				processData: false,
 				success: function (user) {
-					AuthActions.receiveCurrentUser(user);
+					SessionActions.receiveCurrentUser(user);
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -24994,10 +25039,10 @@
 	
 		logOut: function () {
 			ApiUtil.ajax({
-				url: "/session",
+				url: "/api/session",
 				method: "DELETE",
 				success: function (_obj) {
-					AuthActions.logOutCurrentUser(_obj);
+					SessionActions.logOutCurrentUser(_obj);
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -25006,7 +25051,7 @@
 		}
 	};
 	
-	module.exports = AuthUtil;
+	module.exports = SessionUtil;
 
 /***/ },
 /* 220 */
@@ -25015,69 +25060,72 @@
 	console.log("Loaded ApiUtil!!");
 	
 	var ApiUtil = {
-	  // AJAX request:
-	  // options.success: success callback
-	  // options.error: error callback
-	  // options.url target url
-	  // options.method: request type
-	  // options.data: data
-	  // options:form Boolean, do you need an auth token?
-	  ajax: function (options) {
-	    console.log("Made it to AJAX in ApiUtil!!");
+			// AJAX request:
+			// options.success: success callback
+			// options.error: error callback
+			// options.url target url
+			// options.method: request type
+			// options.data: data
+			// options:form Boolean, do you need an auth token?
+			ajax: function (options) {
+					console.log("Made it to AJAX in ApiUtil!!");
 	
-	    var request = new XMLHttpRequest();
+					var request = new XMLHttpRequest();
 	
-	    var defaults = {
-	      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-	      method: "GET",
-	      url: "",
-	      dataType: 'json',
-	      success: function () {},
-	      error: function () {},
-	      data: {},
-	      form: false,
-	      authString: ""
-	    };
+					var defaults = {
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							method: "GET",
+							url: "",
+							dataType: 'json',
+							success: function () {},
+							error: function () {},
+							data: {},
+							form: false,
+							authString: ""
+					};
 	
-	    options = ApiUtil._extend(defaults, options);
+					options = ApiUtil._extend(defaults, options);
 	
-	    // if(options.form){
-	    // 	options.authString = ApiUtil._getAuthToken();
-	    // }
+					// if(options.form){
+					// 	options.authString = ApiUtil._getAuthToken();
+					// }
 	
-	    request.onreadystatechange = function () {
-	      if (request.readyState == XMLHttpRequest.DONE) {
-	        if (request.status == 200) {
-	          options.success(request.response);
-	        } else {
-	          options.error(request.response);
-	        }
-	      }
-	    };
+					request.onreadystatechange = function () {
+							if (request.readyState == XMLHttpRequest.DONE) {
+									if (request.status == 200) {
+											options.success(JSON.parse(request.response));
+									} else {
+											options.error(request.response);
+									}
+									if (options.complete) {
+											options.complete();
+									}
+							}
+					};
 	
-	    request.open(options.method, options.url, true);
-	    request.send(options.data);
-	  },
+					request.open(options.method, options.url, true);
+					request.send(options.data);
+			},
 	
-	  _extend: function (base) {
-	    console.log("Called extend in ApiUtil!!");
-	    var otherObjs = Array.prototype.slice.call(arguments, 1);
-	    otherObjs.forEach(function (obj) {
-	      for (var prop in obj) {
-	        if (obj.hasOwnProperty(prop)) {
-	          base[prop] = obj[prop];
-	        }
-	      }
-	    });
-	    return base;
-	  },
+			_extend: function (base) {
+					console.log("Called extend in ApiUtil!!");
+					var otherObjs = Array.prototype.slice.call(arguments, 1);
+					otherObjs.forEach(function (obj) {
+							for (var prop in obj) {
+									if (obj.hasOwnProperty(prop)) {
+											base[prop] = obj[prop];
+									}
+							}
+					});
+					return base;
+			},
 	
-	  _getAuthToken: function () {
-	    var authToken = document.getElementsByName("authenticity_token")[0].value;
-	    authToken = encodeURIComponent(authToken);
-	    var authString = "authenticity_token=" + authToken;
-	    return authString;
-	  }
+			_getAuthToken: function () {
+					var authToken = document.getElementsByName("authenticity_token")[0].value;
+					authToken = encodeURIComponent(authToken);
+					var authString = "authenticity_token=" + authToken;
+					return authString;
+			}
 	};
 	
 	module.exports = ApiUtil;
@@ -25087,23 +25135,28 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(222);
-	var AuthConstants = __webpack_require__(226);
+	var SessionConstants = __webpack_require__(226);
 	
-	var AuthActions = {
-		receiveCurrentUser: function (user) {
-			Dispatcher.dispatch({
-				actionType: AuthConstants.CURRENT_USER_RECEIVED,
-				currentUser: user
-			});
-		},
-		logOutCurrentUser: function (_obj) {
-			Dispatcher.dispatch({
-				actionType: AuthConstants.CURRENT_USER_DELETED
-			});
-		}
+	var SessionActions = {
+	  receiveCurrentUser: function (user) {
+	    Dispatcher.dispatch({
+	      actionType: SessionConstants.CURRENT_USER_RECEIVED,
+	      currentUser: user
+	    });
+	  },
+	  receiveNoCurrentUser: function () {
+	    Dispatcher.dispatch({
+	      actionType: SessionConstants.NO_USER_RECEIVED
+	    });
+	  },
+	  logOutCurrentUser: function (_obj) {
+	    Dispatcher.dispatch({
+	      actionType: SessionConstants.CURRENT_USER_DELETED
+	    });
+	  }
 	};
 	
-	module.exports = AuthActions;
+	module.exports = SessionActions;
 
 /***/ },
 /* 222 */
@@ -25427,6 +25480,7 @@
 
 	module.exports = {
 		CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
+		NO_USER_RECEIVED: "NO_USER_RECEIVED",
 		CURRENT_USER_DELETED: "CURRENT_USER_DELETED"
 	};
 
@@ -25435,13 +25489,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var AuthUtil = __webpack_require__(219);
+	var SessionUtil = __webpack_require__(219);
 	
 	var NavButtons = React.createClass({
 		displayName: 'NavButtons',
 	
 		logOut: function () {
-			AuthUtil.logOut();
+			SessionUtil.logOut();
 		},
 		render: function () {
 			return React.createElement(
@@ -25496,53 +25550,65 @@
 
 	var Store = __webpack_require__(230).Store;
 	var Dispatcher = __webpack_require__(222);
-	var AuthConstants = __webpack_require__(226);
-	var AuthStore = new Store(Dispatcher);
+	var SessionConstants = __webpack_require__(226);
+	var SessionStore = new Store(Dispatcher);
 	
-	console.log('loaded AuthStore!');
+	console.log('loaded SessionStore!');
+	
+	var currentUserFetched = false;
 	
 	var _currentUser = { online: false };
 	
 	var setCurrentUser = function (user) {
-	  _currentUser = user;
-	  _currentUser.online = true;
+		_currentUser = user;
+		_currentUser.online = true;
 	};
 	
 	var logOutCurrentUser = function () {
-	  _currentUser = { online: false };
+		_currentUser = { online: false };
 	};
 	
-	AuthStore.getCurrentUser = function () {
-	  var user = {};
-	  user.userId = _currentUser.userId;
-	  user.email = _currentUser.email;
-	  user.online = _currentUser.online;
-	  return user;
+	SessionStore.userFetched = function () {
+		return currentUserFetched;
 	};
 	
-	AuthStore.isLoggedIn = function () {
-	  var loggedIn = true;
-	  if (_currentUser.online === false) {
-	    loggedIn = false;
-	  }
-	  return loggedIn;
+	SessionStore.getCurrentUser = function () {
+		var user = {};
+		user.userId = _currentUser.userId;
+		user.email = _currentUser.email;
+		user.online = _currentUser.online;
+		return user;
 	};
 	
-	AuthStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case AuthConstants.CURRENT_USER_RECEIVED:
-	      setCurrentUser(JSON.parse(payload.currentUser));
-	      console.log('emitting change!');
-	      AuthStore.__emitChange();
-	      break;
-	    case AuthConstants.CURRENT_USER_DELETED:
-	      logOutCurrentUser();
-	      AuthStore.__emitChange();
-	      break;
-	  }
+	SessionStore.isLoggedIn = function () {
+		var loggedIn = true;
+		if (_currentUser.online === false) {
+			loggedIn = false;
+		}
+		return loggedIn;
 	};
 	
-	module.exports = AuthStore;
+	SessionStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case SessionConstants.CURRENT_USER_RECEIVED:
+				setCurrentUser(payload.currentUser);
+				currentUserFetched = true;
+				console.log('emitting change!');
+				SessionStore.__emitChange();
+				break;
+			case SessionConstants.NO_USER_RECEIVED:
+				currentUserFetched = true;
+				console.log('emitting change!');
+				SessionStore.__emitChange();
+				break;
+			case SessionConstants.CURRENT_USER_DELETED:
+				logOutCurrentUser();
+				SessionStore.__emitChange();
+				break;
+		}
+	};
+	
+	module.exports = SessionStore;
 
 /***/ },
 /* 230 */
@@ -32091,7 +32157,7 @@
 				url: "/api/posts",
 				method: "GET",
 				success: function (posts) {
-					AuthActions.receiveAllPosts(posts);
+					PostActions.receiveAllPosts(posts);
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -32108,7 +32174,7 @@
 				contentType: false,
 				processData: false,
 				success: function (post) {
-					AuthActions.receiveSinglePost(post);
+					PostActions.receiveSinglePost(post);
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -32121,7 +32187,7 @@
 				url: "/api/posts/" + id,
 				method: "DELETE",
 				success: function (post) {
-					PostActions.postDeleted(_obj);
+					PostActions.postDeleted(post);
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -32149,7 +32215,7 @@
 	  receiveAllPosts: function (posts) {
 	    Dispatcher.dispatch({
 	      actionType: PostConstants.ALL_POSTS_RECEIVED,
-	      posts: post
+	      posts: posts
 	    });
 	  },
 	  postDeleted: function (post) {

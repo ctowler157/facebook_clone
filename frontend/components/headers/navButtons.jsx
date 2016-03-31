@@ -1,9 +1,9 @@
 var React = require('react');
-var AuthUtil = require('../../util/authUtil.js');
+var SessionUtil = require('../../util/sessionUtil.js');
 
 var NavButtons = React.createClass({
 	logOut: function () {
-		AuthUtil.logOut();
+		SessionUtil.logOut();
 	},
 	render: function () {
 		return(
