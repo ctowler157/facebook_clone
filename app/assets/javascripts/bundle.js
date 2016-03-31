@@ -32474,13 +32474,33 @@
 	var React = __webpack_require__(1);
 	
 	var SignUp = React.createClass({
-		displayName: 'SignUp',
+		displayName: "SignUp",
+	
+	
+		_handleSubmit: function (event) {
+			event.preventDefault();
+			// var formData = $(this.signUpForm).serialize();
+		},
 	
 		render: function () {
+	
 			return React.createElement(
-				'h3',
-				null,
-				'Sign Up'
+				"div",
+				{ className: "sign-up-form" },
+				React.createElement(
+					"form",
+					{ ref: "signUpForm", onSubmit: this._handleSubmit },
+					React.createElement("input", { className: "first-name-input", type: "text", name: "user[first_name]" }),
+					React.createElement("input", { className: "last-name-input", type: "text", name: "user[last_name]" }),
+					React.createElement("input", { className: "email-input", type: "text", name: "user[email]" }),
+					React.createElement("input", { className: "email-verify-input", type: "text", name: "user[email_verify]" }),
+					React.createElement("input", { className: "password-input", type: "password", name: "user[password]" }),
+					React.createElement(
+						"input",
+						{ className: "sign-up-button", type: "submit" },
+						"Sign Up"
+					)
+				)
 			);
 		}
 	});
