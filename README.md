@@ -87,9 +87,9 @@ user interface.  News feed is an index of the users statuses.
 - [x] setup the flux loop with skeleton files
 - [x] setup React Router
 - implement each status component, building out the flux loop as needed.
-  - [ ] `PostIndex`
-  - [ ] `PostIndexItem`
-  - [ ] `PostForm`
+  - [x] `PostIndex`
+  - [x] `PostIndexItem`
+  - [x] `PostForm`
 
 ### Phase 4: Start Styling (0.5 days)
 

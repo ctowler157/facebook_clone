@@ -12,7 +12,7 @@ class Api::PostsController < ApplicationController
 		@post = current_user.posts.new(post_params)
 
 		if @post.save
-			render index
+			render :show
 		else
 			render :json => @post.errors.full_messages
 		end
@@ -21,7 +21,7 @@ class Api::PostsController < ApplicationController
 	def update
 		@post = Post.find(params[:id])
 		if @post.update(post_params)
-			render show
+			render :show
 		else
 			render :json => @post.errors.full_messages
 		end
@@ -30,7 +30,7 @@ class Api::PostsController < ApplicationController
 	def destroy
 		@post = Post.find(params[:id])
 		@post.destroy
-		render show
+		render :show
 	end
 
 	private

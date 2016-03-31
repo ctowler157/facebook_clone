@@ -24771,7 +24771,8 @@
 	var LoggedInHeader = __webpack_require__(228);
 	var SessionStore = __webpack_require__(229);
 	var SessionUtil = __webpack_require__(219);
-	var Display = __webpack_require__(247);
+	var LoggedInDisplay = __webpack_require__(257);
+	var LoggedOutDisplay = __webpack_require__(258);
 	
 	module.exports = React.createClass({
 		displayName: 'exports',
@@ -24800,14 +24801,17 @@
 		render: function () {
 			var user = SessionStore.getCurrentUser();
 			var header;
+			var display;
 			if (user.online) {
 				header = React.createElement(LoggedInHeader, { user: user });
+				display = React.createElement(LoggedInDisplay, { user: user });
 			} else {
 				header = React.createElement(LoggedOutHeader, null);
+				display = React.createElement(LoggedOutDisplay, null);
 			}
 			return React.createElement(
 				'div',
-				null,
+				{ className: 'whole-page' },
 				React.createElement(
 					'header',
 					null,
@@ -24815,8 +24819,8 @@
 				),
 				React.createElement(
 					'main',
-					null,
-					React.createElement(Display, { user: user })
+					{ className: 'main' },
+					display
 				)
 			);
 		}
@@ -24829,60 +24833,25 @@
 	var React = __webpack_require__(1);
 	var LogIn = __webpack_require__(218);
 	var NavButtons = __webpack_require__(227);
-	// var AuthStore = require('../../stores/authStore');
 	
-	//
-	// var Header = React.createClass({
-	// 	getInitialState: function () {
-	// 		var loggedIn = AuthStore.isLoggedIn();
-	// 		return({loggedIn: loggedIn});
-	// 	},
-	//
-	// 	componentDidMount: function () {
-	// 		this.logInListener = AuthStore.addListener(this._onChange);
-	// 		//fetch bio info??
-	// 	},
-	//
-	// 	componentWillUnmount: function () {
-	// 		this.logInListener.remove();
-	// 	},
-	//
-	// 	_onChange: function () {
-	// 		var loggedIn = AuthStore.isLoggedIn();
-	// 		this.setState({ loggedIn: loggedIn });
-	// 	},
-	//
-	//   render: function () {
-	// 		var navItem = "";
-	//
-	// 		if (this.state.loggedIn) {
-	// 			var user = AuthStore.getCurrentUser();
-	// 			navItem = <NavButtons user={user}/>;
-	// 		} else {
-	// 			navItem = <LogIn />;
-	// 		}
-	//
-	//     return (
-	//       <nav className="header-nav">
-	//         <a href="#" className="header-nav-logo">fakebook</a>
-	// 				{ navItem }
-	//       </nav>);
-	//   }
-	// });
 	var LoggedOutHeader = React.createClass({
 		displayName: 'LoggedOutHeader',
 	
 	
 		render: function () {
 			return React.createElement(
-				'nav',
-				{ className: 'header-nav' },
+				'div',
+				{ className: 'logged-out-header clear-fix' },
 				React.createElement(
-					'a',
-					{ href: '#', className: 'header-nav-logo' },
-					'fakebook'
-				),
-				React.createElement(LogIn, null)
+					'nav',
+					{ className: 'header-nav' },
+					React.createElement(
+						'a',
+						{ href: '#', className: 'header-nav-logo haeder-nav-left' },
+						'fakebook'
+					),
+					React.createElement(LogIn, null)
+				)
 			);
 		}
 	});
@@ -24929,7 +24898,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'table',
-	      { cellSpacing: '0', role: 'presentation', className: 'login-form' },
+	      { cellSpacing: '0', role: 'presentation', className: 'header-nav-right login-form' },
 	      React.createElement(
 	        'tbody',
 	        { className: 'login-form-table-body' },
@@ -24957,7 +24926,7 @@
 	        ),
 	        React.createElement(
 	          'tr',
-	          null,
+	          { className: 'input-label-row' },
 	          React.createElement(
 	            'td',
 	            null,
@@ -24975,6 +24944,29 @@
 	              'button',
 	              { className: 'login-button', onClick: this.handleClick },
 	              'Log In'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'tr',
+	          { className: 'remember-me-row' },
+	          React.createElement(
+	            'td',
+	            null,
+	            React.createElement(
+	              'label',
+	              { className: 'remember-me-label' },
+	              React.createElement('input', { type: 'checkbox', name: 'persistent', value: '1' }),
+	              'Keep me logged in'
+	            )
+	          ),
+	          React.createElement(
+	            'td',
+	            null,
+	            React.createElement(
+	              'a',
+	              { className: 'forgot-password', href: '#' },
+	              'Forgot your password?'
 	            )
 	          )
 	        )
@@ -25093,7 +25085,8 @@
 					request.onreadystatechange = function () {
 							if (request.readyState == XMLHttpRequest.DONE) {
 									if (request.status == 200) {
-											options.success(JSON.parse(request.response));
+											var response = JSON.parse(request.response);
+											options.success(response);
 									} else {
 											options.error(request.response);
 									}
@@ -25500,7 +25493,7 @@
 		render: function () {
 			return React.createElement(
 				'div',
-				null,
+				{ className: 'header-nav-right' },
 				React.createElement(
 					'h3',
 					null,
@@ -25524,22 +25517,36 @@
 
 	var React = __webpack_require__(1);
 	var NavButtons = __webpack_require__(227);
+	var SearchBar = __webpack_require__(255);
 	
 	var LoggedInHeader = React.createClass({
-	  displayName: 'LoggedInHeader',
+		displayName: 'LoggedInHeader',
 	
-	  render: function () {
-	    return React.createElement(
-	      'nav',
-	      { className: 'header-nav' },
-	      React.createElement(
-	        'a',
-	        { href: '#', className: 'header-nav-logo' },
-	        'fakebook'
-	      ),
-	      React.createElement(NavButtons, { user: this.props.user })
-	    );
-	  }
+		render: function () {
+			return React.createElement(
+				'nav',
+				{ className: 'header-nav' },
+				React.createElement(
+					'ul',
+					{ className: 'header-nav-left' },
+					React.createElement(
+						'li',
+						null,
+						React.createElement(SearchBar, { user: this.props.user })
+					),
+					React.createElement(
+						'li',
+						null,
+						React.createElement(
+							'a',
+							{ href: '#', className: 'header-nav-thumb-logo' },
+							'f'
+						)
+					)
+				),
+				React.createElement(NavButtons, { user: this.props.user })
+			);
+		}
 	});
 	
 	module.exports = LoggedInHeader;
@@ -32057,38 +32064,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(248);
-	var PostIndex = __webpack_require__(252);
-	
-	var Display = React.createClass({
-		displayName: 'Display',
-	
-		render: function () {
-			var displayString = React.createElement(
-				'h1',
-				null,
-				'Home Page'
-			);
-			if (this.props.user.online) {
-				displayString = React.createElement(PostForm, { user: this.props.user });
-			}
-	
-			return React.createElement(
-				'section',
-				{ className: 'main-feed' },
-				displayString,
-				React.createElement(PostIndex, null)
-			);
-		}
-	});
-	
-	module.exports = Display;
-
-/***/ },
+/* 247 */,
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32114,13 +32090,17 @@
 			}
 		},
 	
+		clearForms: function () {
+			this.setState({ body: "" });
+		},
+	
 		tryCreatePost: function () {
 			var formData = new FormData();
 			formData.append("post[author_id]", this.state.authorId);
 			formData.append("post[timeline_id]", this.state.authorId);
 			formData.append("post[body]", this.state.body);
 	
-			PostUtil.tryCreatePost(formData);
+			PostUtil.tryCreatePost(formData, this.clearForms);
 		},
 	
 		render: function () {
@@ -32165,7 +32145,7 @@
 			});
 		},
 	
-		tryCreatePost: function (formData) {
+		tryCreatePost: function (formData, resetForms) {
 			ApiUtil.ajax({
 				url: "/api/posts",
 				method: "POST",
@@ -32175,6 +32155,7 @@
 				processData: false,
 				success: function (post) {
 					PostActions.receiveSinglePost(post);
+					resetForms();
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -32367,6 +32348,210 @@
 	});
 	
 	module.exports = PostIndexItem;
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostUtil = __webpack_require__(249);
+	// var PostActions = require('../../actions');
+	
+	var PostForm = React.createClass({
+		displayName: 'PostForm',
+	
+		getInitialState: function () {
+			// will be needed when determining who to autopopulate
+			// search bar with
+			// var user = this.props.user;
+			return { search: "" };
+		},
+	
+		updateSearch: function (event) {
+			this.setState({ search: event.currentTarget.value });
+		},
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'search-bar' },
+				React.createElement('input', { type: 'text', className: 'search-bar-input', value: this.state.search, onChange: this.updateSearch }),
+				React.createElement(
+					'button',
+					{ type: 'button', className: 'search-bar-submit' },
+					'Search'
+				)
+			);
+		}
+	});
+	
+	module.exports = PostForm;
+
+/***/ },
+/* 256 */,
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostForm = __webpack_require__(248);
+	var PostIndex = __webpack_require__(252);
+	
+	var LoggedInDisplay = React.createClass({
+		displayName: 'LoggedInDisplay',
+	
+		render: function () {
+			var displayString = React.createElement(
+				'h1',
+				null,
+				'Home Page'
+			);
+			if (this.props.user.online) {
+				displayString = React.createElement(PostForm, { user: this.props.user });
+			}
+	
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'section',
+					{ className: 'main-sidebar-left ' },
+					React.createElement(
+						'h3',
+						null,
+						'There\'s stuff in this sidebar'
+					)
+				),
+				React.createElement(
+					'section',
+					{ className: 'main-feed' },
+					displayString,
+					React.createElement(PostIndex, null)
+				),
+				React.createElement('section', { className: 'main-sidebar-right' })
+			);
+		}
+	});
+	
+	module.exports = LoggedInDisplay;
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostForm = __webpack_require__(248);
+	var PostIndex = __webpack_require__(252);
+	var ConnectWithFriends = __webpack_require__(260);
+	var SignUp = __webpack_require__(259);
+	
+	var LoggedInDisplay = React.createClass({
+		displayName: 'LoggedInDisplay',
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'signed-out-homepage' },
+				React.createElement(
+					'section',
+					{ className: 'connect-with-friends' },
+					React.createElement(ConnectWithFriends, null)
+				),
+				React.createElement(
+					'section',
+					{ className: 'sign-up-homepage' },
+					React.createElement(SignUp, null)
+				)
+			);
+		}
+	});
+	
+	module.exports = LoggedInDisplay;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SignUp = React.createClass({
+		displayName: 'SignUp',
+	
+		render: function () {
+			return React.createElement(
+				'h3',
+				null,
+				'Sign Up'
+			);
+		}
+	});
+	
+	module.exports = SignUp;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var ConnectWithFriends = React.createClass({
+		displayName: "ConnectWithFriends",
+	
+	
+		render: function () {
+			var strings = [];
+			strings.push(["See photos and updates", "from friends in News Feed."]);
+			strings.push(["Share what's new", "in your life on your Timeline."]);
+			strings.push(["Find more", "of what you're looking for with Facebook Search."]);
+	
+			var images = ["connect-images photosCI", "connect-images shareCI", "connect-images findCI"];
+			var htmlMaker = function (image, bold, plain) {
+				return React.createElement(
+					"div",
+					{ className: "connect-bullet-item" },
+					React.createElement("div", { className: image }),
+					React.createElement(
+						"div",
+						{ className: "connect-bullet-text" },
+						React.createElement(
+							"p",
+							{ className: "connect-bullet-text-bold" },
+							bold
+						),
+						React.createElement(
+							"p",
+							{ className: "connect-bullet-text-plain" },
+							plain
+						)
+					)
+				);
+			};
+	
+			bullet0 = htmlMaker(images[0], strings[0][0], strings[0][1]);
+			bullet1 = htmlMaker(images[1], strings[1][0], strings[1][1]);
+			bullet2 = htmlMaker(images[2], strings[2][0], strings[2][1]);
+	
+			return React.createElement(
+				"div",
+				{ className: "connect-with-friends" },
+				React.createElement(
+					"h2",
+					{ className: "connect-with-header" },
+					" Connect with friends and the",
+					React.createElement("br", null),
+					"world around you on Facebook. "
+				),
+				React.createElement(
+					"div",
+					{ className: "connect-bullets" },
+					bullet0,
+					bullet1,
+					bullet2
+				)
+			);
+		}
+	});
+	
+	module.exports = ConnectWithFriends;
 
 /***/ }
 /******/ ]);

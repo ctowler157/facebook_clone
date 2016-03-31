@@ -17,7 +17,7 @@ var PostUtil = {
 		});
 	},
 
-	tryCreatePost: function (formData) {
+	tryCreatePost: function (formData, resetForms) {
 		ApiUtil.ajax({
 			url: "/api/posts",
 			method: "POST",
@@ -25,8 +25,11 @@ var PostUtil = {
 			data: formData,
 			contentType: false,
 			processData: false,
-			success: function (post) { PostActions.receiveSinglePost(post); },
-			error: function (response) { console.log("FAILURE\n" + response); },
+			success: function (post) {
+				PostActions.receiveSinglePost(post);
+				resetForms();
+			},
+			error: function (response) { console.log("FAILURE\n" + response); }
 		});
 	},
 

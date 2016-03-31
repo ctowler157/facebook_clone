@@ -3,7 +3,8 @@ var LoggedOutHeader = require('./headers/loggedOutHeader');
 var LoggedInHeader = require('./headers/loggedInHeader');
 var SessionStore = require('../stores/sessionStore');
 var SessionUtil = require('../util/sessionUtil.js');
-var Display = require('./display');
+var LoggedInDisplay = require('./displays/loggedInDisplay');
+var LoggedOutDisplay = require('./displays/loggedOutDisplay');
 
 
 module.exports = React.createClass({
@@ -31,19 +32,22 @@ module.exports = React.createClass({
   render: function() {
 		var user = SessionStore.getCurrentUser();
 		var header;
+		var display;
 		if (user.online) {
 			header = <LoggedInHeader user={ user }/>;
+			display = <LoggedInDisplay user={ user }/>;
 		} else {
 			header = <LoggedOutHeader/>;
+			display = <LoggedOutDisplay/>;
 		}
     return(
-      <div>
+      <div className="whole-page">
 				<header>
 					{ header }
 				</header>
-				<main>
-					<Display user={ user }/>
-				</main>
+					<main className="main">
+						{ display }
+					</main>
       </div>
    );
   }

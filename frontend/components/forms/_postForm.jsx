@@ -18,13 +18,17 @@ var PostForm = React.createClass({
 		}
 	},
 
+	clearForms: function () {
+		this.setState({ body: "" });
+	},
+
 	tryCreatePost: function() {
 		var formData = new FormData();
 		formData.append("post[author_id]", this.state.authorId);
 		formData.append("post[timeline_id]", this.state.authorId);
 		formData.append("post[body]", this.state.body);
 
-		PostUtil.tryCreatePost(formData);
+		PostUtil.tryCreatePost(formData, this.clearForms);
 	},
 
 	render: function () {

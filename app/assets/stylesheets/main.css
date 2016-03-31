@@ -1,0 +1,14 @@
+.main {
+	margin: 0 auto;
+  width: 980px;
+}
+.main-feed {
+  width: 495px;
+	float: right;
+	background-color: lightblue;
+}
+.main-siderbar-left {
+	width: 160;
+	float:left;
+	background-color: lightgreen;
+}

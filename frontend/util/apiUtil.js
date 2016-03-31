@@ -33,8 +33,9 @@ var ApiUtil = {
 
     request.onreadystatechange = function() {
         if (request.readyState == XMLHttpRequest.DONE ) {
-          if(request.status == 200){
-              options.success(JSON.parse(request.response));
+          if(request.status == 200) {
+							var response = JSON.parse(request.response);
+              options.success(response);
           } else {
             options.error(request.response);
           }

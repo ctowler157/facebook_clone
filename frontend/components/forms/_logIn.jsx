@@ -32,7 +32,7 @@ var LogIn = React.createClass({
 
   render: function () {
     return (
-      <table cellSpacing="0" role="presentation" className="login-form">
+      <table cellSpacing="0" role="presentation" className="header-nav-right login-form">
         <tbody className="login-form-table-body">
             <tr>
               <td>
@@ -42,7 +42,7 @@ var LogIn = React.createClass({
                 <label>Password</label>
               </td>
             </tr>
-            <tr>
+            <tr className="input-label-row">
               <td>
                   <input className="login-input" type="text" name="user[email]" value={this.state.email} onChange={this.updateEmail}/>
               </td>
@@ -51,6 +51,17 @@ var LogIn = React.createClass({
               </td>
               <td>
                 <button className="login-button" onClick={this.handleClick}>Log In</button>
+              </td>
+            </tr>
+            <tr className="remember-me-row">
+              <td>
+								<label className="remember-me-label">
+									<input type="checkbox" name="persistent" value="1"/>
+									Keep me logged in
+								</label>
+              </td>
+              <td>
+								<a className="forgot-password" href="#">Forgot your password?</a>
               </td>
             </tr>
         </tbody>

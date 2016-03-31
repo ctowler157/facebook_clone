@@ -35,5 +35,9 @@ body, header, a, div, button {
  }
 
  button {
-	
+
+ }
+
+ .whole-page {
+	 background-color: #edf0f5;
  }
