@@ -2,6 +2,7 @@ var React = require('react');
 var LoggedOutHeader = require('./headers/loggedOutHeader');
 var LoggedInHeader = require('./headers/loggedInHeader');
 var AuthStore = require('../stores/authStore');
+var AuthUtil = require('../util/authUtil.js');
 var Display = require('./display');
 
 
@@ -12,7 +13,9 @@ module.exports = React.createClass({
 	},
 
 	componentDidMount: function () {
+
 		this.logInListener = AuthStore.addListener(this._onChange);
+		AuthUtil.fetchCurrentUser();
 		//fetch bio info??
 	},
 

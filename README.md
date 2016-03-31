@@ -70,28 +70,26 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Statuses can be created, read, edited and destroyed through
 the API.  Statuses belong to the user that created them.
 
-- [ ] create `Status` model
+- [x] create `Post` model
 - [ ] seed the database with a small amount of test data
-- [ ] CRUD API for statuses (`StatusesController`)
-- [ ] jBuilder views for Feed
-- [ ] jBuilder views for statuses (reusable partial)
-- [ ] setup Webpack & Flux scaffold
-- [ ] setup `APIUtil` to interact with the APIs
-- [ ] test out API interaction in the console.
+- [x] CRUD API for statuses (`PostsController`)
+- [x] jBuilder views for Feed
+- [x] jBuilder views for statuses (reusable partial)
+- [x] setup Webpack & Flux scaffold
+- [x] setup `APIUtil` to interact with the APIs
+- [x] test out API interaction in the console.
 
 ### Phase 3: Flux Architecture and Router (1 days)
 
-**Objective:** Statuses can be created, read, edited and destroyed with the
+**Objective:** Posts can be created, read, edited and destroyed with the
 user interface.  News feed is an index of the users statuses.
 
-- [ ] setup the flux loop with skeleton files
-- [ ] setup React Router
+- [x] setup the flux loop with skeleton files
+- [x] setup React Router
 - implement each status component, building out the flux loop as needed.
-  - [ ] `StatusIndex`
-  - [ ] `StatusIndexItem`
-  - [ ] `StatusForm`
-- [ ] save Statuses to the DB when the form loses focus or is left idle
-  after editing.  ##Ask about this##
+  - [ ] `PostIndex`
+  - [ ] `PostIndexItem`
+  - [ ] `PostForm`
 
 ### Phase 4: Start Styling (0.5 days)
 
@@ -110,7 +108,6 @@ an index of their statuses
 - [ ] create `ProfilePicture` model
 - [ ] seed the database with a small amount of test data
 - [ ] CRUD API for timeline bio information
-- [ ] CRUD API for notes (`StatusesController`)
 - [ ] jBuilder views for timeline
 - [ ] jBuilder views for bio information
 - [ ] Build out Flux loops and components for the Timeline, bio, and picture

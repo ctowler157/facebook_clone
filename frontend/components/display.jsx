@@ -1,5 +1,6 @@
 var React = require('react');
 var PostForm = require('./forms/_postForm');
+var PostIndex = require('./posts/index');
 
 var Display = React.createClass({
 	render: function () {
@@ -8,7 +9,12 @@ var Display = React.createClass({
 			displayString = <PostForm user={ this.props.user }/>;
 		}
 
-		return displayString;
+		return(
+			<section className="main-feed">
+				{ displayString }
+				<PostIndex/>
+			</section>
+		);
 	}
 });
 

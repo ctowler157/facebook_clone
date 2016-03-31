@@ -7,6 +7,9 @@ var AuthUtil = {
 	// getCurrentUser: function () {
 	//
 	// },
+	fetchCurrentUser: function () {
+		//do this, maybe fetch from cookie?
+	},
 
 	tryLogIn: function (formData) {
 
