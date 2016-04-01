@@ -9,7 +9,7 @@ var SignUp = React.createClass({
 	_handleSubmit: function (event) {
 		event.preventDefault();
     var form = event.currentTarget;
-    var result = this.validateForm;
+    var result = this.validateForm(form);
     if (result.valid){
   		var data = new FormData(form);
       UserUtil.trySignUp(data);
