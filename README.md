@@ -12,13 +12,13 @@ and React.js. #TBD# allows users to:
 <!-- This is a Markdown checklist. Use it to keep track of your
 progress. Put an x between the brackets for a checkmark: [x] -->
 
-- [ ] Create an account
-- [ ] Log in / Log out
+- [x] Create an account
+- [x] Log in / Log out
 
 - [ ] Create, read, and edit a profile/bio
 - [ ] Upload an image file as a profile picture
 
-- [ ] Create, read, edit, and delete statuses
+- [x] Create, read, edit, and delete statuses
 
 - [ ] Search for other users by name
 

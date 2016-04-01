@@ -46,7 +46,7 @@ module.exports = React.createClass({
 					{ header }
 				</header>
 					<main className="main">
-						{ display }
+						{ this.props.children || display }
 					</main>
       </div>
    );

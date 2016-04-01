@@ -4,7 +4,7 @@ var PostIndex = require('../posts/index');
 var ConnectWithFriends = require('./_connectWithFriends');
 var	SignUp = require('../forms/_signUp');
 
-var LoggedInDisplay = React.createClass({
+var LoggedOutDisplay = React.createClass({
 	render: function () {
 		return(
 			<div className="signed-out-homepage">
@@ -19,4 +19,4 @@ var LoggedInDisplay = React.createClass({
 	}
 });
 
-module.exports = LoggedInDisplay;
+module.exports = LoggedOutDisplay;

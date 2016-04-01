@@ -8,7 +8,8 @@ class User < ActiveRecord::Base
 
 
 	has_many :timeline_posts,	class_name: "Post", foreign_key: :timeline_id
-	
+
+  has_one :bio
 
   after_initialize :ensure_session_token
 

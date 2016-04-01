@@ -8,7 +8,7 @@ var LoggedInHeader = React.createClass({
 			<nav className="header-nav">
 				<ul className="header-nav-left">
 					<li><SearchBar user={ this.props.user }/></li>
-					<li><a href="#" className="header-nav-thumb-logo">f</a></li>
+					<li><a href="#/" className="header-nav-thumb-logo">f</a></li>
 				</ul>
 				<NavButtons user={ this.props.user} />
       </nav>

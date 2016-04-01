@@ -16,7 +16,7 @@ var LoggedInDisplay = React.createClass({
 				</section>
 				<section className="main-feed">
 					{ displayString }
-					<PostIndex/>
+					<PostIndex user={ this.props.user }/>
 				</section>
 				<section className="main-sidebar-right"></section>
 			</div>

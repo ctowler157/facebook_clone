@@ -8,7 +8,7 @@ var LoggedOutHeader = React.createClass ({
 		return (
 			<div className="logged-out-header clear-fix">
 				<nav className="header-nav">
-					<a href="#" className="header-nav-logo haeder-nav-left">fakebook</a>
+					<a href="#/" className="header-nav-logo haeder-nav-left">fakebook</a>
 					<LogIn />
 				</nav>
 			</div>

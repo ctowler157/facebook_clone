@@ -2,7 +2,7 @@ class Api::SessionsController < ApplicationController
 	def show
 		if signed_in?
 			user = current_user
-      render :json => { userId: user.id, email: user.email }
+      render :json => { id: user.id, email: user.email }
     else
       render json: { message: "Not logged in" }
     end
@@ -16,9 +16,9 @@ class Api::SessionsController < ApplicationController
 
     if user
       sign_in(user)
-      render :json => { userId: user.id, email: user.email }
+      render :json => { id: user.id, email: user.email }
     else
-      render :new
+      render :json => { message: "Login failed" }, status: 401
     end
   end
 

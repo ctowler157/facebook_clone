@@ -53,45 +53,47 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(216);
+	var Timeline = __webpack_require__(261);
 	var LogIn = __webpack_require__(218);
-	var SessionStore = __webpack_require__(229);
+	var SessionStore = __webpack_require__(233);
 	var SessionUtil = __webpack_require__(219);
 	
 	var routes = React.createElement(
-		Route,
-		{ path: '/', component: App, onEntry: this.checkLoggedIn },
-		React.createElement(Route, { path: '/login', component: LogIn })
+			Route,
+			{ path: '/', component: App, onEntry: this.checkLoggedIn },
+			React.createElement(Route, { path: '/user/:id', component: Timeline, onEntry: this.checkLoggedIn }),
+			React.createElement(Route, { path: '/login', component: LogIn })
 	);
 	
 	var checkLoggedIn = function (nextState, replace, completion) {
-		if (SessionStore.userFetched()) {
-			completion();
-		} else {
-			SessionUtil.fetchCurrentUser(completion);
-		}
+			if (SessionStore.userFetched()) {
+					completion();
+			} else {
+					SessionUtil.fetchCurrentUser(completion);
+			}
 	};
 	
 	var ensureLoggedIn = function (nextState, replace, completion) {
-		if (SessionStore.userFetched()) {
-			_redirectIfNotLoggedIn();
-		} else {
-			SessionUtil.fetchCurrentUser(_redirectIfNotLoggedIn);
-		}
-	
-		function _redirectIfNotLoggedIn() {
-			if (!SessionStore.isLoggedIn()) {
-				replace("/login");
+			if (SessionStore.userFetched()) {
+					_redirectIfNotLoggedIn();
+			} else {
+					SessionUtil.fetchCurrentUser(_redirectIfNotLoggedIn);
 			}
-			completion();
-		}
+	
+			function _redirectIfNotLoggedIn() {
+					if (!SessionStore.isLoggedIn()) {
+							replace("/login");
+					}
+					completion();
+			}
 	};
 	
 	document.addEventListener("DOMContentLoaded", function (event) {
-		ReactDOM.render(React.createElement(
-			Router,
-			{ history: hashHistory },
-			routes
-		), document.getElementById('root'));
+			ReactDOM.render(React.createElement(
+					Router,
+					{ history: hashHistory },
+					routes
+			), document.getElementById('root'));
 	});
 
 /***/ },
@@ -24769,10 +24771,10 @@
 	var React = __webpack_require__(1);
 	var LoggedOutHeader = __webpack_require__(217);
 	var LoggedInHeader = __webpack_require__(228);
-	var SessionStore = __webpack_require__(229);
+	var SessionStore = __webpack_require__(233);
 	var SessionUtil = __webpack_require__(219);
-	var LoggedInDisplay = __webpack_require__(257);
-	var LoggedOutDisplay = __webpack_require__(258);
+	var LoggedInDisplay = __webpack_require__(251);
+	var LoggedOutDisplay = __webpack_require__(256);
 	
 	module.exports = React.createClass({
 		displayName: 'exports',
@@ -24820,7 +24822,7 @@
 				React.createElement(
 					'main',
 					{ className: 'main' },
-					display
+					this.props.children || display
 				)
 			);
 		}
@@ -24847,7 +24849,7 @@
 					{ className: 'header-nav' },
 					React.createElement(
 						'a',
-						{ href: '#', className: 'header-nav-logo haeder-nav-left' },
+						{ href: '#/', className: 'header-nav-logo haeder-nav-left' },
 						'fakebook'
 					),
 					React.createElement(LogIn, null)
@@ -25517,7 +25519,7 @@
 
 	var React = __webpack_require__(1);
 	var NavButtons = __webpack_require__(227);
-	var SearchBar = __webpack_require__(255);
+	var SearchBar = __webpack_require__(229);
 	
 	var LoggedInHeader = React.createClass({
 		displayName: 'LoggedInHeader',
@@ -25539,7 +25541,7 @@
 						null,
 						React.createElement(
 							'a',
-							{ href: '#', className: 'header-nav-thumb-logo' },
+							{ href: '#/', className: 'header-nav-thumb-logo' },
 							'f'
 						)
 					)
@@ -25555,7 +25557,145 @@
 /* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(230).Store;
+	var React = __webpack_require__(1);
+	var PostUtil = __webpack_require__(230);
+	// var PostActions = require('../../actions');
+	
+	var PostForm = React.createClass({
+		displayName: 'PostForm',
+	
+		getInitialState: function () {
+			// will be needed when determining who to autopopulate
+			// search bar with
+			// var user = this.props.user;
+			return { search: "" };
+		},
+	
+		updateSearch: function (event) {
+			this.setState({ search: event.currentTarget.value });
+		},
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'search-bar' },
+				React.createElement('input', { type: 'text', className: 'search-bar-input', value: this.state.search, onChange: this.updateSearch }),
+				React.createElement(
+					'button',
+					{ type: 'button', className: 'search-bar-submit' },
+					'Search'
+				)
+			);
+		}
+	});
+	
+	module.exports = PostForm;
+
+/***/ },
+/* 230 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var PostActions = __webpack_require__(231);
+	
+	console.log("Loaded PostUtil!");
+	
+	var PostUtil = {
+		// getCurrentUser: function () {
+		//
+		// },
+		fetchAllPosts: function () {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "GET",
+				success: function (posts) {
+					PostActions.receiveAllPosts(posts);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		tryCreatePost: function (formData, resetForms) {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (post) {
+					PostActions.receiveSinglePost(post);
+					resetForms();
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		deletePost: function (id) {
+			ApiUtil.ajax({
+				url: "/api/posts/" + id,
+				method: "DELETE",
+				success: function (post) {
+					PostActions.postDeleted(post);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	};
+	
+	module.exports = PostUtil;
+
+/***/ },
+/* 231 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var PostConstants = __webpack_require__(232);
+	
+	var PostActions = {
+	  receiveSinglePost: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_RECEIVED,
+	      post: post
+	    });
+	  },
+	  receiveAllPosts: function (posts) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.ALL_POSTS_RECEIVED,
+	      posts: posts
+	    });
+	  },
+	  postDeleted: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_DELETED,
+	      deletedPost: post
+	    });
+	  }
+	};
+	
+	module.exports = PostActions;
+
+/***/ },
+/* 232 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		POST_RECEIVED: "POST_RECEIVED",
+		ALL_POSTS_RECEIVED: "ALL_POSTS_RECEIVED",
+		POST_DELETED: "POST_DELETED"
+	};
+
+/***/ },
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(234).Store;
 	var Dispatcher = __webpack_require__(222);
 	var SessionConstants = __webpack_require__(226);
 	var SessionStore = new Store(Dispatcher);
@@ -25581,7 +25721,7 @@
 	
 	SessionStore.getCurrentUser = function () {
 		var user = {};
-		user.userId = _currentUser.userId;
+		user.id = _currentUser.id;
 		user.email = _currentUser.email;
 		user.online = _currentUser.online;
 		return user;
@@ -25618,7 +25758,7 @@
 	module.exports = SessionStore;
 
 /***/ },
-/* 230 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25630,15 +25770,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Container = __webpack_require__(231);
-	module.exports.MapStore = __webpack_require__(234);
-	module.exports.Mixin = __webpack_require__(246);
-	module.exports.ReduceStore = __webpack_require__(235);
-	module.exports.Store = __webpack_require__(236);
+	module.exports.Container = __webpack_require__(235);
+	module.exports.MapStore = __webpack_require__(238);
+	module.exports.Mixin = __webpack_require__(250);
+	module.exports.ReduceStore = __webpack_require__(239);
+	module.exports.Store = __webpack_require__(240);
 
 
 /***/ },
-/* 231 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25660,10 +25800,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStoreGroup = __webpack_require__(232);
+	var FluxStoreGroup = __webpack_require__(236);
 	
 	var invariant = __webpack_require__(225);
-	var shallowEqual = __webpack_require__(233);
+	var shallowEqual = __webpack_require__(237);
 	
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -25821,7 +25961,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 232 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25902,7 +26042,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 233 */
+/* 237 */
 /***/ function(module, exports) {
 
 	/**
@@ -25957,7 +26097,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 234 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25978,8 +26118,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxReduceStore = __webpack_require__(235);
-	var Immutable = __webpack_require__(245);
+	var FluxReduceStore = __webpack_require__(239);
+	var Immutable = __webpack_require__(249);
 	
 	var invariant = __webpack_require__(225);
 	
@@ -26107,7 +26247,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 235 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26128,9 +26268,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStore = __webpack_require__(236);
+	var FluxStore = __webpack_require__(240);
 	
-	var abstractMethod = __webpack_require__(244);
+	var abstractMethod = __webpack_require__(248);
 	var invariant = __webpack_require__(225);
 	
 	var FluxReduceStore = (function (_FluxStore) {
@@ -26214,7 +26354,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 236 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26233,7 +26373,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _require = __webpack_require__(237);
+	var _require = __webpack_require__(241);
 	
 	var EventEmitter = _require.EventEmitter;
 	
@@ -26397,7 +26537,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 237 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26410,14 +26550,14 @@
 	 */
 	
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(238)
+	  EventEmitter: __webpack_require__(242)
 	};
 	
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 238 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26436,11 +26576,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var EmitterSubscription = __webpack_require__(239);
-	var EventSubscriptionVendor = __webpack_require__(241);
+	var EmitterSubscription = __webpack_require__(243);
+	var EventSubscriptionVendor = __webpack_require__(245);
 	
-	var emptyFunction = __webpack_require__(243);
-	var invariant = __webpack_require__(242);
+	var emptyFunction = __webpack_require__(247);
+	var invariant = __webpack_require__(246);
 	
 	/**
 	 * @class BaseEventEmitter
@@ -26614,7 +26754,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 239 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26635,7 +26775,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var EventSubscription = __webpack_require__(240);
+	var EventSubscription = __webpack_require__(244);
 	
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -26667,7 +26807,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 240 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/**
@@ -26721,7 +26861,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 241 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26740,7 +26880,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(242);
+	var invariant = __webpack_require__(246);
 	
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -26830,7 +26970,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 242 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26885,7 +27025,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 243 */
+/* 247 */
 /***/ function(module, exports) {
 
 	/**
@@ -26927,7 +27067,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 244 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26954,7 +27094,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 245 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31941,7 +32081,7 @@
 	}));
 
 /***/ },
-/* 246 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31958,7 +32098,7 @@
 	
 	'use strict';
 	
-	var FluxStoreGroup = __webpack_require__(232);
+	var FluxStoreGroup = __webpack_require__(236);
 	
 	var invariant = __webpack_require__(225);
 	
@@ -32064,12 +32204,57 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 247 */,
-/* 248 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(249);
+	var PostForm = __webpack_require__(252);
+	var PostIndex = __webpack_require__(253);
+	
+	var LoggedInDisplay = React.createClass({
+		displayName: 'LoggedInDisplay',
+	
+		render: function () {
+			var displayString = React.createElement(
+				'h1',
+				null,
+				'Home Page'
+			);
+			if (this.props.user.online) {
+				displayString = React.createElement(PostForm, { user: this.props.user });
+			}
+	
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'section',
+					{ className: 'main-sidebar-left ' },
+					React.createElement(
+						'h3',
+						null,
+						'There\'s stuff in this sidebar'
+					)
+				),
+				React.createElement(
+					'section',
+					{ className: 'main-feed' },
+					displayString,
+					React.createElement(PostIndex, { user: this.props.user })
+				),
+				React.createElement('section', { className: 'main-sidebar-right' })
+			);
+		}
+	});
+	
+	module.exports = LoggedInDisplay;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostUtil = __webpack_require__(230);
 	// var PostActions = require('../../actions');
 	
 	var PostForm = React.createClass({
@@ -32120,113 +32305,13 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var PostActions = __webpack_require__(250);
-	
-	console.log("Loaded PostUtil!");
-	
-	var PostUtil = {
-		// getCurrentUser: function () {
-		//
-		// },
-		fetchAllPosts: function () {
-			ApiUtil.ajax({
-				url: "/api/posts",
-				method: "GET",
-				success: function (posts) {
-					PostActions.receiveAllPosts(posts);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		tryCreatePost: function (formData, resetForms) {
-			ApiUtil.ajax({
-				url: "/api/posts",
-				method: "POST",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (post) {
-					PostActions.receiveSinglePost(post);
-					resetForms();
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		deletePost: function (id) {
-			ApiUtil.ajax({
-				url: "/api/posts/" + id,
-				method: "DELETE",
-				success: function (post) {
-					PostActions.postDeleted(post);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	};
-	
-	module.exports = PostUtil;
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var PostConstants = __webpack_require__(251);
-	
-	var PostActions = {
-	  receiveSinglePost: function (post) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.POST_RECEIVED,
-	      post: post
-	    });
-	  },
-	  receiveAllPosts: function (posts) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.ALL_POSTS_RECEIVED,
-	      posts: posts
-	    });
-	  },
-	  postDeleted: function (post) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.POST_DELETED,
-	      deletedPost: post
-	    });
-	  }
-	};
-	
-	module.exports = PostActions;
-
-/***/ },
-/* 251 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		POST_RECEIVED: "POST_RECEIVED",
-		ALL_POSTS_RECEIVED: "ALL_POSTS_RECEIVED",
-		POST_DELETED: "POST_DELETED"
-	};
-
-/***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(249);
-	var PostStore = __webpack_require__(253);
-	var PostIndexItem = __webpack_require__(254);
+	var PostUtil = __webpack_require__(230);
+	var PostStore = __webpack_require__(254);
+	var PostIndexItem = __webpack_require__(255);
 	
 	var PostIndex = React.createClass({
 		displayName: 'PostIndex',
@@ -32245,11 +32330,12 @@
 		},
 	
 		render: function () {
+			var user = this.props.user;
 			return React.createElement(
 				'ul',
 				null,
 				this.state.posts.map(function (post) {
-					return React.createElement(PostIndexItem, { key: post.id, post: post });
+					return React.createElement(PostIndexItem, { key: post.id, post: post, user: user });
 				})
 			);
 		}
@@ -32258,12 +32344,12 @@
 	module.exports = PostIndex;
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(230).Store;
+	var Store = __webpack_require__(234).Store;
 	var Dispatcher = __webpack_require__(222);
-	var PostConstants = __webpack_require__(251);
+	var PostConstants = __webpack_require__(232);
 	var PostStore = new Store(Dispatcher);
 	
 	console.log('loaded PostStore!');
@@ -32317,135 +32403,78 @@
 	module.exports = PostStore;
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var PostIndexItem = React.createClass({
-		displayName: "PostIndexItem",
+	  displayName: "PostIndexItem",
 	
+	  _handleEdit: function (event) {
+	    // pop up editor
+	  },
 	
-		render: function () {
-			var post = this.props.post;
+	  _handleDelete: function (event) {
+	    // popup confirmation
+	  },
 	
-			return React.createElement(
-				"li",
-				{ className: "post-list-item" },
-				React.createElement(
-					"p",
-					null,
-					post.body
-				),
-				React.createElement(
-					"p",
-					null,
-					"Author posted this at ",
-					post.created_at
-				)
-			);
-		}
+	  render: function () {
+	    var post = this.props.post;
+	
+	    var buttons;
+	    if (post.author_id === this.props.user.id) {
+	      buttons = React.createElement(
+	        "div",
+	        { className: "post-options-drop-down" },
+	        React.createElement(
+	          "a",
+	          { className: "post-options-item", href: "#",
+	            onClick: this._handleEdit },
+	          "Edit Post"
+	        ),
+	        React.createElement(
+	          "a",
+	          { className: "post-options-item", href: "#",
+	            onClick: this._handleDelete },
+	          "Delete"
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      "li",
+	      { className: "post-list-item" },
+	      buttons,
+	      React.createElement(
+	        "p",
+	        null,
+	        post.body
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        post.bio.first_name,
+	        " posted this at ",
+	        post.created_at
+	      )
+	    );
+	  }
 	});
 	
 	module.exports = PostIndexItem;
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(249);
-	// var PostActions = require('../../actions');
+	var PostForm = __webpack_require__(252);
+	var PostIndex = __webpack_require__(253);
+	var ConnectWithFriends = __webpack_require__(257);
+	var SignUp = __webpack_require__(258);
 	
-	var PostForm = React.createClass({
-		displayName: 'PostForm',
-	
-		getInitialState: function () {
-			// will be needed when determining who to autopopulate
-			// search bar with
-			// var user = this.props.user;
-			return { search: "" };
-		},
-	
-		updateSearch: function (event) {
-			this.setState({ search: event.currentTarget.value });
-		},
-	
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'search-bar' },
-				React.createElement('input', { type: 'text', className: 'search-bar-input', value: this.state.search, onChange: this.updateSearch }),
-				React.createElement(
-					'button',
-					{ type: 'button', className: 'search-bar-submit' },
-					'Search'
-				)
-			);
-		}
-	});
-	
-	module.exports = PostForm;
-
-/***/ },
-/* 256 */,
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(248);
-	var PostIndex = __webpack_require__(252);
-	
-	var LoggedInDisplay = React.createClass({
-		displayName: 'LoggedInDisplay',
-	
-		render: function () {
-			var displayString = React.createElement(
-				'h1',
-				null,
-				'Home Page'
-			);
-			if (this.props.user.online) {
-				displayString = React.createElement(PostForm, { user: this.props.user });
-			}
-	
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'section',
-					{ className: 'main-sidebar-left ' },
-					React.createElement(
-						'h3',
-						null,
-						'There\'s stuff in this sidebar'
-					)
-				),
-				React.createElement(
-					'section',
-					{ className: 'main-feed' },
-					displayString,
-					React.createElement(PostIndex, null)
-				),
-				React.createElement('section', { className: 'main-sidebar-right' })
-			);
-		}
-	});
-	
-	module.exports = LoggedInDisplay;
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(248);
-	var PostIndex = __webpack_require__(252);
-	var ConnectWithFriends = __webpack_require__(260);
-	var SignUp = __webpack_require__(259);
-	
-	var LoggedInDisplay = React.createClass({
-		displayName: 'LoggedInDisplay',
+	var LoggedOutDisplay = React.createClass({
+		displayName: 'LoggedOutDisplay',
 	
 		render: function () {
 			return React.createElement(
@@ -32465,50 +32494,10 @@
 		}
 	});
 	
-	module.exports = LoggedInDisplay;
+	module.exports = LoggedOutDisplay;
 
 /***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SignUp = React.createClass({
-		displayName: "SignUp",
-	
-	
-		_handleSubmit: function (event) {
-			event.preventDefault();
-			// var formData = $(this.signUpForm).serialize();
-		},
-	
-		render: function () {
-	
-			return React.createElement(
-				"div",
-				{ className: "sign-up-form" },
-				React.createElement(
-					"form",
-					{ ref: "signUpForm", onSubmit: this._handleSubmit },
-					React.createElement("input", { className: "first-name-input", type: "text", name: "user[first_name]" }),
-					React.createElement("input", { className: "last-name-input", type: "text", name: "user[last_name]" }),
-					React.createElement("input", { className: "email-input", type: "text", name: "user[email]" }),
-					React.createElement("input", { className: "email-verify-input", type: "text", name: "user[email_verify]" }),
-					React.createElement("input", { className: "password-input", type: "password", name: "user[password]" }),
-					React.createElement(
-						"input",
-						{ className: "sign-up-button", type: "submit" },
-						"Sign Up"
-					)
-				)
-			);
-		}
-	});
-	
-	module.exports = SignUp;
-
-/***/ },
-/* 260 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32572,6 +32561,204 @@
 	});
 	
 	module.exports = ConnectWithFriends;
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(259);
+	
+	var SignUp = React.createClass({
+	  displayName: 'SignUp',
+	
+	  getInitialState: function () {
+	    return { errors: [] };
+	  },
+	
+	  _handleSubmit: function (event) {
+	    event.preventDefault();
+	    var form = event.currentTarget;
+	    var result = this.validateForm;
+	    if (result.valid) {
+	      var data = new FormData(form);
+	      UserUtil.trySignUp(data);
+	    } else {
+	      this.setState({ errors: result.errors });
+	    }
+	  },
+	
+	  validateForm: function (form) {
+	    var result = { valid: true };
+	    // validate entries haha
+	    // if (form.)
+	    return result;
+	  },
+	
+	  clearInput: function (e) {
+	    var input = e.currentTarget;
+	    if (input.value === input.defaultValue) {
+	      input.value = "";
+	    }
+	  },
+	
+	  resetInput: function (e) {
+	    var input = e.currentTarget;
+	    if (input.value === "") {
+	      input.value = input.defaultValue;
+	    }
+	  },
+	
+	  render: function () {
+	    var months = ["Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	
+	    var dates = ["Day"];
+	    for (var i = 1; i < 32; i++) {
+	      dates.push(i);
+	    }
+	
+	    var years = ["Year"];
+	    for (i = 2016; i > 1904; i--) {
+	      years.push(i);
+	    }
+	
+	    var selector = function (thing, i) {
+	      return React.createElement(
+	        'option',
+	        { key: i, value: thing },
+	        thing
+	      );
+	    };
+	
+	    return React.createElement(
+	      'form',
+	      { ref: 'signUpForm', className: 'sign-up-form', onSubmit: this._handleSubmit },
+	      React.createElement('input', { className: 'first-name-input', type: 'text',
+	        name: 'bio[first_name]', defaultValue: 'First name',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'last-name-input', type: 'text',
+	        name: 'bio[last_name]', defaultValue: 'Last name',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'email-input', type: 'text',
+	        name: 'user[email]', defaultValue: 'Email',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'email-verify-input', type: 'text',
+	        name: 'user[email_verify]', defaultValue: 'Re-enter email',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'password-input', type: 'password',
+	        name: 'user[password]', defaultValue: 'New password',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[month]' },
+	        months.map(selector)
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[date]' },
+	        dates.map(selector)
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[year]' },
+	        years.map(selector)
+	      ),
+	      React.createElement('input', { className: 'sign-up-button', type: 'submit', value: 'Sign Up' })
+	    );
+	  }
+	});
+	
+	module.exports = SignUp;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var SessionActions = __webpack_require__(221);
+	
+	var UserUtil = {
+		// fetchCurrentUser: function (completion) {
+		// 	ApiUtil.ajax({
+		// 		url: "/api/session",
+		// 		method: "GET",
+		// 		success: function (user) {
+		// 			if (user.message === "Not logged in" ) {
+		// 				SessionActions.receiveNoCurrentUser();
+		// 			} else {
+		// 				SessionActions.receiveCurrentUser(user);
+		// 			}
+		// 		 },
+		// 		error: function (response) {
+		// 			console.log("FAILURE\n" + response);
+		// 		 },
+		// 		complete: function () {
+		// 			if (completion){
+		// 				completion();
+		// 			}
+		// 		}
+		// 	});
+		// },
+	
+		trySignUp: function (formData) {
+	
+			ApiUtil.ajax({
+				url: "/users",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (user) {
+					user.type = "new";
+					SessionActions.receiveCurrentUser(user);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	
+	};
+	
+	module.exports = UserUtil;
+
+/***/ },
+/* 260 */,
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostForm = __webpack_require__(252);
+	var PostIndex = __webpack_require__(253);
+	
+	var Timeline = React.createClass({
+		displayName: 'Timeline',
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'header',
+					{ className: 'timeline-header' },
+					'This will be the header with the photo'
+				),
+				React.createElement(
+					'section',
+					{ className: 'timeline-sidebar' },
+					'this will be the sidebar'
+				),
+				React.createElement(
+					'section',
+					{ className: 'timeline-post-index' },
+					'this will be the posts'
+				)
+			);
+		}
+	});
+	
+	module.exports = Timeline;
 
 /***/ }
 /******/ ]);

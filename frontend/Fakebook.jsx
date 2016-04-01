@@ -7,12 +7,14 @@ var IndexRoute = require('react-router').IndexRoute;
 var hashHistory = require('react-router').hashHistory;
 
 var App = require('./components/app.jsx');
+var Timeline = require('./components/displays/timeline.jsx');
 var LogIn = require('./components/forms/_logIn');
 var SessionStore = require('./stores/sessionStore');
 var SessionUtil = require('./util/sessionUtil');
 
 var routes = (
   <Route path="/" component={App} onEntry={this.checkLoggedIn}>
+    <Route path="/user/:id" component={ Timeline } onEntry={this.checkLoggedIn}/>
 
 		<Route path="/login" component={LogIn}/>
   </Route>

@@ -18,10 +18,11 @@ var PostIndex = React.createClass({
 	},
 
 	render: function () {
+    var user = this.props.user;
 		return(
 		 <ul>
 			 {this.state.posts.map(function (post) {
-				 return <PostIndexItem key={post.id} post={post} />;
+				 return <PostIndexItem key={post.id} post={post} user={ user } />;
 			 })}
 		 </ul>
 	 );
