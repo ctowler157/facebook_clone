@@ -27,6 +27,7 @@ SessionStore.getCurrentUser = function () {
 	user.id = _currentUser.id;
 	user.email = _currentUser.email;
 	user.online = _currentUser.online;
+  user.firstName = _currentUser.firstName;
 	return user;
 };
 

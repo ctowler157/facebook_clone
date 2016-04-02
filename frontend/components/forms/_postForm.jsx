@@ -34,7 +34,7 @@ var PostForm = React.createClass({
 	render: function () {
 		return(
 			<div className="post-form">
-				<input type="text" className="post-form-body-input" value={ this.state.body} onChange={ this.updateBody }/>
+				<input type="textarea" className="post-form-body-input" value={ this.state.body} onChange={ this.updateBody }/>
 				<button type="button" className="post-form-submit" onClick={ this.handleClick }>Post</button>
 			</div>
 		);

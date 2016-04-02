@@ -25500,7 +25500,7 @@
 					'h3',
 					null,
 					'Welcome, ',
-					this.props.user.email
+					this.props.user.firstName
 				),
 				React.createElement(
 					'button',
@@ -25646,6 +25646,25 @@
 					console.log("FAILURE\n" + response);
 				}
 			});
+		},
+	
+		updatePost: function (id, body) {
+			// var uriString = "post=%5Bbody%5D=";
+			// uriString += encodeURI(body);
+			ApiUtil.ajax({
+				url: "/api/posts/" + id,
+				method: "PATCH",
+				form: true,
+				data: body,
+				contentType: false,
+				processData: false,
+				success: function (post) {
+					PostActions.receiveSinglePost(post);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
 		}
 	};
 	
@@ -25674,7 +25693,7 @@
 	  postDeleted: function (post) {
 	    Dispatcher.dispatch({
 	      actionType: PostConstants.POST_DELETED,
-	      deletedPost: post
+	      post: post
 	    });
 	  }
 	};
@@ -25707,52 +25726,53 @@
 	var _currentUser = { online: false };
 	
 	var setCurrentUser = function (user) {
-		_currentUser = user;
-		_currentUser.online = true;
+	  _currentUser = user;
+	  _currentUser.online = true;
 	};
 	
 	var logOutCurrentUser = function () {
-		_currentUser = { online: false };
+	  _currentUser = { online: false };
 	};
 	
 	SessionStore.userFetched = function () {
-		return currentUserFetched;
+	  return currentUserFetched;
 	};
 	
 	SessionStore.getCurrentUser = function () {
-		var user = {};
-		user.id = _currentUser.id;
-		user.email = _currentUser.email;
-		user.online = _currentUser.online;
-		return user;
+	  var user = {};
+	  user.id = _currentUser.id;
+	  user.email = _currentUser.email;
+	  user.online = _currentUser.online;
+	  user.firstName = _currentUser.firstName;
+	  return user;
 	};
 	
 	SessionStore.isLoggedIn = function () {
-		var loggedIn = true;
-		if (_currentUser.online === false) {
-			loggedIn = false;
-		}
-		return loggedIn;
+	  var loggedIn = true;
+	  if (_currentUser.online === false) {
+	    loggedIn = false;
+	  }
+	  return loggedIn;
 	};
 	
 	SessionStore.__onDispatch = function (payload) {
-		switch (payload.actionType) {
-			case SessionConstants.CURRENT_USER_RECEIVED:
-				setCurrentUser(payload.currentUser);
-				currentUserFetched = true;
-				console.log('emitting change!');
-				SessionStore.__emitChange();
-				break;
-			case SessionConstants.NO_USER_RECEIVED:
-				currentUserFetched = true;
-				console.log('emitting change!');
-				SessionStore.__emitChange();
-				break;
-			case SessionConstants.CURRENT_USER_DELETED:
-				logOutCurrentUser();
-				SessionStore.__emitChange();
-				break;
-		}
+	  switch (payload.actionType) {
+	    case SessionConstants.CURRENT_USER_RECEIVED:
+	      setCurrentUser(payload.currentUser);
+	      currentUserFetched = true;
+	      console.log('emitting change!');
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.NO_USER_RECEIVED:
+	      currentUserFetched = true;
+	      console.log('emitting change!');
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.CURRENT_USER_DELETED:
+	      logOutCurrentUser();
+	      SessionStore.__emitChange();
+	      break;
+	  }
 	};
 	
 	module.exports = SessionStore;
@@ -32292,7 +32312,7 @@
 			return React.createElement(
 				'div',
 				{ className: 'post-form' },
-				React.createElement('input', { type: 'text', className: 'post-form-body-input', value: this.state.body, onChange: this.updateBody }),
+				React.createElement('input', { type: 'textarea', className: 'post-form-body-input', value: this.state.body, onChange: this.updateBody }),
 				React.createElement(
 					'button',
 					{ type: 'button', className: 'post-form-submit', onClick: this.handleClick },
@@ -32323,6 +32343,10 @@
 		componentDidMount: function () {
 			this.postListener = PostStore.addListener(this._onChange);
 			PostUtil.fetchAllPosts();
+		},
+	
+		componentWillUnmount: function () {
+			this.postListener.remove();
 		},
 	
 		_onChange: function () {
@@ -32368,7 +32392,7 @@
 	};
 	
 	var removePost = function (post) {
-	  _posts[post.id] = undefined;
+	  delete _posts[post.id];
 	};
 	
 	PostStore.all = function () {
@@ -32407,16 +32431,39 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var PostUtil = __webpack_require__(230);
 	
 	var PostIndexItem = React.createClass({
-	  displayName: "PostIndexItem",
+	  displayName: 'PostIndexItem',
+	
+	  getInitialState: function () {
+	    return { editing: false, body: this.props.post.body };
+	  },
 	
 	  _handleEdit: function (event) {
 	    // pop up editor
+	    this.setState({ editing: true });
+	  },
+	
+	  cancelEdit: function (event) {
+	    this.setState({ editing: false });
+	  },
+	
+	  submitEdit: function (event) {
+	    event.preventDefault();
+	    var postId = this.props.post.id;
+	    var postBody = event.currentTarget;
+	    debugger;
+	    PostUtil.updatePost(postId, postBody);
 	  },
 	
 	  _handleDelete: function (event) {
-	    // popup confirmation
+	    // popup confirmation, pass this as callback?
+	    PostUtil.deletePost(this.props.post.id);
+	  },
+	
+	  _updateBody: function (event) {
+	    this.setState({ body: event.currentTarget.value });
 	  },
 	
 	  render: function () {
@@ -32425,39 +32472,61 @@
 	    var buttons;
 	    if (post.author_id === this.props.user.id) {
 	      buttons = React.createElement(
-	        "div",
-	        { className: "post-options-drop-down" },
+	        'div',
+	        { className: 'post-options-drop-down' },
 	        React.createElement(
-	          "a",
-	          { className: "post-options-item", href: "#",
+	          'a',
+	          { className: 'post-options-item', href: '#', name: 'post[body]',
 	            onClick: this._handleEdit },
-	          "Edit Post"
+	          'Edit Post'
 	        ),
 	        React.createElement(
-	          "a",
-	          { className: "post-options-item", href: "#",
+	          'a',
+	          { className: 'post-options-item', href: '#',
 	            onClick: this._handleDelete },
-	          "Delete"
+	          'Delete'
 	        )
 	      );
 	    }
-	    return React.createElement(
-	      "li",
-	      { className: "post-list-item" },
-	      buttons,
-	      React.createElement(
-	        "p",
-	        null,
-	        post.body
-	      ),
-	      React.createElement(
-	        "p",
-	        null,
-	        post.bio.first_name,
-	        " posted this at ",
-	        post.created_at
-	      )
-	    );
+	
+	    if (this.state.editing === true) {
+	      return React.createElement(
+	        'li',
+	        { className: 'post-list-item edit' },
+	        React.createElement(
+	          'form',
+	          null,
+	          React.createElement('input', { type: 'textArea', value: this.state.body,
+	            onChange: this._updateBody }),
+	          React.createElement(
+	            'button',
+	            { className: 'cancel-edit-button',
+	              onClick: this.cancelEdit },
+	            'Cancel'
+	          ),
+	          React.createElement('input', { type: 'submit', className: 'submit-edit-button',
+	            onClick: this.submitEdit, value: 'Save' })
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'li',
+	        { className: 'post-list-item' },
+	        buttons,
+	        React.createElement(
+	          'p',
+	          null,
+	          post.body
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          post.bio.first_name,
+	          ' posted this at ',
+	          post.created_at
+	        )
+	      );
+	    }
 	  }
 	});
 	

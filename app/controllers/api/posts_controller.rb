@@ -32,7 +32,7 @@ class Api::PostsController < ApplicationController
 	def destroy
 		@post ||= Post.find(params[:id])
 		@post.destroy
-		render :show
+		render :json => { id: @post.id }
 	end
 
 	private
@@ -47,6 +47,7 @@ class Api::PostsController < ApplicationController
   # end
 
 	def post_params
+    debugger
 		params.require(:post).permit(:timeline_id, :body)
 	end
 end

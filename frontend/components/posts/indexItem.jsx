@@ -1,12 +1,35 @@
 var React = require('react');
+var PostUtil = require('../../util/postUtil.js');
 
 var PostIndexItem = React.createClass({
+  getInitialState: function () {
+    return({ editing: false, body: this.props.post.body });
+  },
+
   _handleEdit: function (event) {
     // pop up editor
+    this.setState({ editing: true });
+  },
+
+  cancelEdit: function (event) {
+    this.setState({ editing: false });
+  },
+
+  submitEdit: function (event) {
+    event.preventDefault();
+    var postId = this.props.post.id;
+    var postBody = event.currentTarget;
+    debugger
+    PostUtil.updatePost(postId, postBody);
   },
 
   _handleDelete: function (event) {
-    // popup confirmation
+    // popup confirmation, pass this as callback?
+    PostUtil.deletePost(this.props.post.id);
+  },
+
+  _updateBody: function(event) {
+    this.setState({ body: event.currentTarget.value });
   },
 
 	render: function () {
@@ -16,21 +39,38 @@ var PostIndexItem = React.createClass({
         if (post.author_id === this.props.user.id){
       buttons = (
         <div className="post-options-drop-down">
-          <a className="post-options-item" href="#"
+          <a className="post-options-item" href="#" name="post[body]"
             onClick={ this._handleEdit }>Edit Post</a>
           <a className="post-options-item" href="#"
             onClick={ this._handleDelete }>Delete</a>
         </div>
       );
     }
-		return(
-			<li className="post-list-item">
-        { buttons }
-				<p>{ post.body }</p>
-				<p>{ post.bio.first_name } posted this at { post.created_at }</p>
-			</li>
-	 );
-	}
+
+    if (this.state.editing === true){
+      return (
+        <li className="post-list-item edit">
+          <form>
+
+          <input type="textArea" value={ this.state.body }
+            onChange={ this._updateBody } />
+          <button className="cancel-edit-button"
+            onClick={ this.cancelEdit }>Cancel</button>
+          <input type="submit" className="submit-edit-button"
+            onClick={ this.submitEdit } value="Save"/>
+        </form>
+  			</li>
+      );
+    } else {
+  		return(
+  			<li className="post-list-item">
+          { buttons }
+  				<p>{ post.body }</p>
+  				<p>{ post.bio.first_name } posted this at { post.created_at }</p>
+  			</li>
+  	 );
+   }
+  }
 });
 
 module.exports = PostIndexItem;

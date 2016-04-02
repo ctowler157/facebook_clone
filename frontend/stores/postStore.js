@@ -19,7 +19,7 @@ var resetPost = function (post) {
 };
 
 var removePost = function (post) {
-	_posts[post.id] = undefined;
+	delete(_posts[post.id]);
 };
 
 PostStore.all = function () {

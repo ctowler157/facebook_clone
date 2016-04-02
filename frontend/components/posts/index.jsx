@@ -13,6 +13,10 @@ var PostIndex = React.createClass({
 		PostUtil.fetchAllPosts();
 	},
 
+  componentWillUnmount: function () {
+    this.postListener.remove();
+  },
+
 	_onChange: function () {
 		this.setState({ posts: PostStore.all() });
 	},

@@ -13,6 +13,10 @@ class User < ActiveRecord::Base
 
   after_initialize :ensure_session_token
 
+  def first_name
+    @first_name ||= bio.first_name
+  end
+
   def self.find_by_credentials(email, password)
     user = User.find_by(email: email)
     user.try(:is_password?, password) ? user : nil

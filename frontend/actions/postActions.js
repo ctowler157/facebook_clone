@@ -17,7 +17,7 @@ var PostActions = {
 	postDeleted: function (post) {
 		Dispatcher.dispatch({
 			actionType: PostConstants.POST_DELETED,
-			deletedPost: post
+			post: post
 		});
 	}
 };
