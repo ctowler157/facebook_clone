@@ -53,7 +53,7 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(216);
-	var Timeline = __webpack_require__(261);
+	var Timeline = __webpack_require__(260);
 	var LogIn = __webpack_require__(218);
 	var SessionStore = __webpack_require__(233);
 	var SessionUtil = __webpack_require__(219);
@@ -32745,29 +32745,21 @@
 
 	var ApiUtil = __webpack_require__(220);
 	var SessionActions = __webpack_require__(221);
+	var UserActions = __webpack_require__(261);
 	
 	var UserUtil = {
-		// fetchCurrentUser: function (completion) {
-		// 	ApiUtil.ajax({
-		// 		url: "/api/session",
-		// 		method: "GET",
-		// 		success: function (user) {
-		// 			if (user.message === "Not logged in" ) {
-		// 				SessionActions.receiveNoCurrentUser();
-		// 			} else {
-		// 				SessionActions.receiveCurrentUser(user);
-		// 			}
-		// 		 },
-		// 		error: function (response) {
-		// 			console.log("FAILURE\n" + response);
-		// 		 },
-		// 		complete: function () {
-		// 			if (completion){
-		// 				completion();
-		// 			}
-		// 		}
-		// 	});
-		// },
+		fetchTimelineUser: function (id) {
+			ApiUtil.ajax({
+				url: "/users/" + id,
+				method: "GET",
+				success: function (user) {
+					UserActions.receiveTimelineUser(user);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
 	
 		trySignUp: function (formData) {
 	
@@ -32793,16 +32785,35 @@
 	module.exports = UserUtil;
 
 /***/ },
-/* 260 */,
-/* 261 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostForm = __webpack_require__(252);
 	var PostIndex = __webpack_require__(253);
+	var UserUtil = __webpack_require__(259);
+	var UserStore = __webpack_require__(263);
 	
 	var Timeline = React.createClass({
 		displayName: 'Timeline',
+	
+		getInitialState: function () {
+			return { user: {} };
+		},
+	
+		componentDidMount: function () {
+			this.postListener = UserStore.addListener(this._onChange);
+			UserUtil.fetchTimelineUser(this.props.params.id);
+		},
+	
+		componentWillUnmount: function () {
+			this.postListener.remove();
+		},
+	
+		_onChange: function () {
+			var user = UserStore.getTimelineUser();
+			this.setState({ user: user });
+		},
 	
 		render: function () {
 			return React.createElement(
@@ -32811,7 +32822,8 @@
 				React.createElement(
 					'header',
 					{ className: 'timeline-header' },
-					'This will be the header with the photo'
+					'This will be the header with the photo Here\'s the user ',
+					this.state.user.last_name
 				),
 				React.createElement(
 					'section',
@@ -32828,6 +32840,98 @@
 	});
 	
 	module.exports = Timeline;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var UserConstants = __webpack_require__(262);
+	
+	var UserActions = {
+	  receiveTimelineUser: function (user) {
+	    Dispatcher.dispatch({
+	      actionType: UserConstants.TIMELINE_USER_RECEIVED,
+	      user: user
+	    });
+	  }
+	};
+	
+	module.exports = UserActions;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		TIMELEINE_USER_RECEIVED: "TIMELEINE_USER_RECEIVED"
+	};
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(234).Store;
+	var Dispatcher = __webpack_require__(222);
+	var UserConstants = __webpack_require__(262);
+	var UserStore = new Store(Dispatcher);
+	
+	console.log('loaded UserStore!');
+	
+	var timelineUserFetched = false;
+	
+	var _timelineUser = {};
+	
+	var setTimelineUser = function (user) {
+	  _timelineUser = user;
+	};
+	
+	var resetTimelineUser = function () {
+	  _timelineUser = {};
+	};
+	
+	UserStore.userFetched = function () {
+	  return timelineUserFetched;
+	};
+	
+	UserStore.getTimelineUser = function () {
+	  var user = {};
+	  var keys = Object.keys(_timelineUser);
+	  keys.forEach(function (key) {
+	    user[key] = _timelineUser[key];
+	  });
+	  return user;
+	};
+	
+	// UserStore.isLoggedIn = function () {
+	// 	var loggedIn = true;
+	// 	if (_timelineUser.online === false) {
+	// 		loggedIn = false;
+	// 	}
+	// 	return loggedIn;
+	// };
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.CURRENT_USER_RECEIVED:
+	      setTimelineUser(payload.timelineUser);
+	      timelineUserFetched = true;
+	      console.log('emitting change!');
+	      UserStore.__emitChange();
+	      break;
+	    // case UserConstants.NO_USER_RECEIVED:
+	    // 	timelineUserFetched = true;
+	    // 	console.log('emitting change!');
+	    //   UserStore.__emitChange();
+	    //   break;
+	    // case UserConstants.CURRENT_USER_DELETED:
+	    //   logOutTimelineUser();
+	    //   UserStore.__emitChange();
+	    //   break;
+	  }
+	};
+	
+	module.exports = UserStore;
 
 /***/ }
 /******/ ]);

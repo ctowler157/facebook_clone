@@ -1,28 +1,20 @@
 var ApiUtil = require('./apiUtil');
 var SessionActions = require('../actions/sessionActions');
+var UserActions = require('../actions/userActions');
 
 var UserUtil = {
-	// fetchCurrentUser: function (completion) {
-	// 	ApiUtil.ajax({
-	// 		url: "/api/session",
-	// 		method: "GET",
-	// 		success: function (user) {
-	// 			if (user.message === "Not logged in" ) {
-	// 				SessionActions.receiveNoCurrentUser();
-	// 			} else {
-	// 				SessionActions.receiveCurrentUser(user);
-	// 			}
-	// 		 },
-	// 		error: function (response) {
-	// 			console.log("FAILURE\n" + response);
-	// 		 },
-	// 		complete: function () {
-	// 			if (completion){
-	// 				completion();
-	// 			}
-	// 		}
-	// 	});
-	// },
+	fetchTimelineUser: function (id) {
+		ApiUtil.ajax({
+			url: "/users/" + id,
+			method: "GET",
+			success: function (user) {
+				UserActions.receiveTimelineUser(user);
+			 },
+			error: function (response) {
+				console.log("FAILURE\n" + response);
+			 }
+		});
+	},
 
 	trySignUp: function (formData) {
 

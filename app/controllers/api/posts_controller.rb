@@ -47,7 +47,6 @@ class Api::PostsController < ApplicationController
   # end
 
 	def post_params
-    debugger
 		params.require(:post).permit(:timeline_id, :body)
 	end
 end

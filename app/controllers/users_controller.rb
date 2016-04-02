@@ -16,6 +16,16 @@ class UsersController < ApplicationController
     end
   end
 
+	def show
+		@user = User.includes(:bio).find(params[:id]);
+		keys = user_bio_keys(@user.bio)
+		keys.each { |key| @user[key] = @user.bio[key] }
+		@user[:password_digest] = nil
+		@user[:session_token] = nil
+
+		render :show
+	end
+
   private
   def birthday_params
     params.require(:birthday).permit(:month, :date, :year)
@@ -39,4 +49,13 @@ class UsersController < ApplicationController
   def user_bio_params
     params.require(:bio).permit(:first_name, :last_name, :birthday)
   end
+
+	def user_bio_keys(bio)
+		# NO METHOD FOR KEYS IN BIO OBJECT???????
+		bio_keys = bio.keys
+		bio_keys.delete(:user_id)
+		bio_keys.delete(:id)
+
+		bio_keys
+	end
 end
