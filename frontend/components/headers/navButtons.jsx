@@ -8,7 +8,7 @@ var NavButtons = React.createClass({
 	render: function () {
 		return(
 			<div className="header-nav-right">
-				<h3>Welcome, { this.props.user.firstName }</h3>
+				<h3>Welcome, { this.props.user.first_name }</h3>
 				<button type="button" onClick={ this.logOut }>Log Out</button>
 			</div>
 		);

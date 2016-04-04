@@ -70,11 +70,11 @@ var SignUp = React.createClass({
 		return (
 			<form ref="signUpForm" className="sign-up-form" onSubmit={ this._handleSubmit} >
 				<input className="first-name-input" type="text"
-          name="bio[first_name]" defaultValue="First name"
+          name="user[first_name]" defaultValue="First name"
           onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
 				<input className="last-name-input" type="text"
-          name="bio[last_name]" defaultValue="Last name"
+          name="user[last_name]" defaultValue="Last name"
           onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
 				<input className="email-input" type="text"

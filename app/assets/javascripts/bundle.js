@@ -53,7 +53,7 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(216);
-	var Timeline = __webpack_require__(260);
+	var Timeline = __webpack_require__(262);
 	var LogIn = __webpack_require__(218);
 	var SessionStore = __webpack_require__(233);
 	var SessionUtil = __webpack_require__(219);
@@ -25500,7 +25500,7 @@
 					'h3',
 					null,
 					'Welcome, ',
-					this.props.user.firstName
+					this.props.user.first_name
 				),
 				React.createElement(
 					'button',
@@ -25743,7 +25743,7 @@
 	  user.id = _currentUser.id;
 	  user.email = _currentUser.email;
 	  user.online = _currentUser.online;
-	  user.firstName = _currentUser.firstName;
+	  user.first_name = _currentUser.first_name;
 	  return user;
 	};
 	
@@ -32521,7 +32521,7 @@
 	        React.createElement(
 	          'p',
 	          null,
-	          post.bio.first_name,
+	          post.author.first_name,
 	          ' posted this at ',
 	          post.created_at
 	        )
@@ -32703,10 +32703,10 @@
 	      'form',
 	      { ref: 'signUpForm', className: 'sign-up-form', onSubmit: this._handleSubmit },
 	      React.createElement('input', { className: 'first-name-input', type: 'text',
-	        name: 'bio[first_name]', defaultValue: 'First name',
+	        name: 'user[first_name]', defaultValue: 'First name',
 	        onFocus: this.clearInput, onBlur: this.resetInput }),
 	      React.createElement('input', { className: 'last-name-input', type: 'text',
-	        name: 'bio[last_name]', defaultValue: 'Last name',
+	        name: 'user[last_name]', defaultValue: 'Last name',
 	        onFocus: this.clearInput, onBlur: this.resetInput }),
 	      React.createElement('input', { className: 'email-input', type: 'text',
 	        name: 'user[email]', defaultValue: 'Email',
@@ -32745,7 +32745,7 @@
 
 	var ApiUtil = __webpack_require__(220);
 	var SessionActions = __webpack_require__(221);
-	var UserActions = __webpack_require__(261);
+	var UserActions = __webpack_require__(260);
 	
 	var UserUtil = {
 		fetchTimelineUser: function (id) {
@@ -32788,6 +32788,32 @@
 /* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var Dispatcher = __webpack_require__(222);
+	var UserConstants = __webpack_require__(261);
+	
+	var UserActions = {
+	  receiveTimelineUser: function (user) {
+	    Dispatcher.dispatch({
+	      actionType: UserConstants.TIMELINE_USER_RECEIVED,
+	      user: user
+	    });
+	  }
+	};
+	
+	module.exports = UserActions;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		TIMELEINE_USER_RECEIVED: "TIMELEINE_USER_RECEIVED"
+	};
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var React = __webpack_require__(1);
 	var PostForm = __webpack_require__(252);
 	var PostIndex = __webpack_require__(253);
@@ -32823,7 +32849,7 @@
 					'header',
 					{ className: 'timeline-header' },
 					'This will be the header with the photo Here\'s the user ',
-					this.state.user.last_name
+					this.state.user.first_name
 				),
 				React.createElement(
 					'section',
@@ -32842,38 +32868,12 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var UserConstants = __webpack_require__(262);
-	
-	var UserActions = {
-	  receiveTimelineUser: function (user) {
-	    Dispatcher.dispatch({
-	      actionType: UserConstants.TIMELINE_USER_RECEIVED,
-	      user: user
-	    });
-	  }
-	};
-	
-	module.exports = UserActions;
-
-/***/ },
-/* 262 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		TIMELEINE_USER_RECEIVED: "TIMELEINE_USER_RECEIVED"
-	};
-
-/***/ },
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(234).Store;
 	var Dispatcher = __webpack_require__(222);
-	var UserConstants = __webpack_require__(262);
+	var UserConstants = __webpack_require__(261);
 	var UserStore = new Store(Dispatcher);
 	
 	console.log('loaded UserStore!');

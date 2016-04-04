@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in(@user)
 
-      bio = @user.create_bio(parse_bio_params)
+      # bio = @user.create_bio(parse_bio_params)
 
       render :json => { user_id: @user.id, email: @user.email }
     else
@@ -18,8 +18,9 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.includes(:bio).find(params[:id]);
-		keys = user_bio_keys(@user.bio)
-		keys.each { |key| @user[key] = @user.bio[key] }
+		# keys = user_bio_keys(@user.bio)
+    # debugger
+		# keys.each { |key| @user[key.to_sym] = @user.bio[key.to_sym] }
 		@user[:password_digest] = nil
 		@user[:session_token] = nil
 
@@ -36,26 +37,30 @@ class UsersController < ApplicationController
     "#{bday[:month]} #{bday[:date]} #{bday[:year]}"
   end
 
-  def parse_bio_params
-    bio_params = user_bio_params
-    bio_params[:birthday] = parse_birthday
-    bio_params
-  end
-
   def user_params
-    params.require(:user).permit(:password, :email)
+    user_params = parse_user_params
+    user_params[:birthday] = parse_birthday
+    user_params
   end
 
-  def user_bio_params
-    params.require(:bio).permit(:first_name, :last_name, :birthday)
+  def parse_user_params
+    params.require(:user).permit(
+    :password, :email, :first_name, :last_name, :birthday
+    )
   end
 
-	def user_bio_keys(bio)
-		# NO METHOD FOR KEYS IN BIO OBJECT???????
-		bio_keys = bio.keys
-		bio_keys.delete(:user_id)
-		bio_keys.delete(:id)
+  # def user_bio_params
+  #   params.require(:bio).permit(:first_name, :last_name, :birthday)
+  # end
 
-		bio_keys
-	end
+	# def user_bio_keys(bio)
+	# 	# NO METHOD FOR KEYS IN BIO OBJECT???????
+	# 	bio_keys = bio.attributes.keys
+	# 	bio_keys.delete("user_id")
+	# 	bio_keys.delete("id")
+	# 	bio_keys.delete("created_at")
+	# 	bio_keys.delete("updated_at")
+  #
+	# 	bio_keys
+	# end
 end

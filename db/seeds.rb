@@ -7,17 +7,23 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 User.destroy_all
 
-chris = User.create!(email: "chrisEmail", password: "123456")
-gigi = User.create!(email: "gigiEmail", password: "123456")
-dan = User.create!(email: "danEmail", password: "123456")
-patrick = User.create!(email: "patrickEmail", password: "123456")
+chris = User.create!(
+  email: "chrisEmail", password: "123456",
+  first_name: "Chris", last_name: "Towler", birthday: "April 1 2016"
+  )
+gigi = User.create!(
+  email: "gigiEmail", password: "123456",
+  first_name: "Gigi", last_name: "Campo", birthday: "April 1 2016"
+)
+dan = User.create!(
+  email: "danEmail", password: "123456",
+  first_name: "Dan", last_name: "Whichdan", birthday: "April 1 2016"
+)
+patrick = User.create!(
+  email: "patrickEmail", password: "123456",
+  first_name: "Patrick", last_name: "Kovach-Long", birthday: "April 1 2016"
+)
 
-Bio.destroy_all
-
-chris.create_bio(first_name: "Chris", last_name: "Towler", birthday: "April 1 2016")
-gigi.create_bio(first_name: "Gigi", last_name: "Campo", birthday: "April 1 2016")
-dan.create_bio(first_name: "Dan", last_name: "Whichdan", birthday: "April 1 2016")
-patrick.create_bio(first_name: "Patrick", last_name: "Kovach-Long", birthday: "April 1 2016")
 
 Post.destroy_all
 

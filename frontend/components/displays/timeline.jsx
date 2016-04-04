@@ -27,7 +27,7 @@ var Timeline = React.createClass({
 		return(
 			<div>
         <header className="timeline-header">This will be the header with the photo
-				Here's the user { this.state.user.last_name }</header>
+				Here's the user { this.state.user.first_name }</header>
         <section className="timeline-sidebar">this will be the sidebar</section>
         <section className="timeline-post-index">this will be the posts</section>
 			</div>

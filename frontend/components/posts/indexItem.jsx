@@ -66,7 +66,7 @@ var PostIndexItem = React.createClass({
   			<li className="post-list-item">
           { buttons }
   				<p>{ post.body }</p>
-  				<p>{ post.bio.first_name } posted this at { post.created_at }</p>
+  				<p>{ post.author.first_name } posted this at { post.created_at }</p>
   			</li>
   	 );
    }
