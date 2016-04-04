@@ -1,0 +1,59 @@
+.timeline-header {
+  position: relative;
+  float: left;
+	margin: 0 auto;
+  height: 357px;
+  /*red*/
+  background-color: #FF5454;
+  width: 850px;
+}
+
+.timeline-header-profile-picture {
+  display: inline-block;
+  width: 160px;
+  height: 160px;
+  padding: 5px;
+  /*purple*/
+  background-color: #AA54FF;
+}
+
+.timeline-header-name {
+  display: inline-block;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 24px;
+  color: #fff;
+}
+
+.timeline-header-buttons {
+  list-style: none;
+  float: right;
+}
+
+.timeline-header-buttons > li{
+  float: left;
+}
+
+.timeline-header-tabs {
+  position: absolute;
+  height: 45px;
+  width: 160px;
+  background-color: #e9eaed;
+  /*left: 0;
+  right: 160px;*/
+  bottom: 0;
+}
+/*-----------------FEED---------------*/
+.timeline-post-index {
+  width: 410px;
+  display: inline-block;
+  /*blue*/
+	background-color: #54FFFF;
+}
+
+/*--------------SIDEBAR----------------*/
+.timeline-sidebar {
+	width: 320px;
+	float:left;
+  /*green*/
+	background-color: #AAFF54;
+}

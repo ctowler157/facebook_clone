@@ -7,6 +7,7 @@ var PostIndexItem = React.createClass({
   },
 
   _handleEdit: function (event) {
+    event.preventDefault();
     // pop up editor
     this.setState({ editing: true });
   },
@@ -18,12 +19,13 @@ var PostIndexItem = React.createClass({
   submitEdit: function (event) {
     event.preventDefault();
     var postId = this.props.post.id;
-    var postBody = event.currentTarget;
-    debugger
-    PostUtil.updatePost(postId, postBody);
+    var formData = new FormData();
+    formData.append("post[body]", this.state.body);
+    PostUtil.updatePost(formData, postId, this.cancelEdit);
   },
 
   _handleDelete: function (event) {
+    event.preventDefault();
     // popup confirmation, pass this as callback?
     PostUtil.deletePost(this.props.post.id);
   },

@@ -10,7 +10,11 @@ var PostIndex = React.createClass({
 
 	componentDidMount: function () {
 		this.postListener = PostStore.addListener(this._onChange);
-		PostUtil.fetchAllPosts();
+    if (this.props.timelineId === undefined){
+      PostUtil.fetchAllPosts();
+    } else {
+      PostUtil.fetchAllTimelinePosts(this.props.timelineId);
+    }
 	},
 
   componentWillUnmount: function () {
@@ -25,9 +29,9 @@ var PostIndex = React.createClass({
     var user = this.props.user;
 		return(
 		 <ul>
-			 {this.state.posts.map(function (post) {
-				 return <PostIndexItem key={post.id} post={post} user={ user } />;
-			 })}
+			 { this.state.posts.map(function (post) {
+				 return <PostIndexItem key={ post.id } post={ post } user={ user } />;
+			 }) }
 		 </ul>
 	 );
 	}

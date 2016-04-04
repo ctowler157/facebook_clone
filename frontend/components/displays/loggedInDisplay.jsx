@@ -6,7 +6,9 @@ var LoggedInDisplay = React.createClass({
 	render: function () {
 		var displayString = <h1>Home Page</h1>;
 		if (this.props.user.online) {
-			displayString = <PostForm user={ this.props.user }/>;
+			displayString = <PostForm
+        timelineId={ this.props.user.userId }
+        user={ this.props.user }/>;
 		}
 
 		return(

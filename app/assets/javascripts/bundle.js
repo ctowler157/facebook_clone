@@ -24874,6 +24874,10 @@
 	    return { email: "", password: "" };
 	  },
 	
+	  componentDidMount: function () {
+	    this.refs.emailInput.focus();
+	  },
+	
 	  updateEmail: function (event) {
 	    this.setState({ email: event.currentTarget.value });
 	  },
@@ -24882,9 +24886,19 @@
 	    this.setState({ password: event.currentTarget.value });
 	  },
 	
-	  handleClick: function (e) {
+	  handleSubmit: function (e) {
 	    if (this.state.email !== "" && this.state.password !== "") {
 	      this.tryLogIn();
+	    } else {
+	      if (this.state.email !== "") {
+	        this.refs.passwordInput.focus();
+	      }
+	    }
+	  },
+	
+	  keyPress: function (event) {
+	    if (event.keyCode === 13) {
+	      this.handleSubmit();
 	    }
 	  },
 	
@@ -24932,19 +24946,23 @@
 	          React.createElement(
 	            'td',
 	            null,
-	            React.createElement('input', { className: 'login-input', type: 'text', name: 'user[email]', value: this.state.email, onChange: this.updateEmail })
+	            React.createElement('input', { ref: 'emailInput', className: 'login-input', type: 'text',
+	              name: 'user[email]', value: this.state.email,
+	              onKeyDown: this.keyPress, onChange: this.updateEmail })
 	          ),
 	          React.createElement(
 	            'td',
 	            null,
-	            React.createElement('input', { className: 'login-input', type: 'password', name: 'user[password]', value: this.state.password, onChange: this.updatePassword })
+	            React.createElement('input', { ref: 'passwordInput', className: 'login-input', type: 'password',
+	              name: 'user[password]', value: this.state.password,
+	              onKeyDown: this.keyPress, onChange: this.updatePassword })
 	          ),
 	          React.createElement(
 	            'td',
 	            null,
 	            React.createElement(
 	              'button',
-	              { className: 'login-button', onClick: this.handleClick },
+	              { className: 'login-button', onClick: this.handleSubmit },
 	              'Log In'
 	            )
 	          )
@@ -25617,6 +25635,25 @@
 			});
 		},
 	
+		fetchAllTimelinePosts: function (timelineId) {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "GET",
+				success: function (posts) {
+					var timelinePosts = [];
+					posts.forEach(function (post) {
+						if (post.timeline_id == timelineId) {
+							timelinePosts.push(post);
+						}
+					});
+					PostActions.receiveAllPosts(timelinePosts);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
 		tryCreatePost: function (formData, resetForms) {
 			ApiUtil.ajax({
 				url: "/api/posts",
@@ -25648,18 +25685,17 @@
 			});
 		},
 	
-		updatePost: function (id, body) {
-			// var uriString = "post=%5Bbody%5D=";
-			// uriString += encodeURI(body);
+		updatePost: function (formData, id, cancelEdit) {
 			ApiUtil.ajax({
 				url: "/api/posts/" + id,
 				method: "PATCH",
 				form: true,
-				data: body,
+				data: formData,
 				contentType: false,
 				processData: false,
 				success: function (post) {
 					PostActions.receiveSinglePost(post);
+					cancelEdit();
 				},
 				error: function (response) {
 					console.log("FAILURE\n" + response);
@@ -25681,6 +25717,13 @@
 	  receiveSinglePost: function (post) {
 	    Dispatcher.dispatch({
 	      actionType: PostConstants.POST_RECEIVED,
+	      post: post
+	    });
+	  },
+	
+	  receiveEditedPost: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_EDITED,
 	      post: post
 	    });
 	  },
@@ -25707,7 +25750,8 @@
 	module.exports = {
 		POST_RECEIVED: "POST_RECEIVED",
 		ALL_POSTS_RECEIVED: "ALL_POSTS_RECEIVED",
-		POST_DELETED: "POST_DELETED"
+		POST_DELETED: "POST_DELETED",
+		POST_EDITED: "POST_EDITED"
 	};
 
 /***/ },
@@ -32241,7 +32285,9 @@
 				'Home Page'
 			);
 			if (this.props.user.online) {
-				displayString = React.createElement(PostForm, { user: this.props.user });
+				displayString = React.createElement(PostForm, {
+					timelineId: this.props.user.userId,
+					user: this.props.user });
 			}
 	
 			return React.createElement(
@@ -32281,8 +32327,19 @@
 		displayName: 'PostForm',
 	
 		getInitialState: function () {
-			var author = this.props.user;
-			return { body: "", authorId: author.userId };
+			var authorId;
+			if (this.props.user !== undefined) {
+				authorId = this.props.user.userId;
+			}
+			return { body: "", authorId: authorId };
+		},
+	
+		componentDidMount: function () {
+			var authorId;
+			if (this.props.user !== undefined) {
+				authorId = this.props.user.userId;
+			}
+			this.setState({ body: "", authorId: authorId });
 		},
 	
 		updateBody: function (event) {
@@ -32302,7 +32359,7 @@
 		tryCreatePost: function () {
 			var formData = new FormData();
 			formData.append("post[author_id]", this.state.authorId);
-			formData.append("post[timeline_id]", this.state.authorId);
+			formData.append("post[timeline_id]", this.props.timelineId);
 			formData.append("post[body]", this.state.body);
 	
 			PostUtil.tryCreatePost(formData, this.clearForms);
@@ -32312,10 +32369,12 @@
 			return React.createElement(
 				'div',
 				{ className: 'post-form' },
-				React.createElement('input', { type: 'textarea', className: 'post-form-body-input', value: this.state.body, onChange: this.updateBody }),
+				React.createElement('input', { type: 'textarea', className: 'post-form-body-input',
+					value: this.state.body, onChange: this.updateBody }),
 				React.createElement(
 					'button',
-					{ type: 'button', className: 'post-form-submit', onClick: this.handleClick },
+					{ type: 'button', className: 'post-form-submit',
+						onClick: this.handleClick },
 					'Post'
 				)
 			);
@@ -32342,7 +32401,11 @@
 	
 		componentDidMount: function () {
 			this.postListener = PostStore.addListener(this._onChange);
-			PostUtil.fetchAllPosts();
+			if (this.props.timelineId === undefined) {
+				PostUtil.fetchAllPosts();
+			} else {
+				PostUtil.fetchAllTimelinePosts(this.props.timelineId);
+			}
 		},
 	
 		componentWillUnmount: function () {
@@ -32441,6 +32504,7 @@
 	  },
 	
 	  _handleEdit: function (event) {
+	    event.preventDefault();
 	    // pop up editor
 	    this.setState({ editing: true });
 	  },
@@ -32452,12 +32516,13 @@
 	  submitEdit: function (event) {
 	    event.preventDefault();
 	    var postId = this.props.post.id;
-	    var postBody = event.currentTarget;
-	    debugger;
-	    PostUtil.updatePost(postId, postBody);
+	    var formData = new FormData();
+	    formData.append("post[body]", this.state.body);
+	    PostUtil.updatePost(formData, postId, this.cancelEdit);
 	  },
 	
 	  _handleDelete: function (event) {
+	    event.preventDefault();
 	    // popup confirmation, pass this as callback?
 	    PostUtil.deletePost(this.props.post.id);
 	  },
@@ -32807,7 +32872,7 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-		TIMELEINE_USER_RECEIVED: "TIMELEINE_USER_RECEIVED"
+		TIMELINE_USER_RECEIVED: "TIMELINE_USER_RECEIVED"
 	};
 
 /***/ },
@@ -32819,16 +32884,20 @@
 	var PostIndex = __webpack_require__(253);
 	var UserUtil = __webpack_require__(259);
 	var UserStore = __webpack_require__(263);
+	var TimelineSidebar = __webpack_require__(265);
+	var TimelineHeader = __webpack_require__(266);
+	var SessionStore = __webpack_require__(233);
 	
 	var Timeline = React.createClass({
 		displayName: 'Timeline',
 	
 		getInitialState: function () {
-			return { user: {} };
+			return { user: {}, currentUser: SessionStore.getCurrentUser() };
 		},
 	
 		componentDidMount: function () {
 			this.postListener = UserStore.addListener(this._onChange);
+			this.sessionListener = SessionStore.addListener(this._onSessionChange);
 			UserUtil.fetchTimelineUser(this.props.params.id);
 		},
 	
@@ -32836,30 +32905,40 @@
 			this.postListener.remove();
 		},
 	
+		componentWillReceiveProps: function (newProps) {
+			UserUtil.fetchTimelineUser(newProps.params.id);
+		},
+	
 		_onChange: function () {
 			var user = UserStore.getTimelineUser();
 			this.setState({ user: user });
 		},
 	
+		_onSessionChange: function () {
+			var user = SessionStore.getCurrentUser();
+			this.setState({ currentUser: user });
+		},
+	
 		render: function () {
+			var displayString = "";
+			if (this.state.currentUser.id == this.props.params.id) {
+				displayString = React.createElement(PostForm, {
+					timelineId: this.props.params.id,
+					user: this.props.user });
+			}
+	
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(
-					'header',
-					{ className: 'timeline-header' },
-					'This will be the header with the photo Here\'s the user ',
-					this.state.user.first_name
-				),
-				React.createElement(
-					'section',
-					{ className: 'timeline-sidebar' },
-					'this will be the sidebar'
-				),
+				React.createElement(TimelineHeader, { user: this.state.user,
+					currentUser: this.state.currentUser }),
+				React.createElement(TimelineSidebar, { user: this.state.user,
+					currentUser: this.state.currentUser }),
 				React.createElement(
 					'section',
 					{ className: 'timeline-post-index' },
-					'this will be the posts'
+					displayString,
+					React.createElement(PostIndex, { timelineId: this.props.params.id, user: this.state.currentUser })
 				)
 			);
 		}
@@ -32896,10 +32975,13 @@
 	
 	UserStore.getTimelineUser = function () {
 	  var user = {};
-	  var keys = Object.keys(_timelineUser);
-	  keys.forEach(function (key) {
-	    user[key] = _timelineUser[key];
-	  });
+	  if (_timelineUser !== {}) {
+	    var keys = Object.keys(_timelineUser);
+	    keys.forEach(function (key) {
+	      user[key] = _timelineUser[key];
+	    });
+	    user.userId = _timelineUser.id;
+	  }
 	  return user;
 	};
 	
@@ -32913,8 +32995,8 @@
 	
 	UserStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
-	    case UserConstants.CURRENT_USER_RECEIVED:
-	      setTimelineUser(payload.timelineUser);
+	    case UserConstants.TIMELINE_USER_RECEIVED:
+	      setTimelineUser(payload.user);
 	      timelineUserFetched = true;
 	      console.log('emitting change!');
 	      UserStore.__emitChange();
@@ -32932,6 +33014,136 @@
 	};
 	
 	module.exports = UserStore;
+
+/***/ },
+/* 264 */,
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(259);
+	
+	var TimelineSidebar = React.createClass({
+		displayName: 'TimelineSidebar',
+	
+		render: function () {
+			return React.createElement(
+				'section',
+				{ className: 'timeline-sidebar clear-fix' },
+				'this will be the sidebar for ',
+				this.props.user.first_name
+			);
+		}
+	});
+	
+	module.exports = TimelineSidebar;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(259);
+	var TimelineTabs = __webpack_require__(267);
+	var TimelineButtons = __webpack_require__(268);
+	
+	var TimelineSidebar = React.createClass({
+	  displayName: 'TimelineSidebar',
+	
+	  render: function () {
+	    var user = this.props.user;
+	
+	    return React.createElement(
+	      'section',
+	      { className: 'timeline-header clear-fix' },
+	      React.createElement('div', { className: 'timeline-header-profile-picture clear-fix' }),
+	      React.createElement(
+	        'a',
+	        { className: 'timeline-header-name',
+	          href: '#' },
+	        user.first_name,
+	        ' ',
+	        user.last_name
+	      ),
+	      React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser }),
+	      React.createElement(TimelineTabs, { user: user, currentUser: this.props.currentUser })
+	    );
+	  }
+	});
+	
+	module.exports = TimelineSidebar;
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(259);
+	
+	var TimelineTabs = React.createClass({
+	  displayName: 'TimelineTabs',
+	
+	  render: function () {
+	    var user = this.props.user;
+	
+	    return React.createElement(
+	      'nav',
+	      { className: 'timeline-header-tabs clear-fix' },
+	      'Tabs loaded'
+	    );
+	  }
+	});
+	
+	module.exports = TimelineTabs;
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(259);
+	
+	var TimelineButtons = React.createClass({
+	  displayName: 'TimelineButtons',
+	
+	  render: function () {
+	    var user = this.props.user;
+	
+	    return React.createElement(
+	      'ul',
+	      { className: 'timeline-header-buttons' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#' },
+	          'Friends'
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#' },
+	          'Following'
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { href: '#' },
+	          'Message'
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = TimelineButtons;
 
 /***/ }
 /******/ ]);

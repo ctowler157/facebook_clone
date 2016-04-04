@@ -17,6 +17,23 @@ var PostUtil = {
 		});
 	},
 
+	fetchAllTimelinePosts: function(timelineId) {
+		ApiUtil.ajax({
+			url: "/api/posts",
+			method: "GET",
+			success: function (posts) {
+        var timelinePosts = [];
+        posts.forEach(function (post) {
+          if (post.timeline_id == timelineId) {
+            timelinePosts.push(post);
+          }
+        });
+			  PostActions.receiveAllPosts(timelinePosts);
+      },
+			error: function (response) { console.log("FAILURE\n" + response); },
+		});
+	},
+
 	tryCreatePost: function (formData, resetForms) {
 		ApiUtil.ajax({
 			url: "/api/posts",
@@ -43,18 +60,18 @@ var PostUtil = {
 		});
 	},
 
-	updatePost: function (id, body) {
-    // var uriString = "post=%5Bbody%5D=";
-    // uriString += encodeURI(body);
+	updatePost: function (formData, id, cancelEdit) {
 		ApiUtil.ajax({
 			url: "/api/posts/" + id,
 			method: "PATCH",
       form: true,
-			data: body,
+			data: formData,
 			contentType: false,
 			processData: false,
 			success: function (post) {
-        PostActions.receiveSinglePost(post); },
+        PostActions.receiveSinglePost(post);
+        cancelEdit();
+      },
 			error: function (response) { console.log("FAILURE\n" + response); },
 		});
 	}

@@ -4,9 +4,4 @@ class Post < ActiveRecord::Base
 	belongs_to :timeline, class_name: "User", foreign_key: :timeline_id
 
 	belongs_to :author, class_name: "User", foreign_key: :author_id
-
-  # has_one :bio, through: :author
-
-
-
 end

@@ -9,7 +9,6 @@ class User < ActiveRecord::Base
 
 	has_many :timeline_posts,	class_name: "Post", foreign_key: :timeline_id
 
-  # has_one :bio
 
   after_initialize :ensure_session_token
 
@@ -23,10 +22,6 @@ class User < ActiveRecord::Base
       super
     end
   end
-
-  # def first_name
-  #   @first_name ||= bio.first_name
-  # end
 
   def self.find_by_credentials(email, password)
     user = User.find_by(email: email)

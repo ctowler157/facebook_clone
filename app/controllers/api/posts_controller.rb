@@ -3,12 +3,10 @@ class Api::PostsController < ApplicationController
   # before_action :ensure_friend, only: [:show]
 
 	def show
-		# @post = Post.includes(:bio).find(params[:id])
 		@post = Post.includes(:author).find(params[:id])
 	end
 
 	def index
-		# @posts = Post.includes(:bio).all
 		@posts = Post.includes(:author).all
 	end
 

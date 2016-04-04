@@ -1,2 +1,1 @@
-json.ingnore_nil!
-json.extract! @user
+json.partial! 'user', user: @user

@@ -8,6 +8,13 @@ var PostActions = {
       post: post
     });
   },
+
+	receiveEditedPost: function (post) {
+    Dispatcher.dispatch({
+      actionType: PostConstants.POST_EDITED,
+      post: post
+    });
+  },
 	receiveAllPosts: function (posts) {
     Dispatcher.dispatch({
       actionType: PostConstants.ALL_POSTS_RECEIVED,

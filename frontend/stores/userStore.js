@@ -7,7 +7,7 @@ console.log('loaded UserStore!');
 
 var timelineUserFetched = false;
 
-var _timelineUser = { };
+var _timelineUser = {} ;
 
 var setTimelineUser = function (user) {
   _timelineUser = user;
@@ -23,11 +23,14 @@ UserStore.userFetched = function () {
 
 UserStore.getTimelineUser = function () {
   var user = {};
-	var keys = Object.keys(_timelineUser);
-	keys.forEach(function (key) {
-		user[key] = _timelineUser[key];
-	});
-	return user;
+  if (_timelineUser !== {} ) {
+  	var keys = Object.keys(_timelineUser);
+  	keys.forEach(function (key) {
+  		user[key] = _timelineUser[key];
+  	});
+    user.userId = _timelineUser.id;
+  }
+  return user;
 };
 
 // UserStore.isLoggedIn = function () {
@@ -40,8 +43,8 @@ UserStore.getTimelineUser = function () {
 
 UserStore.__onDispatch = function (payload) {
   switch(payload.actionType) {
-    case UserConstants.CURRENT_USER_RECEIVED:
-      setTimelineUser(payload.timelineUser);
+    case UserConstants.TIMELINE_USER_RECEIVED:
+      setTimelineUser(payload.user);
 			timelineUserFetched = true;
 			console.log('emitting change!');
       UserStore.__emitChange();

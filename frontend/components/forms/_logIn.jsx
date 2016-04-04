@@ -7,6 +7,10 @@ var LogIn = React.createClass({
 		return { email: "", password: "" };
 	},
 
+  componentDidMount: function () {
+    this.refs.emailInput.focus();
+  },
+
 	updateEmail: function (event) {
 		this.setState({ email: event.currentTarget.value });
 	},
@@ -15,11 +19,21 @@ var LogIn = React.createClass({
 		this.setState({ password: event.currentTarget.value });
 	},
 
-	handleClick: function (e) {
+	handleSubmit: function (e) {
 		if(this.state.email !== "" && this.state.password !== ""){
 			this.tryLogIn();
+		} else {
+		  if (this.state.email !=="") {
+        this.refs.passwordInput.focus();
+      }
 		}
 	},
+
+  keyPress: function (event) {
+    if (event.keyCode === 13) {
+      this.handleSubmit();
+    }
+  },
 
   tryLogIn: function () {
 		var formData = new FormData();
@@ -44,13 +58,17 @@ var LogIn = React.createClass({
             </tr>
             <tr className="input-label-row">
               <td>
-                  <input className="login-input" type="text" name="user[email]" value={this.state.email} onChange={this.updateEmail}/>
+                  <input ref="emailInput" className="login-input" type="text"
+                    name="user[email]" value={this.state.email}
+                    onKeyDown={ this.keyPress } onChange={this.updateEmail}/>
               </td>
               <td>
-                  <input className="login-input" type="password" name="user[password]" value={this.state.password} onChange={this.updatePassword}/>
+                  <input ref="passwordInput" className="login-input" type="password"
+                    name="user[password]" value={this.state.password}
+                    onKeyDown={ this.keyPress } onChange={this.updatePassword}/>
               </td>
               <td>
-                <button className="login-button" onClick={this.handleClick}>Log In</button>
+                <button className="login-button" onClick={this.handleSubmit}>Log In</button>
               </td>
             </tr>
             <tr className="remember-me-row">

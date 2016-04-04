@@ -3,14 +3,18 @@ var PostForm = require('../forms/_postForm');
 var PostIndex = require('../posts/index');
 var UserUtil = require('../../util/userUtil');
 var UserStore = require('../../stores/userStore');
+var TimelineSidebar = require('./TimelineSidebar');
+var TimelineHeader = require('./TimelineHeader');
+var SessionStore = require('../../stores/sessionStore');
 
 var Timeline = React.createClass({
 	getInitialState: function () {
-		return({ user: {} });
+		return({ user: {}, currentUser: SessionStore.getCurrentUser() });
 	},
 
 	componentDidMount: function () {
 		this.postListener = UserStore.addListener(this._onChange);
+    this.sessionListener = SessionStore.addListener(this._onSessionChange);
 		UserUtil.fetchTimelineUser(this.props.params.id);
 	},
 
@@ -18,18 +22,38 @@ var Timeline = React.createClass({
 		this.postListener.remove();
 	},
 
+	componentWillReceiveProps: function (newProps) {
+		UserUtil.fetchTimelineUser(newProps.params.id);
+	},
+
 	_onChange: function () {
 		var user = UserStore.getTimelineUser();
 		this.setState({ user: user });
 	},
 
+	_onSessionChange: function () {
+		var user = SessionStore.getCurrentUser();
+		this.setState({ currentUser: user });
+	},
+
   render: function () {
+    var displayString = "";
+    if (this.state.currentUser.id == this.props.params.id) {
+			displayString = <PostForm
+        timelineId={this.props.params.id }
+        user={ this.props.user }/>;
+		}
+
 		return(
 			<div>
-        <header className="timeline-header">This will be the header with the photo
-				Here's the user { this.state.user.first_name }</header>
-        <section className="timeline-sidebar">this will be the sidebar</section>
-        <section className="timeline-post-index">this will be the posts</section>
+        <TimelineHeader user={ this.state.user }
+          currentUser={ this.state.currentUser }/>
+        <TimelineSidebar user={ this.state.user }
+          currentUser={ this.state.currentUser }/>
+        <section className="timeline-post-index">
+          { displayString }
+          <PostIndex timelineId={ this.props.params.id } user={ this.state.currentUser } />
+        </section>
 			</div>
 		);
 	}
