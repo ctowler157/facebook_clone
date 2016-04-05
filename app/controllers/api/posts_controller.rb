@@ -3,11 +3,11 @@ class Api::PostsController < ApplicationController
   # before_action :ensure_friend, only: [:show]
 
 	def show
-		@post = Post.includes(:author).find(params[:id])
+		@post = Post.includes(:author, :timeline).find(params[:id])
 	end
 
 	def index
-		@posts = Post.includes(:author).all
+		@posts = Post.includes(:author, :timeline).all
 	end
 
 	def create
@@ -21,7 +21,7 @@ class Api::PostsController < ApplicationController
 	end
 
 	def update
-		@post ||= Post.find(params[:id])
+		@post ||= Post.includes(:author, :timeline).find(params[:id])
 		if @post.update(post_params)
 			render :show
 		else
@@ -30,14 +30,14 @@ class Api::PostsController < ApplicationController
 	end
 
 	def destroy
-		@post ||= Post.find(params[:id])
+		@post ||= Post.includes(:author, :timeline).find(params[:id])
 		@post.destroy
 		render :json => { id: @post.id }
 	end
 
 	private
   def ensure_current_user
-    @post = Post.find(params[:id])
+    @post = Post.includes(:author, :timeline).find(params[:id])
     current_user.id == @post.author_id #&& current_user.is_friend?(@post.timeline_id)
   end
 

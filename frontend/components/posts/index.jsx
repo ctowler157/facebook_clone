@@ -9,8 +9,9 @@ var PostIndex = React.createClass({
 	},
 
 	componentDidMount: function () {
+    var NEWS_FEED_CONSTANT = "NEWS_FEED";
 		this.postListener = PostStore.addListener(this._onChange);
-    if (this.props.timelineId === undefined){
+    if (this.props.timelineId === NEWS_FEED_CONSTANT){
       // fetchAllFriendsPosts
       PostUtil.fetchAllPosts();
     } else {
@@ -28,8 +29,10 @@ var PostIndex = React.createClass({
 
 	render: function () {
     var user = this.props.user;
+    var timelineId = this.props.timelineId;
     var liString = (this.state.posts.map(function (post) {
-      return (<PostIndexItem key={ post.id } post={ post } user={ user } />);
+      return (<PostIndexItem key={ post.id } post={ post }
+        user={ user } timelineId={ timelineId }/>);
     }));
 		return(
 		 <ul>

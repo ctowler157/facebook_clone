@@ -32310,7 +32310,6 @@
 			//     user={ this.props.user }/>;
 			// }
 			var NEWS_FEED_CONSTANT = "NEWS_FEED";
-	
 			return React.createElement(
 				'div',
 				null,
@@ -32339,9 +32338,9 @@
 					'section',
 					{ className: 'main-feed' },
 					React.createElement(PostForm, {
-						timelineId: this.props.user.userId,
+						timelineId: NEWS_FEED_CONSTANT,
 						user: this.props.user }),
-					React.createElement(PostIndex, { user: this.props.user })
+					React.createElement(PostIndex, { user: this.props.user, timelineId: NEWS_FEED_CONSTANT })
 				),
 				React.createElement(
 					'section',
@@ -32367,70 +32366,149 @@
 	// var PostActions = require('../../actions');
 	
 	var PostForm = React.createClass({
-		displayName: 'PostForm',
+	  displayName: 'PostForm',
 	
-		getInitialState: function () {
-			var authorId;
-			if (this.props.user !== undefined) {
-				authorId = this.props.user.userId;
-			}
-			return { body: "", authorId: authorId };
-		},
+	  getInitialState: function () {
+	    // var authorId;
 	
-		componentDidMount: function () {
-			var authorId;
-			if (this.props.user !== undefined) {
-				authorId = this.props.user.userId;
-			}
-			this.setState({ body: "", authorId: authorId });
-		},
+	    // if (this.props.user !== undefined) {
+	    //   authorId = this.props.user.userId;
+	    // }
+	    // return { body: "", authorId: authorId };
+	    // return { body: "", };
+	    var NEWS_FEED_CONSTANT = "NEWS_FEED";
+	    var timelineId = this.props.timelineId;
+	    if (timelineId === NEWS_FEED_CONSTANT) {
+	      timelineId = this.props.user.id;
+	    }
+	    return { body: "", timelineId: timelineId };
+	  },
 	
-		updateBody: function (event) {
-			this.setState({ body: event.currentTarget.value });
-		},
+	  // componentDidMount: function () {
+	  //   var NEWS_FEED_CONSTANT = "NEWS_FEED";
+	  // 	var authorId;
+	  //   var timelineId = this.props.timelineId;
+	  //   if (this.props.user !== undefined) {
+	  //     authorId = this.props.user.id;
+	  //
+	  //     if (timelineId === NEWS_FEED_CONSTANT) {
+	  //       timelineId = this.props.user.id;
+	  //     }
+	  //   }
+	  //   debugger
+	  // 	this.setState({ body: "", authorId: authorId, timelineId: timelineId });
+	  // },
+	  componentDidMount: function () {
+	    // var NEWS_FEED_CONSTANT = "NEWS_FEED";
+	    // var timelineId = this.state.timelineId;
+	    // if (timelineId === NEWS_FEED_CONSTANT) {
+	    //   timelineId = this.props.user.id;
+	    // }
+	    // debugger
+	    // this.setState({ body: "", timelineId: timelineId });
+	  },
 	
-		handleClick: function () {
-			if (this.state.body !== "") {
-				this.tryCreatePost();
-			}
-		},
+	  updateBody: function (event) {
+	    this.setState({ body: event.currentTarget.value });
+	  },
 	
-		clearForms: function () {
-			this.setState({ body: "" });
-		},
+	  handleClick: function () {
+	    if (this.state.body !== "") {
+	      this.tryCreatePost();
+	    }
+	  },
 	
-		tryCreatePost: function () {
-			var formData = new FormData();
-			formData.append("post[author_id]", this.state.authorId);
-			formData.append("post[timeline_id]", this.props.timelineId);
-			formData.append("post[body]", this.state.body);
+	  preventRedirect: function (e) {
+	    e.preventDefault();
+	  },
 	
-			PostUtil.tryCreatePost(formData, this.clearForms);
-		},
+	  clearForms: function () {
+	    this.setState({ body: "" });
+	  },
 	
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'post-form clear-fix' },
-				React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
-				React.createElement(
-					'div',
-					{ className: 'post-input-padding' },
-					React.createElement('input', { type: 'textarea', className: 'post-form-body-input post-input',
-						value: this.state.body, onChange: this.updateBody })
-				),
-				React.createElement(
-					'div',
-					{ className: 'bottom-of-post-form clear-fix' },
-					React.createElement(
-						'button',
-						{ type: 'button', className: 'post-form-submit blue-button',
-							onClick: this.handleClick },
-						'Post'
-					)
-				)
-			);
-		}
+	  // tryCreatePost: function() {
+	  // 	var formData = new FormData();
+	  // 	formData.append("post[author_id]", this.state.authorId);
+	  // 	formData.append("post[timeline_id]", this.state.timelineId);
+	  // 	formData.append("post[body]", this.state.body);
+	  //   debugger
+	  // 	// PostUtil.tryCreatePost(formData, this.clearForms);
+	  // },
+	  tryCreatePost: function () {
+	    var formData = new FormData();
+	    formData.append("post[author_id]", this.props.user.id);
+	    formData.append("post[timeline_id]", this.state.timelineId);
+	    formData.append("post[body]", this.state.body);
+	
+	    PostUtil.tryCreatePost(formData, this.clearForms);
+	  },
+	
+	  render: function () {
+	    var navClass = "post-form-top-nav clear-fix";
+	    // var navItems = ["Post", "Photo/Video"];
+	    var navItems = ["Post", "Photo"];
+	
+	    if (this.props.timelineId === "NEWS_FEED") {
+	      navClass += " news-feed-post-form";
+	      // navItems = ["Update Status", "Add Photo/Video", "Create Photo Album"];
+	      navItems = ["Update Status", "Add Photo"];
+	    } else {
+	      navClass += " timeline-post-form";
+	      if (this.props.user.id == this.props.timelineId) {
+	        // navItems = ["Status", "Photo/Video", "Life Event"];
+	        navItems = ["Status", "Photo"];
+	      }
+	    }
+	
+	    var navItemsList = navItems.map(function (item, i) {
+	      return React.createElement(
+	        'li',
+	        { key: i },
+	        React.createElement(
+	          'a',
+	          { href: '#', onClick: this.preventRedirect },
+	          item
+	        )
+	      );
+	    });
+	
+	    var navBar = React.createElement(
+	      'nav',
+	      { className: navClass },
+	      React.createElement(
+	        'ul',
+	        null,
+	        navItemsList
+	      )
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'post-form' },
+	      navBar,
+	      React.createElement(
+	        'div',
+	        { className: 'post-pic-and-input clear-fix' },
+	        React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
+	        React.createElement(
+	          'div',
+	          { className: 'post-input-padding' },
+	          React.createElement('input', { type: 'textarea', className: 'post-form-body-input post-input',
+	            value: this.state.body, onChange: this.updateBody })
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'bottom-of-post-form clear-fix' },
+	        React.createElement(
+	          'button',
+	          { type: 'button', className: 'post-form-submit blue-button',
+	            onClick: this.handleClick },
+	          'Post'
+	        )
+	      )
+	    );
+	  }
 	});
 	
 	module.exports = PostForm;
@@ -32445,41 +32523,44 @@
 	var PostIndexItem = __webpack_require__(255);
 	
 	var PostIndex = React.createClass({
-		displayName: 'PostIndex',
+	  displayName: 'PostIndex',
 	
-		getInitialState: function () {
-			return { posts: [] };
-		},
+	  getInitialState: function () {
+	    return { posts: [] };
+	  },
 	
-		componentDidMount: function () {
-			this.postListener = PostStore.addListener(this._onChange);
-			if (this.props.timelineId === undefined) {
-				// fetchAllFriendsPosts
-				PostUtil.fetchAllPosts();
-			} else {
-				PostUtil.fetchAllTimelinePosts(this.props.timelineId);
-			}
-		},
+	  componentDidMount: function () {
+	    var NEWS_FEED_CONSTANT = "NEWS_FEED";
+	    this.postListener = PostStore.addListener(this._onChange);
+	    if (this.props.timelineId === NEWS_FEED_CONSTANT) {
+	      // fetchAllFriendsPosts
+	      PostUtil.fetchAllPosts();
+	    } else {
+	      PostUtil.fetchAllTimelinePosts(this.props.timelineId);
+	    }
+	  },
 	
-		componentWillUnmount: function () {
-			this.postListener.remove();
-		},
+	  componentWillUnmount: function () {
+	    this.postListener.remove();
+	  },
 	
-		_onChange: function () {
-			this.setState({ posts: PostStore.all() });
-		},
+	  _onChange: function () {
+	    this.setState({ posts: PostStore.all() });
+	  },
 	
-		render: function () {
-			var user = this.props.user;
-			var liString = this.state.posts.map(function (post) {
-				return React.createElement(PostIndexItem, { key: post.id, post: post, user: user });
-			});
-			return React.createElement(
-				'ul',
-				null,
-				liString
-			);
-		}
+	  render: function () {
+	    var user = this.props.user;
+	    var timelineId = this.props.timelineId;
+	    var liString = this.state.posts.map(function (post) {
+	      return React.createElement(PostIndexItem, { key: post.id, post: post,
+	        user: user, timelineId: timelineId });
+	    });
+	    return React.createElement(
+	      'ul',
+	      null,
+	      liString
+	    );
+	  }
 	});
 	
 	module.exports = PostIndex;
@@ -32554,7 +32635,8 @@
 	  displayName: 'PostIndexItem',
 	
 	  getInitialState: function () {
-	    return { editing: false, body: this.props.post.body };
+	    return { editing: false, body: this.props.post.body,
+	      dropDownState: " hidden" };
 	  },
 	
 	  _handleEdit: function (event) {
@@ -32585,73 +32667,195 @@
 	    this.setState({ body: event.currentTarget.value });
 	  },
 	
+	  toggleDropDownState: function (e) {
+	    if (this.state.dropDownState === "") {
+	      this.setState({ dropDownState: " hidden" });
+	    } else {
+	      this.setState({ dropDownState: "" });
+	    }
+	  },
+	
+	  hideDropDown: function (e) {
+	    this.setState({ dropDownState: " hidden" });
+	  },
+	
 	  render: function () {
 	    var post = this.props.post;
+	    var authorString = React.createElement(
+	      'a',
+	      { href: "#/user/" + post.author_id, className: 'name-link'
+	      },
+	      post.author.first_name,
+	      ' ',
+	      post.author.last_name
+	    );
 	
-	    var buttons;
-	    if (post.author_id === this.props.user.id) {
-	      buttons = React.createElement(
+	    // -----------Time since posted-----------------------------
+	    function timeSince(date) {
+	      var seconds = Math.floor((new Date() - date) / 1000);
+	      var interval = Math.floor(seconds / 31536000);
+	      if (interval > 1) {
+	        return interval + " years";
+	      }
+	      interval = Math.floor(seconds / 2592000);
+	      if (interval > 1) {
+	        return interval + " months";
+	      }
+	      interval = Math.floor(seconds / 86400);
+	      if (interval > 1) {
+	        return interval + " days";
+	      }
+	      interval = Math.floor(seconds / 3600);
+	      if (interval > 1) {
+	        return interval + " hours";
+	      }
+	      interval = Math.floor(seconds / 60);
+	      if (interval > 1) {
+	        return interval + " minutes";
+	      }
+	      return Math.floor(seconds) + " seconds";
+	    }
+	
+	    var createdAt = Date.parse(post.created_at);
+	
+	    var elapsed = timeSince(createdAt);
+	
+	    // -----------Wall Posts in timeline-----------------------------
+	    var NEWS_FEED_CONSTANT = "NEWS_FEED";
+	    var recipientString;
+	    var postArrow;
+	    var recipient = post.recipient;
+	
+	    if (this.props.timelineId === NEWS_FEED_CONSTANT && post.author_id != recipient.id) {
+	      recipientString = React.createElement(
+	        'a',
+	        { href: "#/user/" + recipient.id, className: 'name-link'
+	        },
+	        recipient.first_name,
+	        ' ',
+	        recipient.last_name
+	      );
+	
+	      postArrow = React.createElement(
 	        'div',
-	        { className: 'post-options-drop-down' },
+	        { className: 'post-arrow clear-fix' },
+	        '  ',
 	        React.createElement(
-	          'a',
-	          { className: 'post-options-item', href: '#', name: 'post[body]',
-	            onClick: this._handleEdit },
-	          'Edit Post'
+	          'u',
+	          null,
+	          ' trick '
 	        ),
+	        '  '
+	      );
+	    }
+	    // -----------------------------------------------------------
+	
+	    // --------------Author Post Edit menu--------------------------
+	
+	    var dropDown;
+	    var menuButton;
+	    if (post.author_id === this.props.user.id) {
+	      menuButton = React.createElement(
+	        'button',
+	        { className: 'post-drop-down-button',
+	          onClick: this.toggleDropDownState,
+	          onBlur: this.hideDropDown },
+	        '  '
+	      );
+	      dropDown = React.createElement(
+	        'div',
+	        { className: "post-drop-down" + this.state.dropDownState },
 	        React.createElement(
-	          'a',
-	          { className: 'post-options-item', href: '#',
-	            onClick: this._handleDelete },
-	          'Delete'
+	          'ul',
+	          { className: 'post-options-drop-down' },
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { className: 'post-options-item', href: '#',
+	                onClick: this._handleDelete },
+	              'Delete'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { className: 'post-options-item', href: '#', name: 'post[body]',
+	                onClick: this._handleEdit },
+	              'Edit Post'
+	            )
+	          )
 	        )
 	      );
 	    }
-	
+	    //---------------conditional rendering----------------------
 	    if (this.state.editing === true) {
 	      return React.createElement(
 	        'li',
 	        { className: 'post-list-item edit-post' },
-	        React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
 	        React.createElement(
 	          'form',
 	          null,
-	          React.createElement('input', { className: 'post-input', type: 'textArea', value: this.state.body,
-	            onChange: this._updateBody }),
 	          React.createElement(
-	            'button',
-	            { className: 'cancel-edit-button',
-	              onClick: this.cancelEdit },
-	            'Cancel'
+	            'section',
+	            { className: 'post-item-header' },
+	            React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
+	            React.createElement('button', { className: 'cancel-edit-button',
+	              onClick: this.cancelEdit }),
+	            React.createElement(
+	              'div',
+	              { className: 'post-input-padding' },
+	              React.createElement('input', { className: 'post-input', type: 'textArea', value: this.state.body,
+	                onChange: this._updateBody })
+	            )
 	          ),
-	          React.createElement('input', { type: 'submit', className: 'submit-edit-button blue-button',
-	            onClick: this.submitEdit, value: 'Save' })
+	          React.createElement(
+	            'section',
+	            { className: 'bottom-of-post-form clear-fix' },
+	            React.createElement(
+	              'button',
+	              { className: 'submit-edit-button blue-button',
+	                onClick: this.submitEdit },
+	              'Save'
+	            )
+	          )
 	        )
 	      );
 	    } else {
 	      return React.createElement(
 	        'li',
 	        { className: 'post-list-item' },
-	        React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
 	        React.createElement(
-	          'p',
-	          null,
+	          'section',
+	          { className: 'post-item-header' },
+	          React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
+	          menuButton,
 	          React.createElement(
-	            'a',
-	            { href: "#/user/" + post.author_id },
-	            post.author.first_name,
-	            ' ',
-	            post.author.last_name
+	            'div',
+	            null,
+	            authorString,
+	            postArrow,
+	            recipientString
 	          ),
-	          React.createElement('br', null),
-	          post.created_at
+	          React.createElement(
+	            'p',
+	            { className: 'timestamp' },
+	            elapsed + " ago"
+	          )
 	        ),
 	        React.createElement(
-	          'p',
-	          { className: 'post-body' },
-	          post.body
+	          'section',
+	          { className: 'post-body-section' },
+	          React.createElement(
+	            'p',
+	            { className: 'post-body' },
+	            post.body
+	          )
 	        ),
-	        buttons
+	        dropDown
 	      );
 	    }
 	  }
@@ -32995,7 +33199,7 @@
 					{ className: 'timeline-post-index' },
 					React.createElement(PostForm, {
 						timelineId: this.props.params.id,
-						user: this.props.user }),
+						user: this.state.currentUser }),
 					React.createElement(PostIndex, { timelineId: this.props.params.id, user: this.state.currentUser })
 				)
 			);

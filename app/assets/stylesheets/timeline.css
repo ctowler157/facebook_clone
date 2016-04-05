@@ -10,6 +10,7 @@
   border-color: #d3d6db;
   border-top: 0px;
   border-radius: 0 0 3px 3px;
+  margin-bottom: 20px;
 }
 
 .timeline-header-profile-picture {
@@ -101,10 +102,11 @@ li.selected > span {
 }
 /*-----------------FEED---------------*/
 .timeline-post-index {
-  width: 410px;
+  width: 510px;
   display: inline-block;
+  margin-left: 20px;
   /*blue*/
-	background-color: #54FFFF;
+	/*background-color: #54FFFF;*/
 }
 
 /*--------------SIDEBAR----------------*/

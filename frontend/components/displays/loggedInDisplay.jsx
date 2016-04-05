@@ -11,7 +11,6 @@ var LoggedInDisplay = React.createClass({
     //     user={ this.props.user }/>;
 		// }
     var NEWS_FEED_CONSTANT = "NEWS_FEED";
-
 		return(
 			<div>
 				<section className="main-sidebar-left clear-fix">
@@ -27,9 +26,9 @@ var LoggedInDisplay = React.createClass({
 				<section className="main-feed">
 					{ /*displayString*/ }
           <PostForm
-            timelineId={ this.props.user.userId }
+            timelineId={ NEWS_FEED_CONSTANT }
             user={ this.props.user }/>
-					<PostIndex user={ this.props.user }/>
+          <PostIndex user={ this.props.user } timelineId={ NEWS_FEED_CONSTANT }/>
 				</section>
 				<section className="main-sidebar-right clear-fix">
           <h3>There might be stuff in this sidebar too</h3></section>

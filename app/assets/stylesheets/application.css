@@ -14,7 +14,7 @@
  *= require_tree .
  */
 
-body, header, a, div, button {
+body, header, a, div, button, p {
   margin: 0;
   border: 0;
   outline: 0;
@@ -28,6 +28,17 @@ body, header, a, div, button {
   content: "";
   clear: both;
   display: block;
+ }
+
+ ul {
+  list-style: none;
+  padding: 0;
+ }
+
+ li {
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
  }
 
  a {

@@ -53,8 +53,8 @@ var Timeline = React.createClass({
         <section className="timeline-post-index">
           { /*displayString*/ }
           <PostForm
-            timelineId={this.props.params.id }
-            user={ this.props.user }/>
+            timelineId={ this.props.params.id }
+            user={ this.state.currentUser }/>
           <PostIndex timelineId={ this.props.params.id } user={ this.state.currentUser } />
         </section>
 			</div>
