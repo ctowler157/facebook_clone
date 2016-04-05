@@ -3,8 +3,8 @@ var PostForm = require('../forms/_postForm');
 var PostIndex = require('../posts/index');
 var UserUtil = require('../../util/userUtil');
 var UserStore = require('../../stores/userStore');
-var TimelineSidebar = require('./TimelineSidebar');
-var TimelineHeader = require('./TimelineHeader');
+var TimelineSidebar = require('./timelineSidebar');
+var TimelineHeader = require('./timelineHeader');
 var SessionStore = require('../../stores/sessionStore');
 
 var Timeline = React.createClass({

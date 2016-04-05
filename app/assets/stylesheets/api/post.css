@@ -80,7 +80,8 @@ has p for body and p > a for name*/
 .post-input-padding {
   float: right;
   display:inline-block;
-  padding: 23px 6px 13px 6px;
+  padding: 23px 6
+  px 13px 6px;
   width: 420px;
   border-top: 1px solid #d3d6db;
   border-bottom: 1px solid #d3d6db;
