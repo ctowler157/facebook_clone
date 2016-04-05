@@ -29,8 +29,6 @@ has p for body and p > a for name*/
   margin-bottom: 10px;
   /*border-color: #d3d6db;*/
   border-color: #e5e6e9 #dfe0e4 #d0d1d5;
-
-
 }
 
 .main-feed > ul > li > p {
@@ -53,6 +51,50 @@ has p for body and p > a for name*/
 }
 
 .main-feed > ul > li > p > a:hover {
+  text-decoration: underline;;
+}
+
+.timeline-post-index > ul {
+  margin: 10px auto;
+  list-style: none;
+}
+.timeline-post-index > ul > li {
+  background-color: #fff;
+
+  font-size: 14px;
+  font-family: helvetica, arial, sans-serif;
+  font-weight: normal;
+  line-height: 1.38;
+  padding: 12px 12px 0px 12px;
+
+  border: 1px solid #d3d6db;
+  border-radius: 3px;
+  border-radius: 0 0 2px 2px;
+  margin-bottom: 10px;
+  /*border-color: #d3d6db;*/
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+}
+
+.timeline-post-index > ul > li > p {
+  display: inline-block;
+
+}
+
+.timeline-post-index > ul > li > p.post-body {
+  margin: 10px;
+
+}
+
+.timeline-post-index > ul > li > p > a {
+  display: inline-block;
+  vertical-align: top;
+  color: #3b5998;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.timeline-post-index > ul > li > p > a:hover {
   text-decoration: underline;;
 }
 

@@ -55,7 +55,7 @@
 	var App = __webpack_require__(216);
 	var Timeline = __webpack_require__(262);
 	var LogIn = __webpack_require__(218);
-	var SessionStore = __webpack_require__(233);
+	var SessionStore = __webpack_require__(228);
 	var SessionUtil = __webpack_require__(219);
 	
 	var routes = React.createElement(
@@ -24770,8 +24770,8 @@
 
 	var React = __webpack_require__(1);
 	var LoggedOutHeader = __webpack_require__(217);
-	var LoggedInHeader = __webpack_require__(228);
-	var SessionStore = __webpack_require__(233);
+	var LoggedInHeader = __webpack_require__(246);
+	var SessionStore = __webpack_require__(228);
 	var SessionUtil = __webpack_require__(219);
 	var LoggedInDisplay = __webpack_require__(251);
 	var LoggedOutDisplay = __webpack_require__(256);
@@ -25507,13 +25507,23 @@
 
 	var React = __webpack_require__(1);
 	var SessionUtil = __webpack_require__(219);
-	var SessionStore = __webpack_require__(233);
+	var SessionStore = __webpack_require__(228);
 	
 	var NavButtons = React.createClass({
 		displayName: 'NavButtons',
 	
+		// contextTypes: {
+		//   router: React.PropTypes.object.isRequired
+		// },
+	
 		logOut: function () {
+			// var router = this.context.router;
+	
 			SessionUtil.logOut();
+	
+			// SessionUtil.logOut(function () {
+			//   router.push("/");
+			// });
 		},
 	
 		render: function () {
@@ -25549,230 +25559,7 @@
 /* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var NavButtons = __webpack_require__(227);
-	var SearchBar = __webpack_require__(229);
-	
-	var LoggedInHeader = React.createClass({
-		displayName: 'LoggedInHeader',
-	
-		render: function () {
-			return React.createElement(
-				'nav',
-				{ className: 'header-nav logged-in-header' },
-				React.createElement(
-					'ul',
-					{ className: 'header-nav-left' },
-					React.createElement(
-						'li',
-						null,
-						React.createElement(SearchBar, { user: this.props.user })
-					),
-					React.createElement(
-						'li',
-						null,
-						React.createElement(
-							'a',
-							{ href: '#/', className: 'header-nav-thumb-logo' },
-							'f'
-						)
-					)
-				),
-				React.createElement(NavButtons, { user: this.props.user })
-			);
-		}
-	});
-	
-	module.exports = LoggedInHeader;
-
-/***/ },
-/* 229 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(230);
-	// var PostActions = require('../../actions');
-	
-	var PostForm = React.createClass({
-		displayName: 'PostForm',
-	
-		getInitialState: function () {
-			// will be needed when determining who to autopopulate
-			// search bar with
-			// var user = this.props.user;
-			return { search: "" };
-		},
-	
-		updateSearch: function (event) {
-			this.setState({ search: event.currentTarget.value });
-		},
-	
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'search-bar' },
-				React.createElement('input', { type: 'text', className: 'search-bar-input', value: this.state.search, onChange: this.updateSearch }),
-				React.createElement(
-					'button',
-					{ type: 'button', className: 'search-bar-submit' },
-					'Search'
-				)
-			);
-		}
-	});
-	
-	module.exports = PostForm;
-
-/***/ },
-/* 230 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var PostActions = __webpack_require__(231);
-	
-	console.log("Loaded PostUtil!");
-	
-	var PostUtil = {
-		// getCurrentUser: function () {
-		//
-		// },
-		fetchAllPosts: function () {
-			ApiUtil.ajax({
-				url: "/api/posts",
-				method: "GET",
-				success: function (posts) {
-					PostActions.receiveAllPosts(posts);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		fetchAllTimelinePosts: function (timelineId) {
-			ApiUtil.ajax({
-				url: "/api/posts",
-				method: "GET",
-				success: function (posts) {
-					var timelinePosts = [];
-					posts.forEach(function (post) {
-						if (post.timeline_id == timelineId) {
-							timelinePosts.push(post);
-						}
-					});
-					PostActions.receiveAllPosts(timelinePosts);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		tryCreatePost: function (formData, resetForms) {
-			ApiUtil.ajax({
-				url: "/api/posts",
-				method: "POST",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (post) {
-					PostActions.receiveSinglePost(post);
-					resetForms();
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		deletePost: function (id) {
-			ApiUtil.ajax({
-				url: "/api/posts/" + id,
-				method: "DELETE",
-				success: function (post) {
-					PostActions.postDeleted(post);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		updatePost: function (formData, id, cancelEdit) {
-			ApiUtil.ajax({
-				url: "/api/posts/" + id,
-				method: "PATCH",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (post) {
-					PostActions.receiveSinglePost(post);
-					cancelEdit();
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	};
-	
-	module.exports = PostUtil;
-
-/***/ },
-/* 231 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var PostConstants = __webpack_require__(232);
-	
-	var PostActions = {
-	  receiveSinglePost: function (post) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.POST_RECEIVED,
-	      post: post
-	    });
-	  },
-	
-	  receiveEditedPost: function (post) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.POST_EDITED,
-	      post: post
-	    });
-	  },
-	  receiveAllPosts: function (posts) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.ALL_POSTS_RECEIVED,
-	      posts: posts
-	    });
-	  },
-	  postDeleted: function (post) {
-	    Dispatcher.dispatch({
-	      actionType: PostConstants.POST_DELETED,
-	      post: post
-	    });
-	  }
-	};
-	
-	module.exports = PostActions;
-
-/***/ },
-/* 232 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		POST_RECEIVED: "POST_RECEIVED",
-		ALL_POSTS_RECEIVED: "ALL_POSTS_RECEIVED",
-		POST_DELETED: "POST_DELETED",
-		POST_EDITED: "POST_EDITED"
-	};
-
-/***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(234).Store;
+	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
 	var SessionConstants = __webpack_require__(226);
 	var SessionStore = new Store(Dispatcher);
@@ -25836,7 +25623,7 @@
 	module.exports = SessionStore;
 
 /***/ },
-/* 234 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25848,15 +25635,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Container = __webpack_require__(235);
-	module.exports.MapStore = __webpack_require__(238);
-	module.exports.Mixin = __webpack_require__(250);
-	module.exports.ReduceStore = __webpack_require__(239);
-	module.exports.Store = __webpack_require__(240);
+	module.exports.Container = __webpack_require__(230);
+	module.exports.MapStore = __webpack_require__(233);
+	module.exports.Mixin = __webpack_require__(245);
+	module.exports.ReduceStore = __webpack_require__(234);
+	module.exports.Store = __webpack_require__(235);
 
 
 /***/ },
-/* 235 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25878,10 +25665,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStoreGroup = __webpack_require__(236);
+	var FluxStoreGroup = __webpack_require__(231);
 	
 	var invariant = __webpack_require__(225);
-	var shallowEqual = __webpack_require__(237);
+	var shallowEqual = __webpack_require__(232);
 	
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -26039,7 +25826,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 236 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26120,7 +25907,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 237 */
+/* 232 */
 /***/ function(module, exports) {
 
 	/**
@@ -26175,7 +25962,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 238 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26196,8 +25983,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxReduceStore = __webpack_require__(239);
-	var Immutable = __webpack_require__(249);
+	var FluxReduceStore = __webpack_require__(234);
+	var Immutable = __webpack_require__(244);
 	
 	var invariant = __webpack_require__(225);
 	
@@ -26325,7 +26112,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 239 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26346,9 +26133,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStore = __webpack_require__(240);
+	var FluxStore = __webpack_require__(235);
 	
-	var abstractMethod = __webpack_require__(248);
+	var abstractMethod = __webpack_require__(243);
 	var invariant = __webpack_require__(225);
 	
 	var FluxReduceStore = (function (_FluxStore) {
@@ -26432,7 +26219,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 240 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26451,7 +26238,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _require = __webpack_require__(241);
+	var _require = __webpack_require__(236);
 	
 	var EventEmitter = _require.EventEmitter;
 	
@@ -26615,7 +26402,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 241 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26628,14 +26415,14 @@
 	 */
 	
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(242)
+	  EventEmitter: __webpack_require__(237)
 	};
 	
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 242 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26654,11 +26441,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var EmitterSubscription = __webpack_require__(243);
-	var EventSubscriptionVendor = __webpack_require__(245);
+	var EmitterSubscription = __webpack_require__(238);
+	var EventSubscriptionVendor = __webpack_require__(240);
 	
-	var emptyFunction = __webpack_require__(247);
-	var invariant = __webpack_require__(246);
+	var emptyFunction = __webpack_require__(242);
+	var invariant = __webpack_require__(241);
 	
 	/**
 	 * @class BaseEventEmitter
@@ -26832,7 +26619,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 243 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26853,7 +26640,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var EventSubscription = __webpack_require__(244);
+	var EventSubscription = __webpack_require__(239);
 	
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -26885,7 +26672,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 244 */
+/* 239 */
 /***/ function(module, exports) {
 
 	/**
@@ -26939,7 +26726,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 245 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26958,7 +26745,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(246);
+	var invariant = __webpack_require__(241);
 	
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -27048,7 +26835,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 246 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -27103,7 +26890,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 247 */
+/* 242 */
 /***/ function(module, exports) {
 
 	/**
@@ -27145,7 +26932,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 248 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -27172,7 +26959,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 249 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32159,7 +31946,7 @@
 	}));
 
 /***/ },
-/* 250 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -32176,7 +31963,7 @@
 	
 	'use strict';
 	
-	var FluxStoreGroup = __webpack_require__(236);
+	var FluxStoreGroup = __webpack_require__(231);
 	
 	var invariant = __webpack_require__(225);
 	
@@ -32282,6 +32069,229 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var NavButtons = __webpack_require__(227);
+	var SearchBar = __webpack_require__(247);
+	
+	var LoggedInHeader = React.createClass({
+		displayName: 'LoggedInHeader',
+	
+		render: function () {
+			return React.createElement(
+				'nav',
+				{ className: 'header-nav logged-in-header' },
+				React.createElement(
+					'ul',
+					{ className: 'header-nav-left' },
+					React.createElement(
+						'li',
+						null,
+						React.createElement(SearchBar, { user: this.props.user })
+					),
+					React.createElement(
+						'li',
+						null,
+						React.createElement(
+							'a',
+							{ href: '#/', className: 'header-nav-thumb-logo' },
+							'f'
+						)
+					)
+				),
+				React.createElement(NavButtons, { user: this.props.user })
+			);
+		}
+	});
+	
+	module.exports = LoggedInHeader;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostUtil = __webpack_require__(248);
+	// var PostActions = require('../../actions');
+	
+	var PostForm = React.createClass({
+		displayName: 'PostForm',
+	
+		getInitialState: function () {
+			// will be needed when determining who to autopopulate
+			// search bar with
+			// var user = this.props.user;
+			return { search: "" };
+		},
+	
+		updateSearch: function (event) {
+			this.setState({ search: event.currentTarget.value });
+		},
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'search-bar' },
+				React.createElement('input', { type: 'text', className: 'search-bar-input', value: this.state.search, onChange: this.updateSearch }),
+				React.createElement(
+					'button',
+					{ type: 'button', className: 'search-bar-submit' },
+					'Search'
+				)
+			);
+		}
+	});
+	
+	module.exports = PostForm;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var PostActions = __webpack_require__(249);
+	
+	console.log("Loaded PostUtil!");
+	
+	var PostUtil = {
+		// getCurrentUser: function () {
+		//
+		// },
+		fetchAllPosts: function () {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "GET",
+				success: function (posts) {
+					PostActions.receiveAllPosts(posts);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		fetchAllTimelinePosts: function (timelineId) {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "GET",
+				success: function (posts) {
+					var timelinePosts = [];
+					posts.forEach(function (post) {
+						if (post.timeline_id == timelineId) {
+							timelinePosts.push(post);
+						}
+					});
+					PostActions.receiveAllPosts(timelinePosts);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		tryCreatePost: function (formData, resetForms) {
+			ApiUtil.ajax({
+				url: "/api/posts",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (post) {
+					PostActions.receiveSinglePost(post);
+					resetForms();
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		deletePost: function (id) {
+			ApiUtil.ajax({
+				url: "/api/posts/" + id,
+				method: "DELETE",
+				success: function (post) {
+					PostActions.postDeleted(post);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		updatePost: function (formData, id, cancelEdit) {
+			ApiUtil.ajax({
+				url: "/api/posts/" + id,
+				method: "PATCH",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (post) {
+					PostActions.receiveSinglePost(post);
+					cancelEdit();
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	};
+	
+	module.exports = PostUtil;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var PostConstants = __webpack_require__(250);
+	
+	var PostActions = {
+	  receiveSinglePost: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_RECEIVED,
+	      post: post
+	    });
+	  },
+	
+	  receiveEditedPost: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_EDITED,
+	      post: post
+	    });
+	  },
+	  receiveAllPosts: function (posts) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.ALL_POSTS_RECEIVED,
+	      posts: posts
+	    });
+	  },
+	  postDeleted: function (post) {
+	    Dispatcher.dispatch({
+	      actionType: PostConstants.POST_DELETED,
+	      post: post
+	    });
+	  }
+	};
+	
+	module.exports = PostActions;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		POST_RECEIVED: "POST_RECEIVED",
+		ALL_POSTS_RECEIVED: "ALL_POSTS_RECEIVED",
+		POST_DELETED: "POST_DELETED",
+		POST_EDITED: "POST_EDITED"
+	};
+
+/***/ },
 /* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32293,16 +32303,13 @@
 		displayName: 'LoggedInDisplay',
 	
 		render: function () {
-			var displayString = React.createElement(
-				'h1',
-				null,
-				'Home Page'
-			);
-			if (this.props.user.online) {
-				displayString = React.createElement(PostForm, {
-					timelineId: this.props.user.userId,
-					user: this.props.user });
-			}
+			// var displayString = <h1>Home Page</h1>;
+			// if (this.props.user.online) {
+			// 	displayString = <PostForm
+			//     timelineId={ this.props.user.userId }
+			//     user={ this.props.user }/>;
+			// }
+			var NEWS_FEED_CONSTANT = "NEWS_FEED";
 	
 			return React.createElement(
 				'div',
@@ -32313,25 +32320,27 @@
 					React.createElement(
 						'h3',
 						null,
-						'There\'s stuff in this sidebar'
+						'Theres stuff in this sidebar'
 					),
 					React.createElement('br', null),
 					React.createElement(
 						'h3',
 						null,
-						'There\'s stuff in this sidebar'
+						'Theres stuff in this sidebar'
 					),
 					React.createElement('br', null),
 					React.createElement(
 						'h3',
 						null,
-						'There\'s stuff in this sidebar'
+						'Theres stuff in this sidebar'
 					)
 				),
 				React.createElement(
 					'section',
 					{ className: 'main-feed' },
-					displayString,
+					React.createElement(PostForm, {
+						timelineId: this.props.user.userId,
+						user: this.props.user }),
 					React.createElement(PostIndex, { user: this.props.user })
 				),
 				React.createElement(
@@ -32354,7 +32363,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(230);
+	var PostUtil = __webpack_require__(248);
 	// var PostActions = require('../../actions');
 	
 	var PostForm = React.createClass({
@@ -32431,7 +32440,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(230);
+	var PostUtil = __webpack_require__(248);
 	var PostStore = __webpack_require__(254);
 	var PostIndexItem = __webpack_require__(255);
 	
@@ -32445,6 +32454,7 @@
 		componentDidMount: function () {
 			this.postListener = PostStore.addListener(this._onChange);
 			if (this.props.timelineId === undefined) {
+				// fetchAllFriendsPosts
 				PostUtil.fetchAllPosts();
 			} else {
 				PostUtil.fetchAllTimelinePosts(this.props.timelineId);
@@ -32461,12 +32471,13 @@
 	
 		render: function () {
 			var user = this.props.user;
+			var liString = this.state.posts.map(function (post) {
+				return React.createElement(PostIndexItem, { key: post.id, post: post, user: user });
+			});
 			return React.createElement(
 				'ul',
 				null,
-				this.state.posts.map(function (post) {
-					return React.createElement(PostIndexItem, { key: post.id, post: post, user: user });
-				})
+				liString
 			);
 		}
 	});
@@ -32477,9 +32488,9 @@
 /* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(234).Store;
+	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
-	var PostConstants = __webpack_require__(232);
+	var PostConstants = __webpack_require__(250);
 	var PostStore = new Store(Dispatcher);
 	
 	console.log('loaded PostStore!');
@@ -32537,7 +32548,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(230);
+	var PostUtil = __webpack_require__(248);
 	
 	var PostIndexItem = React.createClass({
 	  displayName: 'PostIndexItem',
@@ -32935,9 +32946,9 @@
 	var PostIndex = __webpack_require__(253);
 	var UserUtil = __webpack_require__(259);
 	var UserStore = __webpack_require__(263);
-	var TimelineSidebar = __webpack_require__(265);
-	var TimelineHeader = __webpack_require__(266);
-	var SessionStore = __webpack_require__(233);
+	var TimelineSidebar = __webpack_require__(264);
+	var TimelineHeader = __webpack_require__(265);
+	var SessionStore = __webpack_require__(228);
 	
 	var Timeline = React.createClass({
 		displayName: 'Timeline',
@@ -32971,12 +32982,6 @@
 		},
 	
 		render: function () {
-			var displayString = "";
-			if (this.state.currentUser.id == this.props.params.id) {
-				displayString = React.createElement(PostForm, {
-					timelineId: this.props.params.id,
-					user: this.props.user });
-			}
 	
 			return React.createElement(
 				'div',
@@ -32988,7 +32993,9 @@
 				React.createElement(
 					'section',
 					{ className: 'timeline-post-index' },
-					displayString,
+					React.createElement(PostForm, {
+						timelineId: this.props.params.id,
+						user: this.props.user }),
 					React.createElement(PostIndex, { timelineId: this.props.params.id, user: this.state.currentUser })
 				)
 			);
@@ -33001,7 +33008,7 @@
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(234).Store;
+	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
 	var UserConstants = __webpack_require__(261);
 	var UserStore = new Store(Dispatcher);
@@ -33067,8 +33074,7 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 264 */,
-/* 265 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33090,13 +33096,13 @@
 	module.exports = TimelineSidebar;
 
 /***/ },
-/* 266 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var UserUtil = __webpack_require__(259);
-	var TimelineTabs = __webpack_require__(267);
-	var TimelineButtons = __webpack_require__(268);
+	var TimelineTabs = __webpack_require__(266);
+	var TimelineButtons = __webpack_require__(267);
 	
 	var TimelineSidebar = React.createClass({
 	  displayName: 'TimelineSidebar',
@@ -33125,7 +33131,7 @@
 	module.exports = TimelineSidebar;
 
 /***/ },
-/* 267 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33207,7 +33213,7 @@
 	module.exports = TimelineTabs;
 
 /***/ },
-/* 268 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);

@@ -3,8 +3,22 @@ var SessionUtil = require('../../util/sessionUtil.js');
 var SessionStore = require('./../../stores/sessionStore');
 
 var NavButtons = React.createClass({
+  // contextTypes: {
+  //   router: React.PropTypes.object.isRequired
+  // },
+
+
+
 	logOut: function () {
-		SessionUtil.logOut();
+    // var router = this.context.router;
+
+    SessionUtil.logOut();
+
+    // SessionUtil.logOut(function () {
+    //   router.push("/");
+    // });
+
+
 	},
 
 	render: function () {

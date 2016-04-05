@@ -71,7 +71,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 the API.  Statuses belong to the user that created them.
 
 - [x] create `Post` model
-- [ ] seed the database with a small amount of test data
+- [x] seed the database with a very small amount of test data
 - [x] CRUD API for statuses (`PostsController`)
 - [x] jBuilder views for Feed
 - [x] jBuilder views for statuses (reusable partial)
@@ -95,24 +95,24 @@ user interface.  News feed is an index of the users statuses.
 
 **Objective:** Existing pages (including singup/signin) will look good.
 
-- [ ] create a basic style guide
-- [ ] position elements on the page
-- [ ] add basic colors & styles
+- [x] create a basic style guide
+- [x] position elements on the page
+- [x] add basic colors & styles
 
 ### Phase 5: Timeline model and Profile Picture model (1 day)
 
 **Objective:** Timeline displays a users profile picture, biographical info, and
 an index of their statuses
 
-- [ ] create `Timeline` model
+- [x] create `Timeline` model
 - [ ] create `ProfilePicture` model
 - [ ] seed the database with a small amount of test data
 - [ ] CRUD API for timeline bio information
-- [ ] jBuilder views for timeline
+- [x] jBuilder views for timeline
 - [ ] jBuilder views for bio information
-- [ ] Build out Flux loops and components for the Timeline, bio, and picture
+- [x] Build out Flux loops and components for the Timeline, bio, and picture
 
-- [ ] Use CSS to style new views
+- [x] Use CSS to style new views
 
 ### Phase 6: Friendships (1.5 days)
 

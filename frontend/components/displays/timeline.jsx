@@ -37,12 +37,12 @@ var Timeline = React.createClass({
 	},
 
   render: function () {
-    var displayString = "";
-    if (this.state.currentUser.id == this.props.params.id) {
-			displayString = <PostForm
-        timelineId={this.props.params.id }
-        user={ this.props.user }/>;
-		}
+    // var displayString = "";
+    // if (this.state.currentUser.id == this.props.params.id) {
+		// 	displayString = <PostForm
+    //     timelineId={this.props.params.id }
+    //     user={ this.props.user }/>;
+		// }
 
 		return(
 			<div>
@@ -51,7 +51,10 @@ var Timeline = React.createClass({
         <TimelineSidebar user={ this.state.user }
           currentUser={ this.state.currentUser }/>
         <section className="timeline-post-index">
-          { displayString }
+          { /*displayString*/ }
+          <PostForm
+            timelineId={this.props.params.id }
+            user={ this.props.user }/>
           <PostIndex timelineId={ this.props.params.id } user={ this.state.currentUser } />
         </section>
 			</div>
