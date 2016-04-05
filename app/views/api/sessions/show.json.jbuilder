@@ -1,1 +1,1 @@
-json.extract! @current_user 
+json.partial! 'user', user: @user

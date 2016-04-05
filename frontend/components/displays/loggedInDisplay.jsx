@@ -13,14 +13,22 @@ var LoggedInDisplay = React.createClass({
 
 		return(
 			<div>
-				<section className="main-sidebar-left ">
-					<h3>There's stuff in this sidebar</h3>
+				<section className="main-sidebar-left clear-fix">
+					<h3>There's stuff in
+            this sidebar</h3>
+          <br/>
+					<h3>There's stuff in
+            this sidebar</h3>
+          <br/>
+					<h3>There's stuff in
+            this sidebar</h3>
 				</section>
 				<section className="main-feed">
 					{ displayString }
 					<PostIndex user={ this.props.user }/>
 				</section>
-				<section className="main-sidebar-right"></section>
+				<section className="main-sidebar-right clear-fix">
+          <h3>There might be stuff in this sidebar too</h3></section>
 			</div>
 		);
 	}

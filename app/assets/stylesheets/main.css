@@ -2,13 +2,32 @@
 	margin: 0 auto;
   width: 980px;
 }
-.main-feed {
-  width: 495px;
-	float: right;
-	background-color: lightblue;
+.main-sidebar-right {
+  display: inline-block;
+  width: 280px;
+  max-width: 280px;
+  margin-left: 10px;
+  float: right;
+  background-color: red;
 }
-.main-siderbar-left {
-	width: 160;
+
+.main-feed {
+  display: inline-block;
+  width: 495px;
+	float: none;
+	/*background-color: lightblue;*/
+}
+
+.main-sidebar-left {
+	width: 160px;
+  max-width: 160px;
+  margin-right: 10px;
 	float:left;
-	background-color: lightgreen;
+	/*background-color: lightgreen;*/
+}
+
+.main-sidebar-left > h3 {
+  display: inline;
+  /*white-space: normal;*/
+  word-wrap: break-word;
 }

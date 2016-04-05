@@ -44,11 +44,16 @@ var PostForm = React.createClass({
 
 	render: function () {
 		return(
-			<div className="post-form">
-				<input type="textarea" className="post-form-body-input"
-          value={ this.state.body} onChange={ this.updateBody }/>
-				<button type="button" className="post-form-submit"
-          onClick={ this.handleClick }>Post</button>
+			<div className="post-form clear-fix">
+        <div className="post-author-pic-thumb clear-fix" />
+        <div className="post-input-padding">
+          <input type="textarea" className="post-form-body-input post-input"
+              value={ this.state.body} onChange={ this.updateBody }/>
+        </div>
+        <div className="bottom-of-post-form clear-fix">
+          <button type="button" className="post-form-submit blue-button"
+            onClick={ this.handleClick }>Post</button>
+        </div>
 			</div>
 		);
 	}

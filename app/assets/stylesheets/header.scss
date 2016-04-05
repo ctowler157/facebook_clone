@@ -1,5 +1,5 @@
 header {
-  height: 82px;
+
   background: #3a5795;
   font-size: 12px;
 	border-bottom: 1px solid #133783;
@@ -8,10 +8,14 @@ header {
 }
 
 .logged-out-header {
+  height: 82px;
 	z-index: 301;
 	height: 81px;
 	background-image: image_url('header_image.png');
 	background-repeat: repeat-x;
+}
+.logged-in-header {
+  height: 82px;
 }
 
 header > a {
@@ -52,6 +56,21 @@ header > a {
 
 .header-nav-right {
 	float: right;
+}
+
+.nav-buttons {
+  list-style: none;
+  float:right;
+}
+
+.nav-buttons > li {
+  float: left;
+  display: inline-block;
+  vertical-align: middle;
+  height: 44.063px;
+}
+.nav-buttons > li > button {
+  margin: 11.5px 5px;
 }
 
 .header-nav-left {
@@ -101,23 +120,23 @@ td {
 
 /*May need to refactor this as a separate button styling*/
 
-.login-button {
-  background: #5b74a8;
-  border: 1px solid #999;
-  border-color: #2f477a #29447e #1a356e;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
-
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-
-  display: inline-block;
-  cursor: pointer;
-  padding: 2px 6px 4px;;
-  white-space: nowrap;
-
-	line-height: 13px;
-}
+// .login-button {
+//   background: #5b74a8;
+//   border: 1px solid #999;
+//   border-color: #2f477a #29447e #1a356e;
+//   box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+//
+//   color: #fff;
+//   font-size: 12px;
+//   font-weight: bold;
+//
+//   display: inline-block;
+//   cursor: pointer;
+//   padding: 2px 6px 4px;;
+//   white-space: nowrap;
+//
+// 	line-height: 13px;
+// }
 
 .remember-me-row {
 	vertical-align: top;

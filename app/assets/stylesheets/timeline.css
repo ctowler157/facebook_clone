@@ -6,6 +6,10 @@
   /*red*/
   background-color: #FF5454;
   width: 850px;
+  border: 1px solid;
+  border-color: #d3d6db;
+  border-top: 0px;
+  border-radius: 0 0 3px 3px;
 }
 
 .timeline-header-profile-picture {
@@ -29,18 +33,71 @@
   float: right;
 }
 
-.timeline-header-buttons > li{
+.timeline-header-buttons > li {
   float: left;
 }
 
-.timeline-header-tabs {
+.timeline-header-tabs-bar {
   position: absolute;
   height: 45px;
-  width: 160px;
-  background-color: #e9eaed;
-  /*left: 0;
-  right: 160px;*/
+  width: 850px;
+  background-color: #fff;
   bottom: 0;
+}
+
+
+.timeline-header-tabs {
+  border-color: inherit;
+
+  padding-left: 200px;
+  list-style: none;
+  float: left;
+  font-size: 14px;
+  font-weight: bold;
+  color: #3b5998;
+  font-family: helvetica, arial, sans-serif;
+}
+
+.timeline-header-tabs > li{
+  float: left;
+}
+
+.timeline-header-tabs > li:last-child > a {
+  border-right: 1px solid #D8D8DB;
+}
+
+.timeline-header-tabs > li > a {
+  padding: 15px;
+  border-left: 1px solid #D8D8DB;
+  border-top: 0px;
+}
+
+.timeline-header-tabs > li > a:hover {
+  cursor: pointer;
+}
+
+
+h6.friends-button-mutual-friends {
+  display: inline;
+  vertical-align: middle;
+  color: #89919c;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.timeline-header-tabs > li.selected {
+  color: #373e4d;
+}
+.timeline-header-tabs > li.selected > a:hover {
+  cursor: default;
+}
+
+li.selected > span {
+  display: block;
+  height: 9px;
+  bottom: -1px;
+  margin-left: -8px;
+  width: 17px;
 }
 /*-----------------FEED---------------*/
 .timeline-post-index {

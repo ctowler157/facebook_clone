@@ -1,0 +1,30 @@
+.sign-up-button {
+  /*reset*/
+  background: none;
+  border: 0;
+  color: inherit;
+  /* cursor: default; */
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  font-family: helvetica, arial, sans-serif;
+}
+
+.blue-button {
+  background: #5b74a8;
+  border: 1px solid #999;
+  border-color: #2f477a #29447e #1a356e;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+
+  display: inline-block;
+  cursor: pointer;
+  padding: 2px 6px 4px;;
+  white-space: nowrap;
+
+	line-height: 13px;
+}

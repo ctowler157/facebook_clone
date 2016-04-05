@@ -24849,7 +24849,7 @@
 					{ className: 'header-nav' },
 					React.createElement(
 						'a',
-						{ href: '#/', className: 'header-nav-logo haeder-nav-left' },
+						{ href: '#/', className: 'header-nav-logo header-nav-left' },
 						'fakebook'
 					),
 					React.createElement(LogIn, null)
@@ -24911,6 +24911,10 @@
 	    SessionUtil.tryLogIn(formData);
 	  },
 	
+	  forgotPassword: function (event) {
+	    event.preventDefault();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'table',
@@ -24962,7 +24966,7 @@
 	            null,
 	            React.createElement(
 	              'button',
-	              { className: 'login-button', onClick: this.handleSubmit },
+	              { className: 'login-button blue-button', onClick: this.handleSubmit },
 	              'Log In'
 	            )
 	          )
@@ -24985,7 +24989,7 @@
 	            null,
 	            React.createElement(
 	              'a',
-	              { className: 'forgot-password', href: '#' },
+	              { className: 'forgot-password', href: '#', onClick: this.forgotPassword },
 	              'Forgot your password?'
 	            )
 	          )
@@ -25503,6 +25507,7 @@
 
 	var React = __webpack_require__(1);
 	var SessionUtil = __webpack_require__(219);
+	var SessionStore = __webpack_require__(233);
 	
 	var NavButtons = React.createClass({
 		displayName: 'NavButtons',
@@ -25510,20 +25515,29 @@
 		logOut: function () {
 			SessionUtil.logOut();
 		},
+	
 		render: function () {
 			return React.createElement(
-				'div',
-				{ className: 'header-nav-right' },
+				'ul',
+				{ className: 'header-nav-right nav-buttons' },
 				React.createElement(
-					'h3',
+					'li',
 					null,
-					'Welcome, ',
-					this.props.user.first_name
+					React.createElement(
+						'h3',
+						null,
+						'Welcome, ',
+						this.props.user.first_name
+					)
 				),
 				React.createElement(
-					'button',
-					{ type: 'button', onClick: this.logOut },
-					'Log Out'
+					'li',
+					null,
+					React.createElement(
+						'button',
+						{ type: 'button', className: 'blue-button', onClick: this.logOut },
+						'Log Out'
+					)
 				)
 			);
 		}
@@ -25545,7 +25559,7 @@
 		render: function () {
 			return React.createElement(
 				'nav',
-				{ className: 'header-nav' },
+				{ className: 'header-nav logged-in-header' },
 				React.createElement(
 					'ul',
 					{ className: 'header-nav-left' },
@@ -32295,7 +32309,19 @@
 				null,
 				React.createElement(
 					'section',
-					{ className: 'main-sidebar-left ' },
+					{ className: 'main-sidebar-left clear-fix' },
+					React.createElement(
+						'h3',
+						null,
+						'There\'s stuff in this sidebar'
+					),
+					React.createElement('br', null),
+					React.createElement(
+						'h3',
+						null,
+						'There\'s stuff in this sidebar'
+					),
+					React.createElement('br', null),
 					React.createElement(
 						'h3',
 						null,
@@ -32308,7 +32334,15 @@
 					displayString,
 					React.createElement(PostIndex, { user: this.props.user })
 				),
-				React.createElement('section', { className: 'main-sidebar-right' })
+				React.createElement(
+					'section',
+					{ className: 'main-sidebar-right clear-fix' },
+					React.createElement(
+						'h3',
+						null,
+						'There might be stuff in this sidebar too'
+					)
+				)
 			);
 		}
 	});
@@ -32368,14 +32402,23 @@
 		render: function () {
 			return React.createElement(
 				'div',
-				{ className: 'post-form' },
-				React.createElement('input', { type: 'textarea', className: 'post-form-body-input',
-					value: this.state.body, onChange: this.updateBody }),
+				{ className: 'post-form clear-fix' },
+				React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
 				React.createElement(
-					'button',
-					{ type: 'button', className: 'post-form-submit',
-						onClick: this.handleClick },
-					'Post'
+					'div',
+					{ className: 'post-input-padding' },
+					React.createElement('input', { type: 'textarea', className: 'post-form-body-input post-input',
+						value: this.state.body, onChange: this.updateBody })
+				),
+				React.createElement(
+					'div',
+					{ className: 'bottom-of-post-form clear-fix' },
+					React.createElement(
+						'button',
+						{ type: 'button', className: 'post-form-submit blue-button',
+							onClick: this.handleClick },
+						'Post'
+					)
 				)
 			);
 		}
@@ -32557,11 +32600,12 @@
 	    if (this.state.editing === true) {
 	      return React.createElement(
 	        'li',
-	        { className: 'post-list-item edit' },
+	        { className: 'post-list-item edit-post' },
+	        React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
 	        React.createElement(
 	          'form',
 	          null,
-	          React.createElement('input', { type: 'textArea', value: this.state.body,
+	          React.createElement('input', { className: 'post-input', type: 'textArea', value: this.state.body,
 	            onChange: this._updateBody }),
 	          React.createElement(
 	            'button',
@@ -32569,7 +32613,7 @@
 	              onClick: this.cancelEdit },
 	            'Cancel'
 	          ),
-	          React.createElement('input', { type: 'submit', className: 'submit-edit-button',
+	          React.createElement('input', { type: 'submit', className: 'submit-edit-button blue-button',
 	            onClick: this.submitEdit, value: 'Save' })
 	        )
 	      );
@@ -32577,19 +32621,26 @@
 	      return React.createElement(
 	        'li',
 	        { className: 'post-list-item' },
-	        buttons,
+	        React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
 	        React.createElement(
 	          'p',
 	          null,
-	          post.body
+	          React.createElement(
+	            'a',
+	            { href: "#/user/" + post.author_id },
+	            post.author.first_name,
+	            ' ',
+	            post.author.last_name
+	          ),
+	          React.createElement('br', null),
+	          post.created_at
 	        ),
 	        React.createElement(
 	          'p',
-	          null,
-	          post.author.first_name,
-	          ' posted this at ',
-	          post.created_at
-	        )
+	          { className: 'post-body' },
+	          post.body
+	        ),
+	        buttons
 	      );
 	    }
 	  }
@@ -32797,7 +32848,7 @@
 	        { name: 'birthday[year]' },
 	        years.map(selector)
 	      ),
-	      React.createElement('input', { className: 'sign-up-button', type: 'submit', value: 'Sign Up' })
+	      React.createElement('input', { className: 'sign-up-button blue-button', type: 'submit', value: 'Sign Up' })
 	    );
 	  }
 	});
@@ -33083,13 +33134,72 @@
 	var TimelineTabs = React.createClass({
 	  displayName: 'TimelineTabs',
 	
+	  _onClick: function (e) {
+	    e.preventDefault();
+	  },
+	
 	  render: function () {
 	    var user = this.props.user;
+	    var mutual = 19;
 	
 	    return React.createElement(
 	      'nav',
-	      { className: 'timeline-header-tabs clear-fix' },
-	      'Tabs loaded'
+	      { className: 'timeline-header-tabs-bar clear-fix' },
+	      React.createElement(
+	        'ul',
+	        { className: 'timeline-header-tabs' },
+	        React.createElement(
+	          'li',
+	          { className: 'selected' },
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Timeline'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'About'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Friends ',
+	            React.createElement(
+	              'h6',
+	              {
+	                className: 'friends-button-mutual-friends' },
+	              mutual + " Mutual"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Photos'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'More'
+	          )
+	        )
+	      )
 	    );
 	  }
 	});

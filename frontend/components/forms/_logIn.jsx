@@ -44,6 +44,10 @@ var LogIn = React.createClass({
 		SessionUtil.tryLogIn(formData);
 	},
 
+  forgotPassword: function (event) {
+    event.preventDefault();
+  },
+
   render: function () {
     return (
       <table cellSpacing="0" role="presentation" className="header-nav-right login-form">
@@ -68,7 +72,7 @@ var LogIn = React.createClass({
                     onKeyDown={ this.keyPress } onChange={this.updatePassword}/>
               </td>
               <td>
-                <button className="login-button" onClick={this.handleSubmit}>Log In</button>
+                <button className="login-button blue-button" onClick={this.handleSubmit}>Log In</button>
               </td>
             </tr>
             <tr className="remember-me-row">
@@ -79,7 +83,7 @@ var LogIn = React.createClass({
 								</label>
               </td>
               <td>
-								<a className="forgot-password" href="#">Forgot your password?</a>
+								<a className="forgot-password" href="#" onClick={ this.forgotPassword }>Forgot your password?</a>
               </td>
             </tr>
         </tbody>

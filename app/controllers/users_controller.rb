@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in(@user)
 
-      render :json => { user_id: @user.id, email: @user.email }
+      render :show
     else
       render :json => @user.errors.full_messages
     end

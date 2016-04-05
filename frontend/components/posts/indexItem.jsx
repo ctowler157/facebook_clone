@@ -51,14 +51,14 @@ var PostIndexItem = React.createClass({
 
     if (this.state.editing === true){
       return (
-        <li className="post-list-item edit">
+        <li className="post-list-item edit-post">
+          <div className="post-author-pic-thumb clear-fix" />
           <form>
-
-          <input type="textArea" value={ this.state.body }
+          <input className="post-input" type="textArea" value={ this.state.body }
             onChange={ this._updateBody } />
           <button className="cancel-edit-button"
             onClick={ this.cancelEdit }>Cancel</button>
-          <input type="submit" className="submit-edit-button"
+          <input type="submit" className="submit-edit-button blue-button"
             onClick={ this.submitEdit } value="Save"/>
         </form>
   			</li>
@@ -66,9 +66,11 @@ var PostIndexItem = React.createClass({
     } else {
   		return(
   			<li className="post-list-item">
+          <div className="post-author-pic-thumb clear-fix" />
+          <p><a href={ "#/user/" + post.author_id }>{ post.author.first_name } { post.author.last_name }</a>
+            <br/>{ post.created_at }</p>
+  				<p className="post-body">{ post.body }</p>
           { buttons }
-  				<p>{ post.body }</p>
-  				<p>{ post.author.first_name } posted this at { post.created_at }</p>
   			</li>
   	 );
    }

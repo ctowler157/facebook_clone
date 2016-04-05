@@ -100,7 +100,7 @@ var SignUp = React.createClass({
           { years.map(selector) }
         </select>
 
-				<input className="sign-up-button" type="submit" value="Sign Up"/>
+				<input className="sign-up-button blue-button" type="submit" value="Sign Up"/>
 			</form>
 		);
 	}
