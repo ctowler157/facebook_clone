@@ -27,6 +27,8 @@ PostStore.all = function () {
   for (var id in _posts) {
     posts.push(_posts[id]);
   }
+  posts.reverse();
+  
   return posts;
 };
 

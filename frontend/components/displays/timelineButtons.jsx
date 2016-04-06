@@ -6,7 +6,7 @@ var TimelineButtons = React.createClass({
     var user = this.props.user;
 
 		return(
-			<ul className="timeline-header-buttons">
+			<ul className="timeline-header-buttons-list">
         <li><a href='#'>Friends</a></li>
         <li><a href='#'>Following</a></li>
         <li><a href='#'>Message</a></li>

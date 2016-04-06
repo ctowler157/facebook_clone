@@ -4,13 +4,6 @@ var PostUtil = require('../../util/postUtil.js');
 
 var PostForm = React.createClass({
 	getInitialState: function () {
-		// var authorId;
-
-    // if (this.props.user !== undefined) {
-    //   authorId = this.props.user.userId;
-    // }
-		// return { body: "", authorId: authorId };
-		// return { body: "", };
     var NEWS_FEED_CONSTANT = "NEWS_FEED";
     var timelineId = this.props.timelineId;
     if (timelineId === NEWS_FEED_CONSTANT) {
@@ -19,28 +12,7 @@ var PostForm = React.createClass({
 		return({ body: "", timelineId: timelineId });
 	},
 
-	// componentDidMount: function () {
-  //   var NEWS_FEED_CONSTANT = "NEWS_FEED";
-	// 	var authorId;
-  //   var timelineId = this.props.timelineId;
-  //   if (this.props.user !== undefined) {
-  //     authorId = this.props.user.id;
-  //
-  //     if (timelineId === NEWS_FEED_CONSTANT) {
-  //       timelineId = this.props.user.id;
-  //     }
-  //   }
-  //   debugger
-	// 	this.setState({ body: "", authorId: authorId, timelineId: timelineId });
-	// },
 	componentDidMount: function () {
-    // var NEWS_FEED_CONSTANT = "NEWS_FEED";
-    // var timelineId = this.state.timelineId;
-    // if (timelineId === NEWS_FEED_CONSTANT) {
-    //   timelineId = this.props.user.id;
-    // }
-    // debugger
-		// this.setState({ body: "", timelineId: timelineId });
 	},
 
 	updateBody: function (event) {
@@ -61,14 +33,6 @@ var PostForm = React.createClass({
 		this.setState({ body: "" });
 	},
 
-	// tryCreatePost: function() {
-	// 	var formData = new FormData();
-	// 	formData.append("post[author_id]", this.state.authorId);
-	// 	formData.append("post[timeline_id]", this.state.timelineId);
-	// 	formData.append("post[body]", this.state.body);
-  //   debugger
-	// 	// PostUtil.tryCreatePost(formData, this.clearForms);
-	// },
 	tryCreatePost: function() {
 		var formData = new FormData();
 		formData.append("post[author_id]", this.props.user.id);

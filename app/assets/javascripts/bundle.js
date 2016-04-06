@@ -32369,13 +32369,6 @@
 	  displayName: 'PostForm',
 	
 	  getInitialState: function () {
-	    // var authorId;
-	
-	    // if (this.props.user !== undefined) {
-	    //   authorId = this.props.user.userId;
-	    // }
-	    // return { body: "", authorId: authorId };
-	    // return { body: "", };
 	    var NEWS_FEED_CONSTANT = "NEWS_FEED";
 	    var timelineId = this.props.timelineId;
 	    if (timelineId === NEWS_FEED_CONSTANT) {
@@ -32384,29 +32377,7 @@
 	    return { body: "", timelineId: timelineId };
 	  },
 	
-	  // componentDidMount: function () {
-	  //   var NEWS_FEED_CONSTANT = "NEWS_FEED";
-	  // 	var authorId;
-	  //   var timelineId = this.props.timelineId;
-	  //   if (this.props.user !== undefined) {
-	  //     authorId = this.props.user.id;
-	  //
-	  //     if (timelineId === NEWS_FEED_CONSTANT) {
-	  //       timelineId = this.props.user.id;
-	  //     }
-	  //   }
-	  //   debugger
-	  // 	this.setState({ body: "", authorId: authorId, timelineId: timelineId });
-	  // },
-	  componentDidMount: function () {
-	    // var NEWS_FEED_CONSTANT = "NEWS_FEED";
-	    // var timelineId = this.state.timelineId;
-	    // if (timelineId === NEWS_FEED_CONSTANT) {
-	    //   timelineId = this.props.user.id;
-	    // }
-	    // debugger
-	    // this.setState({ body: "", timelineId: timelineId });
-	  },
+	  componentDidMount: function () {},
 	
 	  updateBody: function (event) {
 	    this.setState({ body: event.currentTarget.value });
@@ -32426,14 +32397,6 @@
 	    this.setState({ body: "" });
 	  },
 	
-	  // tryCreatePost: function() {
-	  // 	var formData = new FormData();
-	  // 	formData.append("post[author_id]", this.state.authorId);
-	  // 	formData.append("post[timeline_id]", this.state.timelineId);
-	  // 	formData.append("post[body]", this.state.body);
-	  //   debugger
-	  // 	// PostUtil.tryCreatePost(formData, this.clearForms);
-	  // },
 	  tryCreatePost: function () {
 	    var formData = new FormData();
 	    formData.append("post[author_id]", this.props.user.id);
@@ -32598,6 +32561,8 @@
 	  for (var id in _posts) {
 	    posts.push(_posts[id]);
 	  }
+	  posts.reverse();
+	
 	  return posts;
 	};
 	
@@ -32630,31 +32595,60 @@
 
 	var React = __webpack_require__(1);
 	var PostUtil = __webpack_require__(248);
+	// var Modal = require('react-modal');
+	//
+	// var customStyles = {
+	//   content : {
+	//     top                   : '50%',
+	//     left                  : '50%',
+	//     right                 : 'auto',
+	//     bottom                : 'auto',
+	//     marginRight           : '-50%',
+	//     transform             : 'translate(-50%, -50%)'
+	//   }
+	// };
+	// var appElement = document.getElementById('modal-element');
+	// Modal.setAppElement(appElement); do this in component did mount?
 	
 	var PostIndexItem = React.createClass({
 	  displayName: 'PostIndexItem',
 	
 	  getInitialState: function () {
 	    return { editing: false, body: this.props.post.body,
+	      // modalIsOpen: false,
 	      dropDownState: " hidden" };
 	  },
+	
+	  // openModal: function() {
+	  //   this.setState({ modalIsOpen: true });
+	  // },
+	  //
+	  // closeModal: function() {
+	  //   this.setState({ modalIsOpen: false });
+	  // },
 	
 	  _handleEdit: function (event) {
 	    event.preventDefault();
 	    // pop up editor
-	    this.setState({ editing: true });
+	    this.hideDropDown();
+	    this.setState({ editing: true, modalIsOpen: true });
 	  },
 	
 	  cancelEdit: function (event) {
-	    this.setState({ editing: false });
+	    // this.hideDropDown();
+	    this.setState({ editing: false, modalIsOpen: false });
 	  },
 	
 	  submitEdit: function (event) {
 	    event.preventDefault();
+	
+	    // this.setState({ dropDownState: " hidden" });
+	    // this.hideDropDown();
 	    var postId = this.props.post.id;
 	    var formData = new FormData();
 	    formData.append("post[body]", this.state.body);
 	    PostUtil.updatePost(formData, postId, this.cancelEdit);
+	    this.setState({ editing: false, modalIsOpen: false });
 	  },
 	
 	  _handleDelete: function (event) {
@@ -32676,7 +32670,10 @@
 	  },
 	
 	  hideDropDown: function (e) {
+	    // if (e === undefined ||
+	    // e.currentTarget.className !== "post-drop-down-button") {
 	    this.setState({ dropDownState: " hidden" });
+	    // }
 	  },
 	
 	  render: function () {
@@ -32707,13 +32704,19 @@
 	      }
 	      interval = Math.floor(seconds / 3600);
 	      if (interval > 1) {
-	        return interval + " hours";
+	        return interval + " hrs";
+	      }
+	      if (interval === 1) {
+	        return "1 hr";
 	      }
 	      interval = Math.floor(seconds / 60);
-	      if (interval > 1) {
-	        return interval + " minutes";
+	      if (interval > 40) {
+	        return "1 hr";
 	      }
-	      return Math.floor(seconds) + " seconds";
+	      if (interval > 1) {
+	        return interval + " mins";
+	      }
+	      return "moments ago";
 	    }
 	
 	    var createdAt = Date.parse(post.created_at);
@@ -32755,16 +32758,10 @@
 	    var dropDown;
 	    var menuButton;
 	    if (post.author_id === this.props.user.id) {
-	      menuButton = React.createElement(
-	        'button',
-	        { className: 'post-drop-down-button',
-	          onClick: this.toggleDropDownState,
-	          onBlur: this.hideDropDown },
-	        '  '
-	      );
 	      dropDown = React.createElement(
 	        'div',
-	        { className: "post-drop-down" + this.state.dropDownState },
+	        { className: "post-drop-down" + this.state.dropDownState,
+	          onBlur: this.hideDropDown },
 	        React.createElement(
 	          'ul',
 	          { className: 'post-options-drop-down' },
@@ -32789,6 +32786,13 @@
 	            )
 	          )
 	        )
+	      );
+	      menuButton = React.createElement(
+	        'button',
+	        { className: 'post-drop-down-button',
+	          onClick: this.toggleDropDownState
+	        },
+	        '  '
 	      );
 	    }
 	    //---------------conditional rendering----------------------
@@ -32825,37 +32829,64 @@
 	        )
 	      );
 	    } else {
-	      return React.createElement(
-	        'li',
-	        { className: 'post-list-item' },
+	      return(
+	        // <div>
+	        // <Modal
+	        //   isOpen={this.state.modalIsOpen}
+	        //   onRequestClose={this.closeModal}
+	        //   style={customStyles} >
+	        //     <form>
+	        //       <section className="post-item-header">
+	        //         <div className="post-author-pic-thumb clear-fix" />
+	        //         <button className="cancel-edit-button"
+	        //           onClick={ this.cancelEdit }></button>
+	        //         <div className="post-input-padding">
+	        //           <input className="post-input" type="textArea" value={ this.state.body }
+	        //             onChange={ this._updateBody } onKeyDown={ this.handleKeyDown }/>
+	        //         </div>
+	        //       </section>
+	        //       <section className="bottom-of-post-form clear-fix">
+	        //         <button className="submit-edit-button blue-button"
+	        //           onClick={ this.submitEdit }>Save</button>
+	        //       </section>
+	        //     </form>
+	        // </Modal>
+	
 	        React.createElement(
-	          'section',
-	          { className: 'post-item-header' },
-	          React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
-	          menuButton,
+	          'li',
+	          { className: 'post-list-item', id: 'modal-element' },
 	          React.createElement(
-	            'div',
-	            null,
-	            authorString,
-	            postArrow,
-	            recipientString
+	            'section',
+	            { className: 'post-item-header' },
+	            React.createElement('div', { className: 'post-author-pic-thumb clear-fix' }),
+	            menuButton,
+	            React.createElement(
+	              'div',
+	              null,
+	              authorString,
+	              postArrow,
+	              recipientString
+	            ),
+	            React.createElement(
+	              'p',
+	              { className: 'timestamp' },
+	              elapsed
+	            )
 	          ),
 	          React.createElement(
-	            'p',
-	            { className: 'timestamp' },
-	            elapsed + " ago"
-	          )
-	        ),
-	        React.createElement(
-	          'section',
-	          { className: 'post-body-section' },
-	          React.createElement(
-	            'p',
-	            { className: 'post-body' },
-	            post.body
-	          )
-	        ),
-	        dropDown
+	            'section',
+	            { className: 'post-body-section' },
+	            React.createElement(
+	              'p',
+	              { className: 'post-body' },
+	              post.body
+	            )
+	          ),
+	          dropDown
+	        )
+	
+	        // </div>
+	
 	      );
 	    }
 	  }
@@ -33317,17 +33348,29 @@
 	    return React.createElement(
 	      'section',
 	      { className: 'timeline-header clear-fix' },
-	      React.createElement('div', { className: 'timeline-header-profile-picture clear-fix' }),
 	      React.createElement(
-	        'a',
-	        { className: 'timeline-header-name',
-	          href: '#' },
-	        user.first_name,
-	        ' ',
-	        user.last_name
+	        'div',
+	        { className: 'timeline-cover-photo clear-fix' },
+	        React.createElement(
+	          'a',
+	          { className: 'timeline-header-name',
+	            href: '#' },
+	          user.first_name,
+	          ' ',
+	          user.last_name
+	        )
 	      ),
-	      React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser }),
-	      React.createElement(TimelineTabs, { user: user, currentUser: this.props.currentUser })
+	      React.createElement(
+	        'div',
+	        { className: 'timeline-header-tabs-container' },
+	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser }),
+	        React.createElement(
+	          'div',
+	          { className: 'timeline-profile-pic-container clear-fix' },
+	          React.createElement('div', { className: 'timeline-header-profile-picture clear-fix' })
+	        ),
+	        React.createElement(TimelineTabs, { user: user, currentUser: this.props.currentUser })
+	      )
 	    );
 	  }
 	});
@@ -33431,7 +33474,7 @@
 	
 	    return React.createElement(
 	      'ul',
-	      { className: 'timeline-header-buttons' },
+	      { className: 'timeline-header-buttons-list' },
 	      React.createElement(
 	        'li',
 	        null,

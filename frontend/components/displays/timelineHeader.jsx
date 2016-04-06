@@ -9,11 +9,18 @@ var TimelineSidebar = React.createClass({
 
 		return(
 			<section className="timeline-header clear-fix">
-        <div className="timeline-header-profile-picture clear-fix" />
-        <a className="timeline-header-name"
-          href="#">{ user.first_name } { user.last_name }</a>
-        <TimelineButtons user={ user } currentUser={ this.props.currentUser }/>
-        <TimelineTabs user={ user } currentUser={ this.props.currentUser }/>
+
+        <div className="timeline-cover-photo clear-fix">
+          <a className="timeline-header-name"
+            href="#">{ user.first_name } { user.last_name }</a>
+        </div>
+        <div className="timeline-header-tabs-container">
+          <TimelineButtons user={ user } currentUser={ this.props.currentUser }/>
+          <div className="timeline-profile-pic-container clear-fix">
+            <div className="timeline-header-profile-picture clear-fix" />
+          </div>
+          <TimelineTabs user={ user } currentUser={ this.props.currentUser }/>
+        </div>
       </section>
 		);
 	}

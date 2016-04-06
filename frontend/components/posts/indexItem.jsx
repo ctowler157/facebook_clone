@@ -1,28 +1,57 @@
 var React = require('react');
 var PostUtil = require('../../util/postUtil.js');
+// var Modal = require('react-modal');
+//
+// var customStyles = {
+//   content : {
+//     top                   : '50%',
+//     left                  : '50%',
+//     right                 : 'auto',
+//     bottom                : 'auto',
+//     marginRight           : '-50%',
+//     transform             : 'translate(-50%, -50%)'
+//   }
+// };
+// var appElement = document.getElementById('modal-element');
+// Modal.setAppElement(appElement); do this in component did mount?
 
 var PostIndexItem = React.createClass({
   getInitialState: function () {
     return({ editing: false, body: this.props.post.body,
+      // modalIsOpen: false,
       dropDownState: " hidden" });
   },
+
+  // openModal: function() {
+  //   this.setState({ modalIsOpen: true });
+  // },
+  //
+  // closeModal: function() {
+  //   this.setState({ modalIsOpen: false });
+  // },
 
   _handleEdit: function (event) {
     event.preventDefault();
     // pop up editor
-    this.setState({ editing: true });
+    this.hideDropDown();
+    this.setState({ editing: true, modalIsOpen: true });
   },
 
   cancelEdit: function (event) {
-    this.setState({ editing: false });
+    // this.hideDropDown();
+    this.setState({ editing: false, modalIsOpen: false });
   },
 
   submitEdit: function (event) {
     event.preventDefault();
+
+    // this.setState({ dropDownState: " hidden" });
+    // this.hideDropDown();
     var postId = this.props.post.id;
     var formData = new FormData();
     formData.append("post[body]", this.state.body);
     PostUtil.updatePost(formData, postId, this.cancelEdit);
+    this.setState({ editing: false, modalIsOpen: false });
   },
 
   _handleDelete: function (event) {
@@ -44,7 +73,10 @@ var PostIndexItem = React.createClass({
   },
 
   hideDropDown: function (e) {
-    this.setState({ dropDownState: " hidden"});
+    // if (e === undefined ||
+      // e.currentTarget.className !== "post-drop-down-button") {
+      this.setState({ dropDownState: " hidden"});
+    // }
   },
 
 	render: function () {
@@ -71,13 +103,19 @@ var PostIndexItem = React.createClass({
         }
         interval = Math.floor(seconds / 3600);
         if (interval > 1) {
-            return interval + " hours";
+            return interval + " hrs";
+        }
+        if (interval === 1) {
+            return "1 hr";
         }
         interval = Math.floor(seconds / 60);
-        if (interval > 1) {
-            return interval + " minutes";
+        if (interval > 40) {
+            return "1 hr";
         }
-        return Math.floor(seconds) + " seconds";
+        if (interval > 1) {
+            return interval + " mins";
+        }
+        return "moments ago";
     }
 
     var createdAt = Date.parse(post.created_at);
@@ -108,13 +146,9 @@ var PostIndexItem = React.createClass({
     var dropDown;
     var menuButton;
     if (post.author_id === this.props.user.id){
-      menuButton = (
-        <button className="post-drop-down-button"
-          onClick={ this.toggleDropDownState }
-          onBlur={ this.hideDropDown }>  </button>
-      );
       dropDown = (
-        <div className={ "post-drop-down" + this.state.dropDownState }>
+        <div className={ "post-drop-down" + this.state.dropDownState }
+          onBlur={ this.hideDropDown }>
           <ul className="post-options-drop-down">
             <li>
               <a className="post-options-item" href="#"
@@ -126,6 +160,11 @@ var PostIndexItem = React.createClass({
             </li>
           </ul>
         </div>
+      );
+      menuButton = (
+        <button className="post-drop-down-button"
+          onClick={ this.toggleDropDownState }
+          >  </button>
       );
     }
 //---------------conditional rendering----------------------
@@ -139,7 +178,7 @@ var PostIndexItem = React.createClass({
               onClick={ this.cancelEdit }></button>
             <div className="post-input-padding">
               <input className="post-input" type="textArea" value={ this.state.body }
-                onChange={ this._updateBody } />
+                onChange={ this._updateBody }/>
             </div>
           </section>
           <section className="bottom-of-post-form clear-fix">
@@ -151,18 +190,42 @@ var PostIndexItem = React.createClass({
       );
     } else {
   		return(
-  			<li className="post-list-item">
+        // <div>
+        // <Modal
+        //   isOpen={this.state.modalIsOpen}
+        //   onRequestClose={this.closeModal}
+        //   style={customStyles} >
+        //     <form>
+        //       <section className="post-item-header">
+        //         <div className="post-author-pic-thumb clear-fix" />
+        //         <button className="cancel-edit-button"
+        //           onClick={ this.cancelEdit }></button>
+        //         <div className="post-input-padding">
+        //           <input className="post-input" type="textArea" value={ this.state.body }
+        //             onChange={ this._updateBody } onKeyDown={ this.handleKeyDown }/>
+        //         </div>
+        //       </section>
+        //       <section className="bottom-of-post-form clear-fix">
+        //         <button className="submit-edit-button blue-button"
+        //           onClick={ this.submitEdit }>Save</button>
+        //       </section>
+        //     </form>
+        // </Modal>
+
+  			<li className="post-list-item" id="modal-element">
           <section className="post-item-header">
             <div className="post-author-pic-thumb clear-fix" />
             { menuButton }
             <div>{ authorString }{ postArrow }{ recipientString }</div>
-            <p className="timestamp">{ elapsed + " ago" }</p>
+            <p className="timestamp">{ elapsed }</p>
           </section>
           <section className="post-body-section">
             <p className="post-body">{ post.body }</p>
           </section>
           { dropDown }
   			</li>
+
+      // </div>
   	 );
    }
   }

@@ -13,37 +13,40 @@
   margin-bottom: 20px;
 }
 
-.timeline-header-profile-picture {
-  display: inline-block;
-  width: 160px;
-  height: 160px;
-  padding: 5px;
-  /*purple*/
-  background-color: #AA54FF;
-}
 
 .timeline-header-name {
   display: inline-block;
   font-family: helvetica, arial, sans-serif;
   font-size: 24px;
   color: #fff;
+  bottom: 12px;
+  left: 201px;
+  position: absolute;
 }
 
-.timeline-header-buttons {
+.timeline-header-buttons-list {
   list-style: none;
-  float: right;
+  bottom: 15px;
+  padding: 0;
+  position: absolute;
+  right: 15px;
+  width: 360px;
 }
 
-.timeline-header-buttons > li {
+.timeline-header-buttons-list > li {
   float: left;
 }
 
 .timeline-header-tabs-bar {
-  position: absolute;
   height: 45px;
   width: 850px;
   background-color: #fff;
   bottom: 0;
+}
+
+
+.timeline-header-tabs-container {
+  position: relative;
 }
 
 
@@ -77,6 +80,34 @@
   cursor: pointer;
 }
 
+.timeline-header-profile-picture {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border: 4px solid #fff;
+  border-radius: 2px;
+  margin: 0;
+  /*purple*/
+  background-color: #AA54FF;
+}
+
+.timeline-profile-pic-container {
+  box-shadow: none;
+  position: absolute;
+  background: rgba(0, 0, 0, .3);
+  border-radius: 3px;
+  left: 15px;
+  margin-top: 0;
+  top: -143px;
+  padding: 1px;
+}
+
+.timeline-cover-photo {
+  width: 100%;
+  position: relative;
+  height: 312px;
+  background-color: transparent;
+}
 
 h6.friends-button-mutual-friends {
   display: inline;
