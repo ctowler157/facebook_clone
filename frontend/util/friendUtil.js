@@ -1,16 +1,26 @@
-// var ApiUtil = require('./apiUtil');
-//
-// var FriendUtil = {
-// 	fetchPendingRequests: function(targetId) {
-// 		ApiUtil.ajax({
-// 			url: "/api/friend_requests",
-// 			method: "GET",
-// 			success: function (requests) {
-//         FriendshipActions.receiveAllRequests(timelinePosts);
-//       },
-// 			error: function (response) { console.log("FAILURE\n" + response); },
-// 		});
-// 	},
-// };
-//
-// module.exports = FriendUtil;
+var ApiUtil = require('./apiUtil');
+var FriendActions = require('../actions/friendActions');
+
+var FriendUtil = {
+	fetchFriends: function(userId) {
+		ApiUtil.ajax({
+			url: "/api/friendships/" + userId,
+			method: "GET",
+			success: function (friends) {
+        FriendActions.receiveFriends(friends);
+      },
+			error: function (response) { console.log("FAILURE\n" + response); },
+		});
+	},
+
+	removeFriend: function (friendshipId) {
+		ApiUtil.ajax({
+			url: "/api/posts/" + friendshipId,
+			method: "DELETE",
+			success: function (friendships) {
+				FriendActions.friendshipOver(friendships); },
+			error: function (response) { console.log("FAILURE\n" + response); },
+		});
+	}
+};
+module.exports = FriendUtil;

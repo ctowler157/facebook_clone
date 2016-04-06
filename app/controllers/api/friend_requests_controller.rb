@@ -25,7 +25,6 @@ class Api::FriendRequestsController < ApplicationController
 
 		if @request.save
 			render :show
-			# render what?
 		else
 			render :json => @request.errors.full_messages
 		end
@@ -40,7 +39,32 @@ class Api::FriendRequestsController < ApplicationController
 	def update
 		@request = FriendRequest.find(params[:id])
 		if @request.update(request_params)
-			render :show
+
+			if @request.accepted
+				# create friendships
+				friendship = Friendship.new(
+					user_id: @request.sender_id,
+					friend_id: @request.target_id
+				)
+				corresponding_friendship = Friendship.new(
+					user_id: @request.target_id
+					friend_id: @request.sender_id,
+				)
+				Friendship.transaction do
+						friendship.save!
+						corresponding_friendship.save!
+				end
+
+				if friendship.persisted?
+					@request.delete!
+					render :show
+				else
+					render :json => { message: "Freindship failed to create" }
+				end
+			else
+				@request.delete!
+				render :show
+			end
 		else
 			render :json => @request.errors.full_messages
 		end

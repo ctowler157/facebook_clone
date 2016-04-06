@@ -61,7 +61,7 @@
 	var routes = React.createElement(
 			Route,
 			{ path: '/', component: App, onEntry: this.checkLoggedIn },
-			React.createElement(Route, { path: '/user/:id', component: Timeline, onEntry: this.checkLoggedIn }),
+			React.createElement(Route, { path: '/user/:id', component: Timeline, onEntry: this.ensureLoggedIn }),
 			React.createElement(Route, { path: '/login', component: LogIn })
 	);
 	
@@ -82,7 +82,7 @@
 	
 			function _redirectIfNotLoggedIn() {
 					if (!SessionStore.isLoggedIn()) {
-							replace("/login");
+							replace("/");
 					}
 					completion();
 			}
@@ -24806,12 +24806,15 @@
 			var user = SessionStore.getCurrentUser();
 			var header;
 			var display;
+			var mainString;
 			if (user.online) {
 				header = React.createElement(LoggedInHeader, { user: user });
 				display = React.createElement(LoggedInDisplay, { user: user });
+				mainString = this.props.children || display;
 			} else {
 				header = React.createElement(LoggedOutHeader, null);
 				display = React.createElement(LoggedOutDisplay, null);
+				mainString = display;
 			}
 			return React.createElement(
 				'div',
@@ -24824,7 +24827,7 @@
 				React.createElement(
 					'main',
 					{ className: 'main' },
-					this.props.children || display
+					mainString
 				)
 			);
 		}
@@ -33186,6 +33189,8 @@
 	var TimelineSidebar = __webpack_require__(264);
 	var TimelineHeader = __webpack_require__(265);
 	var SessionStore = __webpack_require__(228);
+	var FriendStore = __webpack_require__(271);
+	var FriendRequestStore = __webpack_require__(272);
 	
 	var Timeline = React.createClass({
 		displayName: 'Timeline',
@@ -33198,10 +33203,21 @@
 			this.postListener = UserStore.addListener(this._onChange);
 			this.sessionListener = SessionStore.addListener(this._onSessionChange);
 			UserUtil.fetchTimelineUser(this.props.params.id);
+	
+			if (this.state.currentUser.id != this.props.params.id) {
+				this.friendsListener = FriendStore.addListener(this._onFriendsChange);
+				this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
+			}
 		},
 	
 		componentWillUnmount: function () {
 			this.postListener.remove();
+			this.sessionListener.remove();
+	
+			if (this.friendsListener) {
+				this.friendsListener.remove();
+				this.requestsListener.remove();
+			}
 		},
 	
 		componentWillReceiveProps: function (newProps) {
@@ -33509,6 +33525,159 @@
 	});
 	
 	module.exports = TimelineButtons;
+
+/***/ },
+/* 268 */,
+/* 269 */,
+/* 270 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
+		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
+		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
+		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
+		REQUEST_REJECTED: "REQUEST_REJECTED"
+	};
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var Dispatcher = __webpack_require__(222);
+	var FriendConstants = __webpack_require__(273);
+	var FriendRequestConstants = __webpack_require__(270);
+	var FriendStore = new Store(Dispatcher);
+	
+	console.log('loaded FriendStore!');
+	
+	var _friends = {};
+	
+	var setFriends = function (friends) {
+		_friends = {};
+		friends.forEach(function (friend) {
+			_friends[friend.id] = friend;
+		});
+	};
+	
+	var addFriend = function (request) {};
+	
+	FriendStore.getFriendsObj = function () {
+		friends = {};
+		for (var id in _friends) {
+			friends[id] = _friends[id];
+		}
+		return friends;
+	};
+	
+	FriendStore.getFriendsArr = function () {
+		friends = [];
+		for (var id in _friends) {
+			friends.push(_friends[id]);
+		}
+		return friends;
+	};
+	
+	FriendStore.__onDispatch = function (payload) {
+		switch (payload.actionType) {
+			case FriendConstants.FRIENDS_RECEIVED:
+				setFriends(payload.friends);
+				FriendStore.__emitChange();
+				break;
+			case FriendConstants.FRIENDSHIP_OVER:
+				removeFriendship(payload.friendships);
+				FriendStore.__emitChange();
+				break;
+			case FriendRequestConstants.REQUEST_ACCEPTED:
+				addFriend(payload.request);
+				FriendStore.__emitChange();
+		}
+	};
+	
+	module.exports = FriendStore;
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var Dispatcher = __webpack_require__(222);
+	var FriendRequestConstants = __webpack_require__(226);
+	var FriendRequestStore = new Store(Dispatcher);
+	
+	console.log('loaded FriendRequestStore!');
+	
+	var _requests = {};
+	
+	var setRequest = function (request) {
+	  _requests[request.id] = request;
+	};
+	
+	var removeRequest = function (request) {
+	  delete _requests[request.id];
+	};
+	
+	var setRequests = function (requests) {
+	  _requests = {};
+	  requests.forEach(function (request) {
+	    _requests[request.id] = request;
+	  });
+	};
+	
+	FriendRequestStore.isRequested = function (currentUserId, timelineId) {
+	  var request;
+	  for (var id in _requests) {
+	    request = _requests.id;
+	    if (request.sender_id == currentUserId && request.target_id == timelineId) {
+	      return "Request sent";
+	    }
+	    if (request.sender_id == timelineId && request.target_id == currentUserId) {
+	      return "Respond to request";
+	    }
+	  }
+	
+	  return "Add Friend";
+	};
+	
+	FriendRequestStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FriendRequestConstants.USER_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.NEW_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_ACCEPTED:
+	      removeRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_REJECTED:
+	      removeRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUESTS_RECEIVED:
+	      setRequests(payload.requests);
+	      FriendRequestStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FriendRequestStore;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
+		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
+		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
+		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
+		REQUEST_REJECTED: "REQUEST_REJECTED"
+	};
 
 /***/ }
 /******/ ]);

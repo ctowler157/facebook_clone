@@ -33,12 +33,15 @@ module.exports = React.createClass({
 		var user = SessionStore.getCurrentUser();
 		var header;
 		var display;
+		var mainString;
 		if (user.online) {
 			header = <LoggedInHeader user={ user }/>;
 			display = <LoggedInDisplay user={ user }/>;
+			mainString = this.props.children || display;
 		} else {
 			header = <LoggedOutHeader/>;
 			display = <LoggedOutDisplay/>;
+			mainString = display;
 		}
     return(
       <div className="whole-page">
@@ -46,7 +49,7 @@ module.exports = React.createClass({
 					{ header }
 				</header>
 					<main className="main">
-						{ this.props.children || display }
+						{ mainString }
 					</main>
       </div>
    );

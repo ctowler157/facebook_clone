@@ -9,12 +9,27 @@ var FriendRequestActions = {
     });
   },
 
-	// receiveEditedFriendRequest: function (request) {
-  //   Dispatcher.dispatch({
-  //     actionType: FriendRequestConstants.POST_EDITED,
-  //     request: request
-  //   });
-  // },
+	receiveNewRequest: function (request) {
+    Dispatcher.dispatch({
+      actionType: FriendRequestConstants.NEW_REQUEST_RECEIVED,
+      request: request
+    });
+  },
+
+	receiveAcceptedFriendRequest: function (request) {
+    Dispatcher.dispatch({
+      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
+      request: request
+    });
+  },
+
+	receiveRejectedFriendRequest: function (request) {
+    Dispatcher.dispatch({
+      actionType: FriendRequestConstants.REQUEST_REJECTED,
+      request: request
+    });
+  },
+
 	receivePendingRequests: function (requests) {
 		Dispatcher.dispatch({
       actionType: FriendRequestConstants.REQUESTS_RECEIVED,

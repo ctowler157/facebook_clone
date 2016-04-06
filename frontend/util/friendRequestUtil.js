@@ -37,9 +37,29 @@ var FriendRequestUtil = {
 				resetForms();
 			},
 			error: function (response) { console.log("FAILURE\n" + response);
-		}
-	});
-},
+			}
+		});
+	},
+
+	updateRequest: function (formData, requestId) {
+		ApiUtil.ajax({
+			url: "/api/friend_requests/" + requestId,
+			method: "PATCH",
+      form: true,
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (request) {
+				// error handle
+        if (request.accepted){
+					FriendRequestActions.receiveAcceptedRequest(request);
+				} else {
+					FriendRequestActions.receiveRejectedRequest(request);
+				}
+      },
+			error: function (response) { console.log("FAILURE\n" + response); },
+		});
+	}
 
 };
 module.exports = FriendRequestUtil;

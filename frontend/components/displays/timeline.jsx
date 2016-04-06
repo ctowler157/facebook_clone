@@ -6,6 +6,8 @@ var UserStore = require('../../stores/userStore');
 var TimelineSidebar = require('./timelineSidebar');
 var TimelineHeader = require('./timelineHeader');
 var SessionStore = require('../../stores/sessionStore');
+var FriendStore = require('../../stores/friendStore');
+var FriendRequestStore = require('../../stores/friendRequestStore');
 
 var Timeline = React.createClass({
 	getInitialState: function () {
@@ -16,10 +18,21 @@ var Timeline = React.createClass({
 		this.postListener = UserStore.addListener(this._onChange);
     this.sessionListener = SessionStore.addListener(this._onSessionChange);
 		UserUtil.fetchTimelineUser(this.props.params.id);
+
+		if (this.state.currentUser.id != this.props.params.id){
+			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
+			this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
+		}
 	},
 
 	componentWillUnmount: function () {
 		this.postListener.remove();
+		this.sessionListener.remove();
+
+		if (this.friendsListener) {
+			this.friendsListener.remove();
+			this.requestsListener.remove();
+		}
 	},
 
 	componentWillReceiveProps: function (newProps) {

@@ -14,7 +14,7 @@ var SessionUtil = require('./util/sessionUtil');
 
 var routes = (
   <Route path="/" component={App} onEntry={this.checkLoggedIn}>
-    <Route path="/user/:id" component={ Timeline } onEntry={this.checkLoggedIn}/>
+    <Route path="/user/:id" component={ Timeline } onEntry={this.ensureLoggedIn}/>
 
 		<Route path="/login" component={LogIn}/>
   </Route>
@@ -37,7 +37,7 @@ var ensureLoggedIn = function (nextState, replace, completion) {
 
 	function _redirectIfNotLoggedIn() {
     if (!SessionStore.isLoggedIn()) {
-      replace("/login");
+      replace("/");
     }
     completion();
   }
