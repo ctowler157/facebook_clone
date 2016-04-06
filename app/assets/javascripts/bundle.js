@@ -87,6 +87,8 @@
 					completion();
 			}
 	};
+	// Test code
+	// var FriendRequestUtil = require('./util/FriendRequestUtil');
 	
 	document.addEventListener("DOMContentLoaded", function (event) {
 			ReactDOM.render(React.createElement(
