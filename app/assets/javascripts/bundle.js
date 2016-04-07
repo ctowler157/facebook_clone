@@ -33213,16 +33213,16 @@
 	var React = __webpack_require__(1);
 	var PostForm = __webpack_require__(252);
 	var PostIndex = __webpack_require__(253);
-	var TimelineSidebar = __webpack_require__(264);
-	var TimelineHeader = __webpack_require__(265);
+	var TimelineSidebar = __webpack_require__(263);
+	var TimelineHeader = __webpack_require__(264);
 	
 	var UserUtil = __webpack_require__(259);
-	var UserStore = __webpack_require__(263);
+	var UserStore = __webpack_require__(271);
 	var SessionStore = __webpack_require__(228);
-	var FriendUtil = __webpack_require__(274);
-	var FriendRequestUtil = __webpack_require__(276);
-	var FriendStore = __webpack_require__(271);
-	var FriendRequestStore = __webpack_require__(272);
+	var FriendUtil = __webpack_require__(272);
+	var FriendRequestUtil = __webpack_require__(267);
+	var FriendStore = __webpack_require__(275);
+	var FriendRequestStore = __webpack_require__(270);
 	
 	var Timeline = React.createClass({
 		displayName: 'Timeline',
@@ -33304,75 +33304,6 @@
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(229).Store;
-	var Dispatcher = __webpack_require__(222);
-	var UserConstants = __webpack_require__(261);
-	var UserStore = new Store(Dispatcher);
-	
-	console.log('loaded UserStore!');
-	
-	var timelineUserFetched = false;
-	
-	var _timelineUser = {};
-	
-	var setTimelineUser = function (user) {
-	  _timelineUser = user;
-	};
-	
-	var resetTimelineUser = function () {
-	  _timelineUser = {};
-	};
-	
-	UserStore.userFetched = function () {
-	  return timelineUserFetched;
-	};
-	
-	UserStore.getTimelineUser = function () {
-	  var user = {};
-	  if (_timelineUser !== {}) {
-	    var keys = Object.keys(_timelineUser);
-	    keys.forEach(function (key) {
-	      user[key] = _timelineUser[key];
-	    });
-	    user.userId = _timelineUser.id;
-	  }
-	  return user;
-	};
-	
-	// UserStore.isLoggedIn = function () {
-	// 	var loggedIn = true;
-	// 	if (_timelineUser.online === false) {
-	// 		loggedIn = false;
-	// 	}
-	// 	return loggedIn;
-	// };
-	
-	UserStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case UserConstants.TIMELINE_USER_RECEIVED:
-	      setTimelineUser(payload.user);
-	      timelineUserFetched = true;
-	      console.log('emitting change!');
-	      UserStore.__emitChange();
-	      break;
-	    // case UserConstants.NO_USER_RECEIVED:
-	    // 	timelineUserFetched = true;
-	    // 	console.log('emitting change!');
-	    //   UserStore.__emitChange();
-	    //   break;
-	    // case UserConstants.CURRENT_USER_DELETED:
-	    //   logOutTimelineUser();
-	    //   UserStore.__emitChange();
-	    //   break;
-	  }
-	};
-	
-	module.exports = UserStore;
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var React = __webpack_require__(1);
 	var UserUtil = __webpack_require__(259);
 	
@@ -33392,13 +33323,13 @@
 	module.exports = TimelineSidebar;
 
 /***/ },
-/* 265 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var UserUtil = __webpack_require__(259);
-	var TimelineTabs = __webpack_require__(266);
-	var TimelineButtons = __webpack_require__(267);
+	var TimelineTabs = __webpack_require__(265);
+	var TimelineButtons = __webpack_require__(266);
 	
 	var TimelineHeader = React.createClass({
 	  displayName: 'TimelineHeader',
@@ -33440,7 +33371,7 @@
 	module.exports = TimelineHeader;
 
 /***/ },
-/* 266 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33522,12 +33453,12 @@
 	module.exports = TimelineTabs;
 
 /***/ },
-/* 267 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var FriendRequestUtil = __webpack_require__(276);
-	var FriendRequestStore = __webpack_require__(272);
+	var FriendRequestUtil = __webpack_require__(267);
+	var FriendRequestStore = __webpack_require__(270);
 	
 	var TimelineButtons = React.createClass({
 		displayName: 'TimelineButtons',
@@ -33539,6 +33470,7 @@
 		componentDidMount: function () {
 			this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
 			FriendRequestUtil.fetchRequestsWithUser(this.props.user.id);
+			console.log("Mounted!");
 		},
 	
 		componentWillUnmount: function () {
@@ -33548,6 +33480,7 @@
 		addRequestStatus: function () {
 			var requestStatus = FriendRequestStore.isRequested();
 			this.setState({ requestStatus: requestStatus });
+			console.log("Setting request status!");
 		},
 	
 		handleFriendsClick: function (e) {
@@ -33560,6 +33493,10 @@
 	
 		handleSendRequest: function (e) {
 			e.preventDefault();
+			var request = new FormData();
+			request.append("request[target_id]", this.props.user.id);
+			FriendRequestUtil.createRequest(request);
+			// button inactive
 		},
 	
 		handleEditRequest: function (e) {
@@ -33642,12 +33579,87 @@
 	module.exports = TimelineButtons;
 
 /***/ },
-/* 268 */,
-/* 269 */
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendRequestActions = __webpack_require__(268);
+	
+	var FriendRequestUtil = {
+		fetchPendingRequests: function () {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "GET",
+				success: function (requests) {
+					FriendRequestActions.receivePendingRequests(requests);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		fetchRequestsWithUser: function (timelineId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + timelineId,
+				method: "GET",
+				success: function (request) {
+					FriendRequestActions.receiveUserRequest(request);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		createRequest: function (formData) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (request) {
+					FriendRequestActions.receiveNewRequest(request);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		updateRequest: function (formData, requestId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + requestId,
+				method: "PATCH",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (request) {
+					// error handle
+					if (request.accepted) {
+						FriendRequestActions.receiveAcceptedRequest(request);
+					} else {
+						FriendRequestActions.receiveRejectedRequest(request);
+					}
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	
+	};
+	module.exports = FriendRequestUtil;
+
+/***/ },
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(222);
-	var FriendRequestConstants = __webpack_require__(270);
+	var FriendRequestConstants = __webpack_require__(269);
 	
 	var FriendRequestActions = {
 	  receiveUserRequest: function (request) {
@@ -33695,7 +33707,7 @@
 	module.exports = FriendRequestActions;
 
 /***/ },
-/* 270 */
+/* 269 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -33707,13 +33719,226 @@
 	};
 
 /***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var Dispatcher = __webpack_require__(222);
+	var FriendRequestConstants = __webpack_require__(269);
+	var FriendRequestStore = new Store(Dispatcher);
+	
+	console.log('loaded FriendRequestStore!');
+	
+	var _requests = {};
+	
+	var _request = { id: "not set" };
+	
+	var setRequest = function (request) {
+	  _request = request;
+	};
+	
+	var removeRequest = function (request) {
+	  delete _requests[request.id];
+	};
+	
+	var setRequests = function (requests) {
+	  _requests = {};
+	  requests.forEach(function (request) {
+	    _requests[request.id] = request;
+	  });
+	};
+	
+	FriendRequestStore.isRequested = function (timelineId) {
+	  console.log("calling isRequested");
+	  if (_request.id == "NO REQUEST") {
+	    console.log("none");
+	    return "none";
+	  } else if (timelineId == _request.target_id) {
+	    console.log("sent");
+	    return "sent";
+	  } else {
+	    console.log("received");
+	    return "received";
+	  }
+	};
+	
+	FriendRequestStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FriendRequestConstants.USER_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.NEW_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_ACCEPTED:
+	      removeRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_REJECTED:
+	      removeRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUESTS_RECEIVED:
+	      setRequests(payload.requests);
+	      FriendRequestStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FriendRequestStore;
+
+/***/ },
 /* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
-	var FriendConstants = __webpack_require__(273);
-	var FriendRequestConstants = __webpack_require__(270);
+	var UserConstants = __webpack_require__(261);
+	var UserStore = new Store(Dispatcher);
+	
+	console.log('loaded UserStore!');
+	
+	var timelineUserFetched = false;
+	
+	var _timelineUser = {};
+	
+	var setTimelineUser = function (user) {
+	  _timelineUser = user;
+	};
+	
+	var resetTimelineUser = function () {
+	  _timelineUser = {};
+	};
+	
+	UserStore.userFetched = function () {
+	  return timelineUserFetched;
+	};
+	
+	UserStore.getTimelineUser = function () {
+	  var user = {};
+	  if (_timelineUser !== {}) {
+	    var keys = Object.keys(_timelineUser);
+	    keys.forEach(function (key) {
+	      user[key] = _timelineUser[key];
+	    });
+	    user.userId = _timelineUser.id;
+	  }
+	  return user;
+	};
+	
+	// UserStore.isLoggedIn = function () {
+	// 	var loggedIn = true;
+	// 	if (_timelineUser.online === false) {
+	// 		loggedIn = false;
+	// 	}
+	// 	return loggedIn;
+	// };
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.TIMELINE_USER_RECEIVED:
+	      setTimelineUser(payload.user);
+	      timelineUserFetched = true;
+	      console.log('emitting change!');
+	      UserStore.__emitChange();
+	      break;
+	    // case UserConstants.NO_USER_RECEIVED:
+	    // 	timelineUserFetched = true;
+	    // 	console.log('emitting change!');
+	    //   UserStore.__emitChange();
+	    //   break;
+	    // case UserConstants.CURRENT_USER_DELETED:
+	    //   logOutTimelineUser();
+	    //   UserStore.__emitChange();
+	    //   break;
+	  }
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendActions = __webpack_require__(273);
+	
+	var FriendUtil = {
+		fetchFriends: function (userId) {
+			ApiUtil.ajax({
+				url: "/api/friendships/" + userId,
+				method: "GET",
+				success: function (friends) {
+					FriendActions.receiveFriends(friends);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		removeFriend: function (friendshipId) {
+			ApiUtil.ajax({
+				url: "/api/posts/" + friendshipId,
+				method: "DELETE",
+				success: function (friendships) {
+					FriendActions.friendshipOver(friendships);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	};
+	module.exports = FriendUtil;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var FriendConstants = __webpack_require__(274);
+	
+	var FriendActions = {
+	  receiveFriends: function (friends) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDS_RECEIVED,
+	      friends: friends
+	    });
+	  },
+	
+	  friendshipEnded: function (friendships) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDSHIP_OVER,
+	      friendships: friendships
+	    });
+	  }
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 274 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
+		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
+		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
+		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
+		REQUEST_REJECTED: "REQUEST_REJECTED"
+	};
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var Dispatcher = __webpack_require__(222);
+	var FriendConstants = __webpack_require__(274);
+	var FriendRequestConstants = __webpack_require__(269);
 	var FriendStore = new Store(Dispatcher);
 	
 	console.log('loaded FriendStore!');
@@ -33762,223 +33987,6 @@
 	};
 	
 	module.exports = FriendStore;
-
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(229).Store;
-	var Dispatcher = __webpack_require__(222);
-	var FriendRequestConstants = __webpack_require__(270);
-	var FriendRequestStore = new Store(Dispatcher);
-	
-	console.log('loaded FriendRequestStore!');
-	
-	var _requests = {};
-	
-	var _request = { id: "not set" };
-	
-	var setRequest = function (request) {
-	  _request = request;
-	};
-	
-	var removeRequest = function (request) {
-	  delete _requests[request.id];
-	};
-	
-	var setRequests = function (requests) {
-	  _requests = {};
-	  requests.forEach(function (request) {
-	    _requests[request.id] = request;
-	  });
-	};
-	
-	FriendRequestStore.isRequested = function (timelineId) {
-	  if (_request.id == "NO REQUEST") {
-	    return "none";
-	  } else if (timelineId == _request.target_id) {
-	    return "sent";
-	  } else {
-	    return "received";
-	  }
-	};
-	
-	FriendRequestStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case FriendRequestConstants.USER_REQUEST_RECEIVED:
-	      setRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.NEW_REQUEST_RECEIVED:
-	      setRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUEST_ACCEPTED:
-	      removeRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUEST_REJECTED:
-	      removeRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUESTS_RECEIVED:
-	      setRequests(payload.requests);
-	      FriendRequestStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = FriendRequestStore;
-
-/***/ },
-/* 273 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
-		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
-		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
-		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
-		REQUEST_REJECTED: "REQUEST_REJECTED"
-	};
-
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var FriendActions = __webpack_require__(275);
-	
-	var FriendUtil = {
-		fetchFriends: function (userId) {
-			ApiUtil.ajax({
-				url: "/api/friendships/" + userId,
-				method: "GET",
-				success: function (friends) {
-					FriendActions.receiveFriends(friends);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		removeFriend: function (friendshipId) {
-			ApiUtil.ajax({
-				url: "/api/posts/" + friendshipId,
-				method: "DELETE",
-				success: function (friendships) {
-					FriendActions.friendshipOver(friendships);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	};
-	module.exports = FriendUtil;
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var FriendConstants = __webpack_require__(273);
-	
-	var FriendActions = {
-	  receiveFriends: function (friends) {
-	    Dispatcher.dispatch({
-	      actionType: FriendConstants.FRIENDS_RECEIVED,
-	      friends: friends
-	    });
-	  },
-	
-	  friendshipEnded: function (friendships) {
-	    Dispatcher.dispatch({
-	      actionType: FriendConstants.FRIENDSHIP_OVER,
-	      friendships: friendships
-	    });
-	  }
-	};
-	
-	module.exports = FriendActions;
-
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var FriendRequestActions = __webpack_require__(269);
-	
-	var FriendRequestUtil = {
-		fetchPendingRequests: function () {
-			ApiUtil.ajax({
-				url: "/api/friend_requests",
-				method: "GET",
-				success: function (requests) {
-					FriendRequestActions.receivePendingRequests(requests);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		fetchRequestsWithUser: function (timelineId) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests/" + timelineId,
-				method: "GET",
-				success: function (request) {
-					FriendRequestActions.receiveUserRequest(request);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		createRequest: function (formData) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests",
-				method: "POST",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (request) {
-					FriendRequestActions.receiveNewRequest(request);
-					resetForms();
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		updateRequest: function (formData, requestId) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests/" + requestId,
-				method: "PATCH",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (request) {
-					// error handle
-					if (request.accepted) {
-						FriendRequestActions.receiveAcceptedRequest(request);
-					} else {
-						FriendRequestActions.receiveRejectedRequest(request);
-					}
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	
-	};
-	module.exports = FriendRequestUtil;
 
 /***/ }
 /******/ ]);

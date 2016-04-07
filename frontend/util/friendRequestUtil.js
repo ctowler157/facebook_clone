@@ -34,7 +34,6 @@ var FriendRequestUtil = {
 			processData: false,
 			success: function (request) {
 				FriendRequestActions.receiveNewRequest(request);
-				resetForms();
 			},
 			error: function (response) { console.log("FAILURE\n" + response);
 			}

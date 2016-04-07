@@ -1,12 +1,13 @@
 header {
 
   background: #3a5795;
-  font-size: 12px;
 	border-bottom: 1px solid #133783;
   box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .52);
 	font-family: helvetica, arial, sans-serif;
 	z-index: 301;
 	width: 100%;
+  position: fixed;
+  top: 0;
 }
 
 .logged-out-header {
@@ -16,9 +17,11 @@ header {
 	height: 81px;
 	background-image: image_url('header_image.png');
 	background-repeat: repeat-x;
+  font-size: 12px;
 }
 .logged-in-header {
   height: 42px;
+  z-index: 301;
 }
 .logged-in-header.header-nav {
 	padding-top: 0px;
@@ -32,7 +35,7 @@ header {
 	list-style: none;
 	float:right;
 
-  margin: 6px 0 10px 5px;
+  margin: 6px 0 5px 5px;
 }
 
 .nav-buttons > li {
@@ -143,7 +146,7 @@ header {
   width: 17px;
 	padding: 0px 4px 0px 11px;
 	position: absolute;
-	top: -5px;
+	top: -9px;
 }
 
 .header-nav-left {
@@ -160,7 +163,7 @@ ul.header-nav-left{
 }
 
 .login-form {
-	border-spacing: 10px 4px;
+	border-spacing: 0px 4px;
 }
 
 .login-form-table {

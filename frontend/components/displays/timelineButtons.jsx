@@ -10,6 +10,7 @@ var TimelineButtons = React.createClass({
 	componentDidMount: function () {
 		this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
 		FriendRequestUtil.fetchRequestsWithUser(this.props.user.id);
+    console.log("Mounted!");
 	},
 
 	componentWillUnmount: function () {
@@ -19,6 +20,7 @@ var TimelineButtons = React.createClass({
 	addRequestStatus: function () {
 		var requestStatus = FriendRequestStore.isRequested();
 		this.setState({ requestStatus: requestStatus });
+    console.log("Setting request status!");
 	},
 
 	handleFriendsClick: function (e) {
@@ -31,6 +33,10 @@ var TimelineButtons = React.createClass({
 
 	handleSendRequest: function (e) {
 		e.preventDefault();
+    var request = new FormData();
+    request.append("request[target_id]", this.props.user.id);
+    FriendRequestUtil.createRequest(request);
+    // button inactive
 	},
 
 	handleEditRequest: function (e) {

@@ -26,13 +26,17 @@ var setRequests = function (requests) {
 
 
 FriendRequestStore.isRequested = function (timelineId) {
+  console.log("calling isRequested");
 	if (_request.id == "NO REQUEST") {
+    console.log("none");
 		return "none";
 	}
 	else if (timelineId == _request.target_id){
+    console.log("sent");
 		return "sent";
 	}
 	else {
+    console.log("received");
 		return "received";
 	}
 };
