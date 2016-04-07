@@ -28,13 +28,14 @@
   list-style: none;
   padding: 0;
   position: absolute;
-  right: -246px;
+  right: 12px;
 	bottom: 43px;
   width: 360px;
 }
 
 .timeline-header-buttons-list > li {
-  float: left;
+  // float: left;
+  float: right;
 }
 
 .timeline-header-buttons-list > li > a {

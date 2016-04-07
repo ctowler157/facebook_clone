@@ -25643,12 +25643,10 @@
 	    case SessionConstants.CURRENT_USER_RECEIVED:
 	      setCurrentUser(payload.currentUser);
 	      currentUserFetched = true;
-	      console.log('emitting change!');
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.NO_USER_RECEIVED:
 	      currentUserFetched = true;
-	      console.log('emitting change!');
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.CURRENT_USER_DELETED:
@@ -33280,7 +33278,7 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(TimelineHeader, { user: this.state.user,
+				React.createElement(TimelineHeader, { userId: this.props.params.id, user: this.state.user,
 					currentUser: this.state.currentUser,
 					friends: this.state.friends }),
 				React.createElement(TimelineSidebar, { user: this.state.user,
@@ -33356,7 +33354,7 @@
 	        'div',
 	        { className: 'timeline-header-tabs-container' },
 	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser,
-	          friends: this.props.friends }),
+	          friends: this.props.friends, userId: this.props.userId }),
 	        React.createElement(
 	          'div',
 	          { className: 'timeline-profile-pic-container clear-fix' },
@@ -33459,32 +33457,66 @@
 	var React = __webpack_require__(1);
 	var FriendRequestUtil = __webpack_require__(267);
 	var FriendRequestStore = __webpack_require__(270);
+	var FriendUtil = __webpack_require__(272);
+	// var FriendStore = require('../../stores/friendStore');
 	
 	var TimelineButtons = React.createClass({
 		displayName: 'TimelineButtons',
 	
 		getInitialState: function () {
-			return { requestStatus: "none" };
+			return { requestStatus: "no request", friendshipId: "no friendship" };
 		},
 	
 		componentDidMount: function () {
-			this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
-			FriendRequestUtil.fetchRequestsWithUser(this.props.user.id);
-			console.log("Mounted!");
+			// this.friendsListener = FriendStore.addListener(this.addFriends);
+			// FriendUtil.fetchFriends(this.props.userId);
+			if (this.props.userId != this.props.currentUser.id) {
+				this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
+				FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
+			}
 		},
 	
 		componentWillUnmount: function () {
-			this.requestListener.remove();
+			if (this.requestListener) {
+				this.requestListener.remove();
+			}
+			// this.friendsListener.remove();
 		},
 	
 		addRequestStatus: function () {
-			var requestStatus = FriendRequestStore.isRequested();
+			var requestStatus = FriendRequestStore.isRequested(this.props.userId);
 			this.setState({ requestStatus: requestStatus });
-			console.log("Setting request status!");
+		},
+	
+		getFriendshipId: function (newProps) {
+			var friendshipId = "no friendship";
+			debugger;
+			newProps.friends.forEach(function (friend) {
+				if (friend.id == this.props.currentUser.id) {
+					friendshipId = friend.friendshipId;
+				}
+			});
+	
+			return friendshipId;
+		},
+	
+		// addFriends: function () {
+		//   var friends = FriendStore.getFriendsArr();
+		//   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
+		//   this.setState({ friends: friends, friendshipId: friendshipId });
+		// },
+		componentWillReceiveProps: function (newProps) {
+			if (this.props.userId != this.props.currentUser.id) {
+				var friendshipId = this.getFriendshipId(newProps);
+				this.setState({ friendshipId: friendshipId });
+			}
 		},
 	
 		handleFriendsClick: function (e) {
 			e.preventDefault();
+			// form to choose
+			debugger;
+			FriendUtil.removeFriend(this.state.friendshipId);
 		},
 	
 		handleUpdateInfo: function (e) {
@@ -33505,6 +33537,11 @@
 	
 		handleRespond: function (e) {
 			e.preventDefault();
+			var req = FriendRequestStore.getRequest();
+			// form to select response
+			var response = new FormData();
+			response.append("request[accepted]", true);
+			FriendRequestUtil.updateRequest(response, req.id);
 		},
 	
 		render: function () {
@@ -33535,7 +33572,7 @@
 				);
 			} else {
 				switch (this.state.requestStatus) {
-					case "none":
+					case "no request":
 						friendButton = React.createElement(
 							'a',
 							{ href: '#', onClick: this.handleSendRequest, className: 'header-button-request add-friend' },
@@ -33676,14 +33713,14 @@
 	    });
 	  },
 	
-	  receiveAcceptedFriendRequest: function (request) {
+	  receiveAcceptedRequest: function (request) {
 	    Dispatcher.dispatch({
 	      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
 	      request: request
 	    });
 	  },
 	
-	  receiveRejectedFriendRequest: function (request) {
+	  receiveRejectedRequest: function (request) {
 	    Dispatcher.dispatch({
 	      actionType: FriendRequestConstants.REQUEST_REJECTED,
 	      request: request
@@ -33727,8 +33764,6 @@
 	var FriendRequestConstants = __webpack_require__(269);
 	var FriendRequestStore = new Store(Dispatcher);
 	
-	console.log('loaded FriendRequestStore!');
-	
 	var _requests = {};
 	
 	var _request = { id: "not set" };
@@ -33748,17 +33783,34 @@
 	  });
 	};
 	
+	FriendRequestStore.getAllRequests = function () {
+	  var requests = {};
+	  for (var id in _requests) {
+	    requests[id] = _requests[id];
+	  }
+	  return requests;
+	};
+	
+	FriendRequestStore.getRequest = function () {
+	  var request = {};
+	  for (var id in _request) {
+	    request[id] = _request[id];
+	  }
+	  return request;
+	};
+	
 	FriendRequestStore.isRequested = function (timelineId) {
-	  console.log("calling isRequested");
 	  if (_request.id == "NO REQUEST") {
 	    console.log("none");
-	    return "none";
+	    return "no request";
 	  } else if (timelineId == _request.target_id) {
 	    console.log("sent");
 	    return "sent";
-	  } else {
+	  } else if (timelineId == _request.sender_id) {
 	    console.log("received");
 	    return "received";
+	  } else {
+	    debugger;
 	  }
 	};
 	
@@ -33841,12 +33893,10 @@
 	    case UserConstants.TIMELINE_USER_RECEIVED:
 	      setTimelineUser(payload.user);
 	      timelineUserFetched = true;
-	      console.log('emitting change!');
 	      UserStore.__emitChange();
 	      break;
 	    // case UserConstants.NO_USER_RECEIVED:
 	    // 	timelineUserFetched = true;
-	    // 	console.log('emitting change!');
 	    //   UserStore.__emitChange();
 	    //   break;
 	    // case UserConstants.CURRENT_USER_DELETED:
@@ -33946,44 +33996,52 @@
 	var _friends = {};
 	
 	var setFriends = function (friends) {
-		_friends = {};
-		friends.forEach(function (friend) {
-			_friends[friend.id] = friend;
-		});
+	  _friends = {};
+	  friends.forEach(function (friend) {
+	    _friends[friend.id] = friend;
+	  });
 	};
 	
 	var addFriend = function (request) {};
 	
 	FriendStore.getFriendsObj = function () {
-		friends = {};
-		for (var id in _friends) {
-			friends[id] = _friends[id];
-		}
-		return friends;
+	  friends = {};
+	  for (var id in _friends) {
+	    friends[id] = _friends[id];
+	  }
+	  return friends;
+	};
+	
+	FriendStore.getFriendshipId = function (id) {
+	  if (_friends[id]) {
+	    return _friends[id].friendshipId;
+	  } else {
+	    return "no friendship";
+	  }
 	};
 	
 	FriendStore.getFriendsArr = function () {
-		friends = [];
-		for (var id in _friends) {
-			friends.push(_friends[id]);
-		}
-		return friends;
+	  friends = [];
+	  for (var id in _friends) {
+	    friends.push(_friends[id]);
+	  }
+	  return friends;
 	};
 	
 	FriendStore.__onDispatch = function (payload) {
-		switch (payload.actionType) {
-			case FriendConstants.FRIENDS_RECEIVED:
-				setFriends(payload.friends);
-				FriendStore.__emitChange();
-				break;
-			case FriendConstants.FRIENDSHIP_OVER:
-				removeFriendship(payload.friendships);
-				FriendStore.__emitChange();
-				break;
-			case FriendRequestConstants.REQUEST_ACCEPTED:
-				addFriend(payload.request);
-				FriendStore.__emitChange();
-		}
+	  switch (payload.actionType) {
+	    case FriendConstants.FRIENDS_RECEIVED:
+	      setFriends(payload.friends);
+	      FriendStore.__emitChange();
+	      break;
+	    case FriendConstants.FRIENDSHIP_OVER:
+	      removeFriendship(payload.friendships);
+	      FriendStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_ACCEPTED:
+	      addFriend(payload.request);
+	      FriendStore.__emitChange();
+	  }
 	};
 	
 	module.exports = FriendStore;

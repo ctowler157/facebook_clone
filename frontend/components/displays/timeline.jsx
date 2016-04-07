@@ -71,7 +71,7 @@ var Timeline = React.createClass({
 
 		return(
 			<div>
-        <TimelineHeader user={ this.state.user }
+        <TimelineHeader userId={ this.props.params.id } user={ this.state.user }
           currentUser={ this.state.currentUser }
 					friends={ this.state.friends }/>
         <TimelineSidebar user={ this.state.user }

@@ -3,8 +3,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 var FriendRequestConstants = require('../constants/friendRequestConstants');
 var FriendRequestStore = new Store(Dispatcher);
 
-console.log('loaded FriendRequestStore!');
-
 var _requests = {  };
 
 var _request = { id: "not set" };
@@ -24,21 +22,36 @@ var setRequests = function (requests) {
   });
 };
 
+FriendRequestStore.getAllRequests = function () {
+  var requests = {};
+  for (var id in _requests){
+    requests[id] = _requests[id];
+  }
+  return requests;
+};
+
+FriendRequestStore.getRequest = function () {
+  var request = {};
+  for (var id in _request){
+    request[id] = _request[id];
+  }
+  return request;
+};
+
 
 FriendRequestStore.isRequested = function (timelineId) {
-  console.log("calling isRequested");
 	if (_request.id == "NO REQUEST") {
     console.log("none");
-		return "none";
+		return "no request";
 	}
 	else if (timelineId == _request.target_id){
     console.log("sent");
 		return "sent";
 	}
-	else {
+  else if (timelineId == _request.sender_id) {
     console.log("received");
 		return "received";
-	}
+	} else { debugger}
 };
 
 

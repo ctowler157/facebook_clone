@@ -1,11 +1,12 @@
 class Api::FriendshipsController < ApplicationController
 	def index
-		@friends = User.includes(:friends).find(params[:id]).friends.all
-		render :index
+		@friendships = User.includes(friendships: :friend).find(params[:id]).friendships.all
+
+    render :index
 	end
 
 	def show
-		@friends = User.includes(:friends).find(params[:id]).friends.all
+		@friendships = User.includes(friendships: :friend).find(params[:id]).friendships.all
 		render :index
 	end
 

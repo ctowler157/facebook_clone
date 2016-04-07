@@ -46,12 +46,10 @@ UserStore.__onDispatch = function (payload) {
     case UserConstants.TIMELINE_USER_RECEIVED:
       setTimelineUser(payload.user);
 			timelineUserFetched = true;
-			console.log('emitting change!');
       UserStore.__emitChange();
       break;
     // case UserConstants.NO_USER_RECEIVED:
 		// 	timelineUserFetched = true;
-		// 	console.log('emitting change!');
     //   UserStore.__emitChange();
     //   break;
     // case UserConstants.CURRENT_USER_DELETED:

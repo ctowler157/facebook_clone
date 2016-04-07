@@ -44,12 +44,10 @@ SessionStore.__onDispatch = function (payload) {
     case SessionConstants.CURRENT_USER_RECEIVED:
       setCurrentUser(payload.currentUser);
 			currentUserFetched = true;
-			console.log('emitting change!');
       SessionStore.__emitChange();
       break;
     case SessionConstants.NO_USER_RECEIVED:
 			currentUserFetched = true;
-			console.log('emitting change!');
       SessionStore.__emitChange();
       break;
     case SessionConstants.CURRENT_USER_DELETED:

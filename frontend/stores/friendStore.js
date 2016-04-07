@@ -16,8 +16,10 @@ var setFriends = function (friends) {
 };
 
 var addFriend = function (request) {
-	
+
 };
+
+
 
 FriendStore.getFriendsObj = function () {
 	friends = {};
@@ -25,6 +27,14 @@ FriendStore.getFriendsObj = function () {
 		friends[id] = _friends[id];
 	}
 	return friends;
+};
+
+FriendStore.getFriendshipId = function (id) {
+  if (_friends[id]){
+    return _friends[id].friendshipId;
+  } else {
+    return "no friendship";
+  }
 };
 
 FriendStore.getFriendsArr = function () {

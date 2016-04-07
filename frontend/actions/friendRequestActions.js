@@ -16,14 +16,14 @@ var FriendRequestActions = {
     });
   },
 
-	receiveAcceptedFriendRequest: function (request) {
+	receiveAcceptedRequest: function (request) {
     Dispatcher.dispatch({
       actionType: FriendRequestConstants.REQUEST_ACCEPTED,
       request: request
     });
   },
 
-	receiveRejectedFriendRequest: function (request) {
+	receiveRejectedRequest: function (request) {
     Dispatcher.dispatch({
       actionType: FriendRequestConstants.REQUEST_REJECTED,
       request: request

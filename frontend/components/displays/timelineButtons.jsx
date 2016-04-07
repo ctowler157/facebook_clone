@@ -1,30 +1,64 @@
 var React = require('react');
 var FriendRequestUtil = require('../../util/friendRequestUtil');
 var FriendRequestStore = require('../../stores/friendRequestStore');
+var FriendUtil = require('../../util/friendUtil');
+// var FriendStore = require('../../stores/friendStore');
 
 var TimelineButtons = React.createClass({
 	getInitialState: function () {
-		return ({ requestStatus: "none" });
+		return ({ requestStatus: "no request", friendshipId: "no friendship" });
 	},
 
 	componentDidMount: function () {
-		this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
-		FriendRequestUtil.fetchRequestsWithUser(this.props.user.id);
-    console.log("Mounted!");
+    // this.friendsListener = FriendStore.addListener(this.addFriends);
+    // FriendUtil.fetchFriends(this.props.userId);
+    if (this.props.userId != this.props.currentUser.id){
+      this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
+      FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
+    }
 	},
 
 	componentWillUnmount: function () {
-		this.requestListener.remove();
+		if (this.requestListener) {
+      this.requestListener.remove();
+    }
+    // this.friendsListener.remove();
 	},
 
 	addRequestStatus: function () {
-		var requestStatus = FriendRequestStore.isRequested();
+		var requestStatus = FriendRequestStore.isRequested(this.props.userId);
 		this.setState({ requestStatus: requestStatus });
-    console.log("Setting request status!");
 	},
+
+  getFriendshipId: function(newProps) {
+    var friendshipId = "no friendship";
+    debugger
+    newProps.friends.forEach( function (friend) {
+      if (friend.id == this.props.currentUser.id) {
+        friendshipId = friend.friendshipId;
+      }
+    });
+
+    return friendshipId;
+  },
+
+  // addFriends: function () {
+  //   var friends = FriendStore.getFriendsArr();
+  //   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
+  //   this.setState({ friends: friends, friendshipId: friendshipId });
+  // },
+  componentWillReceiveProps: function (newProps) {
+    if (this.props.userId != this.props.currentUser.id){
+      var friendshipId = this.getFriendshipId(newProps);
+      this.setState({ friendshipId: friendshipId });
+    }
+  },
 
 	handleFriendsClick: function (e) {
 		e.preventDefault();
+    // form to choose
+    debugger
+    FriendUtil.removeFriend(this.state.friendshipId);
 	},
 
 	handleUpdateInfo: function (e) {
@@ -45,6 +79,11 @@ var TimelineButtons = React.createClass({
 
 	handleRespond: function (e) {
 		e.preventDefault();
+    var req = FriendRequestStore.getRequest();
+    // form to select response
+    var response = new FormData();
+    response.append("request[accepted]", true);
+    FriendRequestUtil.updateRequest(response, req.id);
 	},
 
   render: function () {
@@ -69,7 +108,7 @@ var TimelineButtons = React.createClass({
 				);
 		} else {
 			switch(this.state.requestStatus) {
-				case "none":
+				case "no request":
 					friendButton = (
 						<a href='#' onClick={ this.handleSendRequest } className="header-button-request add-friend"><img className="add"/>Add Friend</a>
 					);

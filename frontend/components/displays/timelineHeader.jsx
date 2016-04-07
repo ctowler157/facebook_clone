@@ -16,7 +16,7 @@ var TimelineHeader = React.createClass({
         </div>
         <div className="timeline-header-tabs-container">
           <TimelineButtons user={ user } currentUser={ this.props.currentUser }
-						friends={ this.props.friends }/>
+						friends={ this.props.friends } userId={ this.props.userId }/>
           <div className="timeline-profile-pic-container clear-fix">
             <div className="timeline-header-profile-picture clear-fix" />
           </div>
