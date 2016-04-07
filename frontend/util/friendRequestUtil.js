@@ -48,12 +48,12 @@ var FriendRequestUtil = {
 			data: formData,
 			contentType: false,
 			processData: false,
-			success: function (request) {
+			success: function (friend) {
 				// error handle
-        if (request.accepted){
-					FriendRequestActions.receiveAcceptedRequest(request);
+        if (friend.friendshipId !== "no friendship"){
+					FriendRequestActions.receiveAcceptedRequest(friend);
 				} else {
-					FriendRequestActions.receiveRejectedRequest(request);
+					FriendRequestActions.receiveRejectedRequest(friend);
 				}
       },
 			error: function (response) { console.log("FAILURE\n" + response); },

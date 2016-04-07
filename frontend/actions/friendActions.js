@@ -9,7 +9,7 @@ var FriendActions = {
     });
   },
 
-	friendshipEnded: function (friendships) {
+	friendshipOver: function (friendships) {
     Dispatcher.dispatch({
       actionType: FriendConstants.FRIENDSHIP_OVER,
       friendships: friendships

@@ -15,8 +15,24 @@ var setFriends = function (friends) {
   });
 };
 
-var addFriend = function (request) {
+var addFriend = function (friend) {
+  _friends[friend.id] = friend;
+};
 
+var removeFriendship = function (friendships) {
+  var ids = [
+    friendships.id,
+    friendships.corresponding_friendship_id
+  ];
+  friends = FriendStore.getFriendsArr();
+  for (var i = 0; i < friends.length; i++){
+    var friend = friends[i];
+    if (friend.friendshipId == ids[0] ||
+          friend.friendshipId == ids[1]){
+      delete(_friends[friend.id]);
+      break;
+    }
+  }
 };
 
 
@@ -56,7 +72,7 @@ FriendStore.__onDispatch = function (payload) {
       FriendStore.__emitChange();
       break;
 		case FriendRequestConstants.REQUEST_ACCEPTED:
-			addFriend(payload.request);
+			addFriend(payload.friend);
 			FriendStore.__emitChange();
   }
 };

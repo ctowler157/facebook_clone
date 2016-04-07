@@ -5,14 +5,21 @@ var FriendRequestStore = new Store(Dispatcher);
 
 var _requests = {  };
 
-var _request = { id: "not set" };
+var _request = { id: "NO REQUEST" };
 
 var setRequest = function (request) {
   _request = request;
 };
 
-var removeRequest = function (request) {
-	delete(_requests[request.id]);
+var removeRequest = function (friend) {
+  var removeId;
+  for (var id in _requests){
+    if (_requests[id].target_id == friend.id) {
+      removeId = undefined;
+    }
+  }
+  _request = { id: "NO REQUEST" };
+	delete(_requests[removeId]);
 };
 
 var setRequests = function (requests) {
@@ -66,11 +73,11 @@ FriendRequestStore.__onDispatch = function (payload) {
       FriendRequestStore.__emitChange();
       break;
     case FriendRequestConstants.REQUEST_ACCEPTED:
-			removeRequest(payload.request);
+			removeRequest(payload.friend);
       FriendRequestStore.__emitChange();
       break;
     case FriendRequestConstants.REQUEST_REJECTED:
-			removeRequest(payload.request);
+			removeRequest(payload.friend);
       FriendRequestStore.__emitChange();
       break;
     case FriendRequestConstants.REQUESTS_RECEIVED:

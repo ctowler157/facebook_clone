@@ -16,10 +16,10 @@ var FriendRequestActions = {
     });
   },
 
-	receiveAcceptedRequest: function (request) {
+	receiveAcceptedRequest: function (friend) {
     Dispatcher.dispatch({
       actionType: FriendRequestConstants.REQUEST_ACCEPTED,
-      request: request
+      friend: friend
     });
   },
 

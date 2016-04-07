@@ -33490,9 +33490,10 @@
 	
 		getFriendshipId: function (newProps) {
 			var friendshipId = "no friendship";
-			debugger;
+			var user = this.props.currentUser;
+	
 			newProps.friends.forEach(function (friend) {
-				if (friend.id == this.props.currentUser.id) {
+				if (friend.id == user.id) {
 					friendshipId = friend.friendshipId;
 				}
 			});
@@ -33515,7 +33516,6 @@
 		handleFriendsClick: function (e) {
 			e.preventDefault();
 			// form to choose
-			debugger;
 			FriendUtil.removeFriend(this.state.friendshipId);
 		},
 	
@@ -33674,12 +33674,12 @@
 				data: formData,
 				contentType: false,
 				processData: false,
-				success: function (request) {
+				success: function (friend) {
 					// error handle
-					if (request.accepted) {
-						FriendRequestActions.receiveAcceptedRequest(request);
+					if (friend.friendshipId !== "no friendship") {
+						FriendRequestActions.receiveAcceptedRequest(friend);
 					} else {
-						FriendRequestActions.receiveRejectedRequest(request);
+						FriendRequestActions.receiveRejectedRequest(friend);
 					}
 				},
 				error: function (response) {
@@ -33713,10 +33713,10 @@
 	    });
 	  },
 	
-	  receiveAcceptedRequest: function (request) {
+	  receiveAcceptedRequest: function (friend) {
 	    Dispatcher.dispatch({
 	      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
-	      request: request
+	      friend: friend
 	    });
 	  },
 	
@@ -33766,14 +33766,21 @@
 	
 	var _requests = {};
 	
-	var _request = { id: "not set" };
+	var _request = { id: "NO REQUEST" };
 	
 	var setRequest = function (request) {
 	  _request = request;
 	};
 	
-	var removeRequest = function (request) {
-	  delete _requests[request.id];
+	var removeRequest = function (friend) {
+	  var removeId;
+	  for (var id in _requests) {
+	    if (_requests[id].target_id == friend.id) {
+	      removeId = undefined;
+	    }
+	  }
+	  _request = { id: "NO REQUEST" };
+	  delete _requests[removeId];
 	};
 	
 	var setRequests = function (requests) {
@@ -33825,11 +33832,11 @@
 	      FriendRequestStore.__emitChange();
 	      break;
 	    case FriendRequestConstants.REQUEST_ACCEPTED:
-	      removeRequest(payload.request);
+	      removeRequest(payload.friend);
 	      FriendRequestStore.__emitChange();
 	      break;
 	    case FriendRequestConstants.REQUEST_REJECTED:
-	      removeRequest(payload.request);
+	      removeRequest(payload.friend);
 	      FriendRequestStore.__emitChange();
 	      break;
 	    case FriendRequestConstants.REQUESTS_RECEIVED:
@@ -33931,7 +33938,7 @@
 	
 		removeFriend: function (friendshipId) {
 			ApiUtil.ajax({
-				url: "/api/posts/" + friendshipId,
+				url: "/api/friendships/" + friendshipId,
 				method: "DELETE",
 				success: function (friendships) {
 					FriendActions.friendshipOver(friendships);
@@ -33959,7 +33966,7 @@
 	    });
 	  },
 	
-	  friendshipEnded: function (friendships) {
+	  friendshipOver: function (friendships) {
 	    Dispatcher.dispatch({
 	      actionType: FriendConstants.FRIENDSHIP_OVER,
 	      friendships: friendships
@@ -33974,11 +33981,8 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
-		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
-		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
-		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
-		REQUEST_REJECTED: "REQUEST_REJECTED"
+		FRIENDS_RECEIVED: "FRIENDS_RECEIVED",
+		FRIENDSHIP_OVER: "FRIENDSHIP_OVER"
 	};
 
 /***/ },
@@ -34002,7 +34006,21 @@
 	  });
 	};
 	
-	var addFriend = function (request) {};
+	var addFriend = function (friend) {
+	  _friends[friend.id] = friend;
+	};
+	
+	var removeFriendship = function (friendships) {
+	  var ids = [friendships.id, friendships.corresponding_friendship_id];
+	  friends = FriendStore.getFriendsArr();
+	  for (var i = 0; i < friends.length; i++) {
+	    var friend = friends[i];
+	    if (friend.friendshipId == ids[0] || friend.friendshipId == ids[1]) {
+	      delete _friends[friend.id];
+	      break;
+	    }
+	  }
+	};
 	
 	FriendStore.getFriendsObj = function () {
 	  friends = {};
@@ -34039,7 +34057,7 @@
 	      FriendStore.__emitChange();
 	      break;
 	    case FriendRequestConstants.REQUEST_ACCEPTED:
-	      addFriend(payload.request);
+	      addFriend(payload.friend);
 	      FriendStore.__emitChange();
 	  }
 	};

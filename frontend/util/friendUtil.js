@@ -15,7 +15,7 @@ var FriendUtil = {
 
 	removeFriend: function (friendshipId) {
 		ApiUtil.ajax({
-			url: "/api/posts/" + friendshipId,
+			url: "/api/friendships/" + friendshipId,
 			method: "DELETE",
 			success: function (friendships) {
 				FriendActions.friendshipOver(friendships); },

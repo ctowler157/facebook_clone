@@ -32,9 +32,10 @@ var TimelineButtons = React.createClass({
 
   getFriendshipId: function(newProps) {
     var friendshipId = "no friendship";
-    debugger
+    var user = this.props.currentUser;
+
     newProps.friends.forEach( function (friend) {
-      if (friend.id == this.props.currentUser.id) {
+      if (friend.id == user.id) {
         friendshipId = friend.friendshipId;
       }
     });
@@ -57,7 +58,6 @@ var TimelineButtons = React.createClass({
 	handleFriendsClick: function (e) {
 		e.preventDefault();
     // form to choose
-    debugger
     FriendUtil.removeFriend(this.state.friendshipId);
 	},
 
