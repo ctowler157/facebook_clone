@@ -13,9 +13,9 @@ var FriendRequestUtil = {
 		});
 	},
 
-	fetchRequestsWithUser: function(senderId) {
+	fetchRequestsWithUser: function(timelineId) {
 		ApiUtil.ajax({
-			url: "/api/friend_requests/" + senderId,
+			url: "/api/friend_requests/" + timelineId,
 			method: "GET",
 			success: function (request) {
         FriendRequestActions.receiveUserRequest(request);

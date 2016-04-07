@@ -17,7 +17,7 @@ gigi = User.create!(
 )
 dan = User.create!(
   email: "danEmail", password: "123456",
-  first_name: "Dan", last_name: "Whichdan", birthday: "April 1 2016"
+  first_name: "Dan", last_name: "Rodriguez", birthday: "April 1 2016"
 )
 patrick = User.create!(
   email: "patrickEmail", password: "123456",
@@ -30,7 +30,7 @@ Post.destroy_all
 chris.posts.create!(body: "I'm makin a post", timeline_id: chris.id)
 gigi.posts.create!(body: "Wow, love this facebook clone", timeline_id: gigi.id)
 dan.posts.create!(body: "I should be coding rn LOL", timeline_id: dan.id)
-patrick.posts.create!(body: "I put the the STYLE in METHOD STYLE!!", timeline_id: patrick.id)
+patrick.posts.create!(body: "I put the STYLE in METHOD STYLE!!", timeline_id: patrick.id)
 
 chris.posts.create!(body: "This is getting too popular", timeline_id: chris.id)
 gigi.posts.create!(body: "Let me know if you're trying to find a puppy!", timeline_id: gigi.id)

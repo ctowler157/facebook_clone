@@ -3,7 +3,7 @@ var UserUtil = require('../../util/userUtil');
 var TimelineTabs = require('./timelineTabs');
 var TimelineButtons = require('./timelineButtons');
 
-var TimelineSidebar = React.createClass({
+var TimelineHeader = React.createClass({
   render: function () {
     var user = this.props.user;
 
@@ -15,7 +15,8 @@ var TimelineSidebar = React.createClass({
             href="#">{ user.first_name } { user.last_name }</a>
         </div>
         <div className="timeline-header-tabs-container">
-          <TimelineButtons user={ user } currentUser={ this.props.currentUser }/>
+          <TimelineButtons user={ user } currentUser={ this.props.currentUser }
+						friends={ this.props.friends }/>
           <div className="timeline-profile-pic-container clear-fix">
             <div className="timeline-header-profile-picture clear-fix" />
           </div>
@@ -26,4 +27,4 @@ var TimelineSidebar = React.createClass({
 	}
 });
 
-module.exports = TimelineSidebar;
+module.exports = TimelineHeader;

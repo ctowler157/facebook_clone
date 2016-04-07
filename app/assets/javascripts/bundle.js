@@ -25521,6 +25521,10 @@
 		//   router: React.PropTypes.object.isRequired
 		// },
 	
+		prevDef: function (e) {
+			e.preventDefault();
+		},
+	
 		logOut: function () {
 			// var router = this.context.router;
 	
@@ -25532,6 +25536,8 @@
 		},
 	
 		render: function () {
+			var user = this.props.user;
+	
 			return React.createElement(
 				'ul',
 				{ className: 'header-nav-right nav-buttons' },
@@ -25539,11 +25545,38 @@
 					'li',
 					null,
 					React.createElement(
-						'h3',
-						null,
-						'Welcome, ',
-						this.props.user.first_name
+						'a',
+						{ className: 'left-buttons', href: "#/user/" + user.id },
+						user.first_name
 					)
+				),
+				React.createElement(
+					'li',
+					null,
+					React.createElement(
+						'a',
+						{ className: 'left-buttons home-button', href: "#/" },
+						'Home'
+					)
+				),
+				React.createElement('li', { className: 'empty-li' }),
+				React.createElement(
+					'li',
+					null,
+					React.createElement('a', { href: '#/requests', className: 'notis requests-button',
+						onClick: this.prevDef })
+				),
+				React.createElement(
+					'li',
+					null,
+					React.createElement('a', { href: '#/messages', className: 'notis messages-button',
+						onClick: this.prevDef })
+				),
+				React.createElement(
+					'li',
+					null,
+					React.createElement('a', { href: '#/notifications', className: 'notis notifications-button',
+						onClick: this.prevDef })
 				),
 				React.createElement(
 					'li',
@@ -32087,7 +32120,7 @@
 		render: function () {
 			return React.createElement(
 				'nav',
-				{ className: 'header-nav logged-in-header' },
+				{ className: 'header-nav logged-in-header clear-fix' },
 				React.createElement(
 					'ul',
 					{ className: 'header-nav-left' },
@@ -32099,11 +32132,7 @@
 					React.createElement(
 						'li',
 						null,
-						React.createElement(
-							'a',
-							{ href: '#/', className: 'header-nav-thumb-logo' },
-							'f'
-						)
+						React.createElement('a', { href: '#/', className: 'header-nav-thumb-logo' })
 					)
 				),
 				React.createElement(NavButtons, { user: this.props.user })
@@ -32143,7 +32172,7 @@
 				React.createElement(
 					'button',
 					{ type: 'button', className: 'search-bar-submit' },
-					'Search'
+					React.createElement('div', { className: 'magnifying-glass' })
 				)
 			);
 		}
@@ -32317,7 +32346,7 @@
 			var NEWS_FEED_CONSTANT = "NEWS_FEED";
 			return React.createElement(
 				'div',
-				null,
+				{ className: 'news-feed' },
 				React.createElement(
 					'section',
 					{ className: 'main-sidebar-left clear-fix' },
@@ -33184,11 +33213,14 @@
 	var React = __webpack_require__(1);
 	var PostForm = __webpack_require__(252);
 	var PostIndex = __webpack_require__(253);
-	var UserUtil = __webpack_require__(259);
-	var UserStore = __webpack_require__(263);
 	var TimelineSidebar = __webpack_require__(264);
 	var TimelineHeader = __webpack_require__(265);
+	
+	var UserUtil = __webpack_require__(259);
+	var UserStore = __webpack_require__(263);
 	var SessionStore = __webpack_require__(228);
+	var FriendUtil = __webpack_require__(274);
+	var FriendRequestUtil = __webpack_require__(276);
 	var FriendStore = __webpack_require__(271);
 	var FriendRequestStore = __webpack_require__(272);
 	
@@ -33196,7 +33228,7 @@
 		displayName: 'Timeline',
 	
 		getInitialState: function () {
-			return { user: {}, currentUser: SessionStore.getCurrentUser() };
+			return { user: {}, currentUser: SessionStore.getCurrentUser(), friends: [] };
 		},
 	
 		componentDidMount: function () {
@@ -33204,8 +33236,10 @@
 			this.sessionListener = SessionStore.addListener(this._onSessionChange);
 			UserUtil.fetchTimelineUser(this.props.params.id);
 	
+			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
+			FriendUtil.fetchFriends(this.props.params.id);
+	
 			if (this.state.currentUser.id != this.props.params.id) {
-				this.friendsListener = FriendStore.addListener(this._onFriendsChange);
 				this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
 			}
 		},
@@ -33213,9 +33247,9 @@
 		componentWillUnmount: function () {
 			this.postListener.remove();
 			this.sessionListener.remove();
+			this.friendsListener.remove();
 	
-			if (this.friendsListener) {
-				this.friendsListener.remove();
+			if (this.friendRequestsListener) {
 				this.requestsListener.remove();
 			}
 		},
@@ -33229,6 +33263,13 @@
 			this.setState({ user: user });
 		},
 	
+		_onFriendsChange: function () {
+			var friends = FriendStore.getFriendsArr();
+			this.setState({ friends: friends });
+		},
+	
+		_onRequestsChange: function () {},
+	
 		_onSessionChange: function () {
 			var user = SessionStore.getCurrentUser();
 			this.setState({ currentUser: user });
@@ -33240,9 +33281,11 @@
 				'div',
 				null,
 				React.createElement(TimelineHeader, { user: this.state.user,
-					currentUser: this.state.currentUser }),
+					currentUser: this.state.currentUser,
+					friends: this.state.friends }),
 				React.createElement(TimelineSidebar, { user: this.state.user,
-					currentUser: this.state.currentUser }),
+					currentUser: this.state.currentUser,
+					friends: this.state.friends }),
 				React.createElement(
 					'section',
 					{ className: 'timeline-post-index' },
@@ -33357,8 +33400,8 @@
 	var TimelineTabs = __webpack_require__(266);
 	var TimelineButtons = __webpack_require__(267);
 	
-	var TimelineSidebar = React.createClass({
-	  displayName: 'TimelineSidebar',
+	var TimelineHeader = React.createClass({
+	  displayName: 'TimelineHeader',
 	
 	  render: function () {
 	    var user = this.props.user;
@@ -33381,7 +33424,8 @@
 	      React.createElement(
 	        'div',
 	        { className: 'timeline-header-tabs-container' },
-	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser }),
+	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser,
+	          friends: this.props.friends }),
 	        React.createElement(
 	          'div',
 	          { className: 'timeline-profile-pic-container clear-fix' },
@@ -33393,7 +33437,7 @@
 	  }
 	});
 	
-	module.exports = TimelineSidebar;
+	module.exports = TimelineHeader;
 
 /***/ },
 /* 266 */
@@ -33482,53 +33526,175 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
+	var FriendRequestUtil = __webpack_require__(276);
+	var FriendRequestStore = __webpack_require__(272);
 	
 	var TimelineButtons = React.createClass({
-	  displayName: 'TimelineButtons',
+		displayName: 'TimelineButtons',
 	
-	  render: function () {
-	    var user = this.props.user;
+		getInitialState: function () {
+			return { requestStatus: "none" };
+		},
 	
-	    return React.createElement(
-	      'ul',
-	      { className: 'timeline-header-buttons-list' },
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#' },
-	          'Friends'
-	        )
-	      ),
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#' },
-	          'Following'
-	        )
-	      ),
-	      React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'a',
-	          { href: '#' },
-	          'Message'
-	        )
-	      )
-	    );
-	  }
+		componentDidMount: function () {
+			this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
+			FriendRequestUtil.fetchRequestsWithUser(this.props.user.id);
+		},
+	
+		componentWillUnmount: function () {
+			this.requestListener.remove();
+		},
+	
+		addRequestStatus: function () {
+			var requestStatus = FriendRequestStore.isRequested();
+			this.setState({ requestStatus: requestStatus });
+		},
+	
+		handleFriendsClick: function (e) {
+			e.preventDefault();
+		},
+	
+		handleUpdateInfo: function (e) {
+			e.preventDefault();
+		},
+	
+		handleSendRequest: function (e) {
+			e.preventDefault();
+		},
+	
+		handleEditRequest: function (e) {
+			e.preventDefault();
+		},
+	
+		handleRespond: function (e) {
+			e.preventDefault();
+		},
+	
+		render: function () {
+			var user = this.props.user;
+			var friendButton = "Friends";
+	
+			var isFriend = false;
+			var currentUser = this.props.currentUser;
+			this.props.friends.forEach(function (friend) {
+				if (friend.id == currentUser.id) {
+					isFriend = true;
+				}
+			});
+	
+			if (isFriend) {
+				friendButton = React.createElement(
+					'a',
+					{ href: '#', onClick: this.handleFriendsClick, className: 'header-button-friends confirmed' },
+					React.createElement('img', { className: 'i1' }),
+					'Friends',
+					React.createElement('img', { className: 'tri-drop' })
+				);
+			} else if (this.props.user.id == this.props.currentUser.id) {
+				friendButton = React.createElement(
+					'a',
+					{ href: '#', onClick: this.handleUpdateInfo, className: 'header-button-friends update-info' },
+					'Update Info'
+				);
+			} else {
+				switch (this.state.requestStatus) {
+					case "none":
+						friendButton = React.createElement(
+							'a',
+							{ href: '#', onClick: this.handleSendRequest, className: 'header-button-request add-friend' },
+							React.createElement('img', { className: 'add' }),
+							'Add Friend'
+						);
+						break;
+					case "sent":
+						friendButton = React.createElement(
+							'a',
+							{ href: '#', onClick: this.handleEditRequest, className: 'header-button-request request-sent' },
+							'Friend Request Sent'
+						);
+						break;
+					case "received":
+						friendButton = React.createElement(
+							'a',
+							{ href: '#', onClick: this.handleRespond, className: 'header-button-request respond-to' },
+							'Respond to request'
+						);
+	
+						break;
+				}
+			}
+	
+			// <li><a href='#'>Following</a></li>
+			// <li><a href='#'>Message</a></li>
+	
+			return React.createElement(
+				'ul',
+				{ className: 'timeline-header-buttons-list' },
+				React.createElement(
+					'li',
+					null,
+					friendButton
+				)
+			);
+		}
 	});
 	
 	module.exports = TimelineButtons;
 
 /***/ },
 /* 268 */,
-/* 269 */,
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var FriendRequestConstants = __webpack_require__(270);
+	
+	var FriendRequestActions = {
+	  receiveUserRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.USER_REQUEST_RECEIVED,
+	      request: request
+	    });
+	  },
+	
+	  receiveNewRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.NEW_REQUEST_RECEIVED,
+	      request: request
+	    });
+	  },
+	
+	  receiveAcceptedFriendRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
+	      request: request
+	    });
+	  },
+	
+	  receiveRejectedFriendRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUEST_REJECTED,
+	      request: request
+	    });
+	  },
+	
+	  receivePendingRequests: function (requests) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUESTS_RECEIVED,
+	      requests: requests
+	    });
+	  }
+	};
+	
+	// requestDeleted: function (request) {
+	// 	Dispatcher.dispatch({
+	// 		actionType: FriendRequestConstants.POST_DELETED,
+	// 		request: request
+	// 	});
+	// }
+	module.exports = FriendRequestActions;
+
+/***/ },
 /* 270 */
 /***/ function(module, exports) {
 
@@ -33603,15 +33769,17 @@
 
 	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
-	var FriendRequestConstants = __webpack_require__(226);
+	var FriendRequestConstants = __webpack_require__(270);
 	var FriendRequestStore = new Store(Dispatcher);
 	
 	console.log('loaded FriendRequestStore!');
 	
 	var _requests = {};
 	
+	var _request = { id: "not set" };
+	
 	var setRequest = function (request) {
-	  _requests[request.id] = request;
+	  _request = request;
 	};
 	
 	var removeRequest = function (request) {
@@ -33625,19 +33793,14 @@
 	  });
 	};
 	
-	FriendRequestStore.isRequested = function (currentUserId, timelineId) {
-	  var request;
-	  for (var id in _requests) {
-	    request = _requests.id;
-	    if (request.sender_id == currentUserId && request.target_id == timelineId) {
-	      return "Request sent";
-	    }
-	    if (request.sender_id == timelineId && request.target_id == currentUserId) {
-	      return "Respond to request";
-	    }
+	FriendRequestStore.isRequested = function (timelineId) {
+	  if (_request.id == "NO REQUEST") {
+	    return "none";
+	  } else if (timelineId == _request.target_id) {
+	    return "sent";
+	  } else {
+	    return "received";
 	  }
-	
-	  return "Add Friend";
 	};
 	
 	FriendRequestStore.__onDispatch = function (payload) {
@@ -33678,6 +33841,144 @@
 		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
 		REQUEST_REJECTED: "REQUEST_REJECTED"
 	};
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendActions = __webpack_require__(275);
+	
+	var FriendUtil = {
+		fetchFriends: function (userId) {
+			ApiUtil.ajax({
+				url: "/api/friendships/" + userId,
+				method: "GET",
+				success: function (friends) {
+					FriendActions.receiveFriends(friends);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		removeFriend: function (friendshipId) {
+			ApiUtil.ajax({
+				url: "/api/posts/" + friendshipId,
+				method: "DELETE",
+				success: function (friendships) {
+					FriendActions.friendshipOver(friendships);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	};
+	module.exports = FriendUtil;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var FriendConstants = __webpack_require__(273);
+	
+	var FriendActions = {
+	  receiveFriends: function (friends) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDS_RECEIVED,
+	      friends: friends
+	    });
+	  },
+	
+	  friendshipEnded: function (friendships) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDSHIP_OVER,
+	      friendships: friendships
+	    });
+	  }
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendRequestActions = __webpack_require__(269);
+	
+	var FriendRequestUtil = {
+		fetchPendingRequests: function () {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "GET",
+				success: function (requests) {
+					FriendRequestActions.receivePendingRequests(requests);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		fetchRequestsWithUser: function (timelineId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + timelineId,
+				method: "GET",
+				success: function (request) {
+					FriendRequestActions.receiveUserRequest(request);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		createRequest: function (formData) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (request) {
+					FriendRequestActions.receiveNewRequest(request);
+					resetForms();
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		updateRequest: function (formData, requestId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + requestId,
+				method: "PATCH",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (request) {
+					// error handle
+					if (request.accepted) {
+						FriendRequestActions.receiveAcceptedRequest(request);
+					} else {
+						FriendRequestActions.receiveRejectedRequest(request);
+					}
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	
+	};
+	module.exports = FriendRequestUtil;
 
 /***/ }
 /******/ ]);

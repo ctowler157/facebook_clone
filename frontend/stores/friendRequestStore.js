@@ -1,14 +1,16 @@
 var Store = require('flux/utils').Store;
 var Dispatcher = require('../dispatcher/dispatcher');
-var FriendRequestConstants = require('../constants/sessionConstants');
+var FriendRequestConstants = require('../constants/friendRequestConstants');
 var FriendRequestStore = new Store(Dispatcher);
 
 console.log('loaded FriendRequestStore!');
 
 var _requests = {  };
 
+var _request = { id: "not set" };
+
 var setRequest = function (request) {
-  _requests[request.id] = request;
+  _request = request;
 };
 
 var removeRequest = function (request) {
@@ -23,21 +25,16 @@ var setRequests = function (requests) {
 };
 
 
-FriendRequestStore.isRequested = function (currentUserId, timelineId) {
-	var request;
-  for (var id in _requests) {
-		request = _requests.id;
-		if (request.sender_id == currentUserId &&
-			request.target_id == timelineId) {
-				return "Request sent";
-			}
-		if (request.sender_id == timelineId &&
-			request.target_id == currentUserId) {
-				return "Respond to request";
-		}
+FriendRequestStore.isRequested = function (timelineId) {
+	if (_request.id == "NO REQUEST") {
+		return "none";
 	}
-
-	return "Add Friend";
+	else if (timelineId == _request.target_id){
+		return "sent";
+	}
+	else {
+		return "received";
+	}
 };
 
 

@@ -26,15 +26,64 @@
 
 .timeline-header-buttons-list {
   list-style: none;
-  bottom: 15px;
   padding: 0;
   position: absolute;
-  right: 15px;
+  right: -246px;
+	bottom: 43px;
   width: 360px;
 }
 
 .timeline-header-buttons-list > li {
   float: left;
+}
+
+.timeline-header-buttons-list > li > a {
+	font-size: 12px;
+	line-height: 26px;
+	color: #4e5665;
+	text-shadow: 0 1px 0 #fff;
+  background-color: #f6f7f8;
+	font-family: helvetica, arial, sans-serif;
+	font-weight: bold;
+	padding: 5px 10px;
+	border: 1px solid;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+
+}
+
+.timeline-header-buttons-list > li > a.confirmed > img.i1 {
+	display: inline;
+	content: url(image_path('facebook_checkmark.png'));
+	height: 12px;
+	width: 12px;
+	background-size: auto;
+	vertical-align: middle;
+	margin-right: 4px;
+}
+
+.timeline-header-buttons-list > li > a.add-friend > img.add {
+	display: inline;
+	content: url(image_path('fakebook_add_friend.png'));
+	height: 12px;
+	width: 12px;
+	background-size: auto;
+	vertical-align: middle;
+	padding-bottom: 2.5px;
+	margin-right: 4px;
+	margin-left: 0px;
+}
+.timeline-header-buttons-list > li > a > img {
+	margin-left: 4px;
+}
+
+.tri-drop {
+	display: inline;
+	content: url(image_path('facebook_drop_triangle.png'));
+	width: 9px;
+	height: 8px;
+	background-position: -1px -1px;
+	background-size: auto;
 }
 
 .timeline-header-tabs-bar {

@@ -4,6 +4,11 @@ class Api::FriendshipsController < ApplicationController
 		render :index
 	end
 
+	def show
+		@friends = User.includes(:friends).find(params[:id]).friends.all
+		render :index
+	end
+
 	def create
 		@friendship = current_user.friendships.new(
 			friend_id: friendship_params[:friend_id]

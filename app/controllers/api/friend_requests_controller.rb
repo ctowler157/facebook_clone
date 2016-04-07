@@ -6,12 +6,11 @@ class Api::FriendRequestsController < ApplicationController
 			) || FriendRequest.find_by(
 			sender_id: current_user.id, target_id: params[:id]
 			)
-
-			if @request
-				render :show
-			else
-				render :json { id: "NO REQUEST" }
-			end
+		if @request
+			render :show
+		else
+			render :json => { id: "NO REQUEST" }
+		end
 	end
 
 	def index
@@ -47,7 +46,7 @@ class Api::FriendRequestsController < ApplicationController
 					friend_id: @request.target_id
 				)
 				corresponding_friendship = Friendship.new(
-					user_id: @request.target_id
+					user_id: @request.target_id,
 					friend_id: @request.sender_id,
 				)
 				Friendship.transaction do

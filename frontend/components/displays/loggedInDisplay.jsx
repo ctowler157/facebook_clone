@@ -12,7 +12,7 @@ var LoggedInDisplay = React.createClass({
 		// }
     var NEWS_FEED_CONSTANT = "NEWS_FEED";
 		return(
-			<div>
+			<div className="news-feed">
 				<section className="main-sidebar-left clear-fix">
 					<h3>Theres stuff in
             this sidebar</h3>

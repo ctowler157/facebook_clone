@@ -7,6 +7,9 @@ var NavButtons = React.createClass({
   //   router: React.PropTypes.object.isRequired
   // },
 
+	prevDef: function (e) {
+		e.preventDefault();
+	},
 
 
 	logOut: function () {
@@ -22,9 +25,25 @@ var NavButtons = React.createClass({
 	},
 
 	render: function () {
+		var user = this.props.user;
+
 		return(
 			<ul className="header-nav-right nav-buttons">
-				<li><h3>Welcome, { this.props.user.first_name }</h3></li>
+				<li><a className="left-buttons" href={ "#/user/" + user.id }>{ user.first_name }</a></li>
+				<li><a className="left-buttons home-button" href={ "#/" }>Home</a></li>
+				<li className="empty-li"></li>
+				<li>
+					<a href="#/requests" className="notis requests-button"
+						onClick={ this.prevDef }></a>
+				</li>
+				<li>
+					<a href="#/messages" className="notis messages-button"
+						onClick={ this.prevDef }></a>
+				</li>
+				<li>
+					<a href="#/notifications" className="notis notifications-button"
+						onClick={ this.prevDef }></a>
+				</li>
 				<li><button type="button" className="blue-button" onClick={ this.logOut }>Log Out</button></li>
 			</ul>
 		);

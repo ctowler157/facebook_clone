@@ -1,17 +1,20 @@
 var React = require('react');
 var PostForm = require('../forms/_postForm');
 var PostIndex = require('../posts/index');
-var UserUtil = require('../../util/userUtil');
-var UserStore = require('../../stores/userStore');
 var TimelineSidebar = require('./timelineSidebar');
 var TimelineHeader = require('./timelineHeader');
+
+var UserUtil = require('../../util/userUtil');
+var UserStore = require('../../stores/userStore');
 var SessionStore = require('../../stores/sessionStore');
+var FriendUtil = require('../../util/friendUtil');
+var FriendRequestUtil = require('../../util/friendRequestUtil');
 var FriendStore = require('../../stores/friendStore');
 var FriendRequestStore = require('../../stores/friendRequestStore');
 
 var Timeline = React.createClass({
 	getInitialState: function () {
-		return({ user: {}, currentUser: SessionStore.getCurrentUser() });
+		return({ user: {}, currentUser: SessionStore.getCurrentUser(), friends: [] });
 	},
 
 	componentDidMount: function () {
@@ -19,8 +22,10 @@ var Timeline = React.createClass({
     this.sessionListener = SessionStore.addListener(this._onSessionChange);
 		UserUtil.fetchTimelineUser(this.props.params.id);
 
+		this.friendsListener = FriendStore.addListener(this._onFriendsChange);
+		FriendUtil.fetchFriends(this.props.params.id);
+
 		if (this.state.currentUser.id != this.props.params.id){
-			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
 			this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
 		}
 	},
@@ -28,9 +33,9 @@ var Timeline = React.createClass({
 	componentWillUnmount: function () {
 		this.postListener.remove();
 		this.sessionListener.remove();
+		this.friendsListener.remove();
 
-		if (this.friendsListener) {
-			this.friendsListener.remove();
+		if (this.friendRequestsListener) {
 			this.requestsListener.remove();
 		}
 	},
@@ -43,6 +48,13 @@ var Timeline = React.createClass({
 		var user = UserStore.getTimelineUser();
 		this.setState({ user: user });
 	},
+
+	_onFriendsChange: function () {
+		var friends = FriendStore.getFriendsArr();
+		this.setState({ friends: friends });
+	},
+
+	_onRequestsChange: function() {},
 
 	_onSessionChange: function () {
 		var user = SessionStore.getCurrentUser();
@@ -60,9 +72,11 @@ var Timeline = React.createClass({
 		return(
 			<div>
         <TimelineHeader user={ this.state.user }
-          currentUser={ this.state.currentUser }/>
+          currentUser={ this.state.currentUser }
+					friends={ this.state.friends }/>
         <TimelineSidebar user={ this.state.user }
-          currentUser={ this.state.currentUser }/>
+          currentUser={ this.state.currentUser }
+					friends={ this.state.friends }/>
         <section className="timeline-post-index">
           { /*displayString*/ }
           <PostForm

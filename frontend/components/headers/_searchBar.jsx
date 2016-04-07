@@ -18,7 +18,9 @@ var PostForm = React.createClass({
 		return(
 			<div className="search-bar">
 				<input type="text" className="search-bar-input" value={ this.state.search} onChange={ this.updateSearch }/>
-				<button type="button" className="search-bar-submit">Search</button>
+				<button type="button" className="search-bar-submit">
+					 <div className="magnifying-glass"/>
+				</button>
 			</div>
 		);
 	}
