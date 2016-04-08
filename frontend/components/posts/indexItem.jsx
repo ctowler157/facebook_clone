@@ -1,6 +1,6 @@
 var React = require('react');
 var PostUtil = require('../../util/postUtil.js');
-// var Modal = require('react-modal');
+var Modal = require('react-modal');
 
 var PostIndexItem = React.createClass({
   getInitialState: function () {
@@ -155,51 +155,82 @@ var PostIndexItem = React.createClass({
       );
     }
 //---------------conditional rendering----------------------
-    if (this.state.editing === true){
-      return (
-        <li className="post-list-item edit-post">
-          <form>
-          <section className="post-item-header">
-            <div className="post-author-pic-thumb clear-fix" />
-            <button className="cancel-edit-button"
-              onClick={ this.cancelEdit }></button>
-            <div className="post-input-padding">
-              <input className="post-input" type="textArea" value={ this.state.body }
-                onChange={ this._updateBody }/>
-            </div>
-          </section>
-          <section className="bottom-of-post-form clear-fix">
-            <button className="submit-edit-button blue-button"
-              onClick={ this.submitEdit }>Save</button>
-          </section>
-        </form>
-  			</li>
-      );
-    } else {
+    // if (this.state.editing === true){
+    //   return (
+    //     <li className="post-list-item edit-post">
+    //       <form>
+    //         <section className="post-item-header">
+    //           <nav className="edit-post-heading">
+    //             <ul><li><h3 className="edit-status">Edit Post</h3></li></ul>
+    //             <button className="cancel-edit-button"
+    //               onClick={ this.cancelEdit }></button>
+    //           </nav>
+    //           <div className="post-pic-and-input post-form-version clear-fix">
+    //             <img className="profile-pic-thumb post-form-version"
+    //               src={ post.author.profile_pic_url } />
+    //             <div className="post-input-padding">
+    //               <input className="post-input" type="textArea" value={ this.state.body }
+    //                 onChange={ this._updateBody }/>
+    //             </div>
+    //           </div>
+    //         </section>
+    //         <section className="bottom-of-post-form clear-fix">
+    //           <button className="submit-edit-button blue-button"
+    //             onClick={ this.submitEdit }>Save</button>
+    //         </section>
+    //       </form>
+		// 	</li>
+    //   );
+    // } else {
+
+    var profileModalStyle = {
+      content : {
+        padding                 :  '0px',
+        top                     : '50%',
+        left                    : '50%',
+        right                   : 'auto',
+        bottom                  : 'auto',
+        marginRight             : '-50%',
+        transform               : 'translate(-50%, -50%)',
+        overflow                : 'hidden',
+        borderRadius           : '3px'
+      },
+      overlay : {
+        backgroundColor   : 'rgba(95, 95, 95, 0.75)'
+      }
+    };
   		return(
         // <div>
-        // <Modal
-        //   isOpen={this.state.modalIsOpen}
-        //   onRequestClose={this.closeModal}
-        //   style={customStyles} >
-        //     <form>
-        //       <section className="post-item-header">
-        //         <div className="post-author-pic-thumb clear-fix" />
-        //         <button className="cancel-edit-button"
-        //           onClick={ this.cancelEdit }></button>
-        //         <div className="post-input-padding">
-        //           <input className="post-input" type="textArea" value={ this.state.body }
-        //             onChange={ this._updateBody } onKeyDown={ this.handleKeyDown }/>
-        //         </div>
-        //       </section>
-        //       <section className="bottom-of-post-form clear-fix">
-        //         <button className="submit-edit-button blue-button"
-        //           onClick={ this.submitEdit }>Save</button>
-        //       </section>
-        //     </form>
-        // </Modal>
 
-  			<li className="post-list-item" id="modal-element">
+
+  			<li className="post-list-item">
+          <Modal
+            isOpen={this.state.editing}
+            onRequestClose={this.cancelEdit}
+            style={profileModalStyle} >
+            <form className="editing-form-window">
+              <section className="post-item-header">
+                <nav className="edit-post-heading">
+                  <ul><li><h3 className="edit-status">Edit Post</h3></li></ul>
+                  <button className="cancel-edit-button"
+                    onClick={ this.cancelEdit }></button>
+                </nav>
+                <div className="post-pic-and-input post-form-version clear-fix">
+                  <img className="profile-pic-thumb post-form-version"
+                    src={ post.author.profile_pic_url } />
+                  <div className="post-input-padding">
+                    <input className="post-input" type="textArea" value={ this.state.body }
+                      onChange={ this._updateBody }/>
+                  </div>
+                </div>
+              </section>
+              <section className="bottom-of-post-form clear-fix">
+                <button className="submit-edit-button blue-button"
+                  onClick={ this.submitEdit }>Save</button>
+              </section>
+            </form>
+          </Modal>
+
           <section className="post-item-header">
             <div className="post-author-pic-container clear-fix">
               <img className="profile-pic-thumb"
@@ -219,6 +250,6 @@ var PostIndexItem = React.createClass({
   	 );
    }
   }
-});
+);
 
 module.exports = PostIndexItem;

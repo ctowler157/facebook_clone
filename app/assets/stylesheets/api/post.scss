@@ -138,11 +138,24 @@ has p for body and p > a for name*/
   display: block;
 }
 
+.profile-pic-thumb.post-form-version {
+  display: inline-block;
+  background-color: #dfe3ee;
+}
+
 .post-pic-and-input {
   margin-left: 12px;
   margin-right: 12px;
   padding-top: 12px;
   border-top: 1px solid #d3d6db;
+}
+
+.post-pic-and-input.feed-version {
+  padding-bottom: 20px;
+}
+
+.post-pic-and-input.post-form-version {
+border: none ;
 }
 
 .post-form{
@@ -155,6 +168,30 @@ has p for body and p > a for name*/
   border-radius: 0 0 2px 2px;
   border-color: #e5e6e9 #dfe0e4 #d0d1d5;
   margin-top: 0px;
+}
+
+.edit-status {
+  margin: 0;
+  border: 0;
+  outline: 0;
+  padding: 0;
+
+  color: #141823;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: helvetica, arial, sans-serif;
+}
+
+.edit-post-heading {
+  padding: 12px 12px 13px;
+  border-bottom: 1px solid #d3d6db;
+}
+.editing-form-window {
+  box-shadow: 0 2px 26px rgba(0, 0, 0, .3), 0 0 0 1px rgba(0, 0, 0, .1);
+}
+.edit-post-heading > ul {
+  position: relative;
+  margin: 0px;
 }
 
 .news-feed-post-form {
@@ -182,9 +219,21 @@ has p for body and p > a for name*/
 }
 
 .timeline-post-form {
-  padding: 10px 12px 8px 12px;
+  padding: 0px 0px 8px 0px;
+  margin: 0 12px;
 }
 
+.timeline-post-form > ul > li {
+  margin-left: 12px;
+}
+
+.timeline-post-form > ul > li > a {
+  padding: 5px 12px 3px 21px;
+}
+
+.timeline-post-form > ul {
+
+}
 
 .post-form-top-nav > ul {
   font-family: helvetica, arial, sans-serif;
@@ -243,6 +292,10 @@ has p for body and p > a for name*/
 .post-list-item {
   box-sizing: border-box;
   position: relative;
+}
+
+.post-list-item {
+
 }
 
 .post-body-section {
@@ -317,8 +370,8 @@ has p for body and p > a for name*/
 
 .cancel-edit-button {
   position: absolute;
-  right: -1px;
-  top: -13px;
+  right: 15px;
+  top: 15px;
   width:12px;
   height: 12px;
   background-color: transparent;

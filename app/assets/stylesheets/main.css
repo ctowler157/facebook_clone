@@ -1,3 +1,7 @@
+.guest {
+  font-family: helvetica, arial, sans-serif;
+}
+
 .main {
   padding-top: 42px;
 	margin: 0 auto;
@@ -9,7 +13,8 @@
   max-width: 280px;
   margin-left: 10px;
   float: right;
-  background-color: red;
+  background-color: transparent;
+  color: #edf0f5;
 }
 
 .main-feed {
@@ -24,6 +29,7 @@
   max-width: 160px;
   margin-right: 10px;
 	float:left;
+  color: #edf0f5;
 	/*background-color: lightgreen;*/
 }
 

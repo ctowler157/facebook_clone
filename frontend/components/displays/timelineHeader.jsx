@@ -32,6 +32,22 @@ var TimelineHeader = React.createClass({
   render: function () {
     var user = this.props.user;
 
+    var coverButton;
+    var profileButton;
+
+    if (this.props.currentUser.id == user.id) {
+      coverButton = ( <a href="#/upload.cover.photo" className="edit-cover-button"
+          onClick={ this.openUploadCover }><i className="camera-icon" />
+        <div>Update Cover Photo</div>
+        </a> );
+      profileButton = (<a href="#/upload.profile.pic" className="edit-profile-pic-button"
+          onClick={ this.openUploadProfilePic }>
+          <i className="camera-icon" />
+          <div>Update Profile Picture</div>
+        </a>);
+
+    }
+
     var profileModalStyle = {
       content : {
         top                   : '50%',
@@ -66,11 +82,8 @@ var TimelineHeader = React.createClass({
         </Modal>
 
         <div className="timeline-cover-photo clear-fix">
-          <img className="timeline-cover-photo" src={ user.cover_photo_url }/>
-          <a href="#/upload.cover.photo" className="edit-cover-button"
-              onClick={ this.openUploadCover }><i className="camera-icon" />
-            <div>Update Cover Photo</div>
-            </a>
+          <img className="timeline-cover-photo cover-image" src={ user.cover_photo_url }/>
+          { coverButton }
           <a className="timeline-header-name"
             href="#">{ user.first_name } { user.last_name }</a>
         </div>
@@ -80,11 +93,7 @@ var TimelineHeader = React.createClass({
           <div className="timeline-profile-pic-container clear-fix">
             <img src={ user.profile_pic_url }
                 className="timeline-header-profile-picture" />
-              <a href="#/upload.profile.pic" className="edit-profile-pic-button"
-                onClick={ this.openUploadProfilePic }>
-                <i className="camera-icon" />
-                <div>Update Profile Picture</div>
-              </a>
+              { profileButton }
           </div>
           <TimelineTabs user={ user } currentUser={ this.props.currentUser }/>
         </div>

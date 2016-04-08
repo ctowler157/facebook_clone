@@ -36,3 +36,6 @@ chris.posts.create!(body: "This is getting too popular", timeline_id: chris.id)
 gigi.posts.create!(body: "Let me know if you're trying to find a puppy!", timeline_id: gigi.id)
 dan.posts.create!(body: "I smell really bad.  Also, I should really stop leaving my facebook logged in.", timeline_id: dan.id)
 patrick.posts.create!(body: "People shouldn't leave their facebook open!", timeline_id: patrick.id)
+
+Friendship.destroy_all
+FriendRequest.destroy_all

@@ -62,9 +62,9 @@ var TimelineButtons = React.createClass({
     FriendUtil.removeFriend(this.state.friendshipId);
 	},
 
-	// handleUpdateInfo: function (e) {
-	// 	e.preventDefault();
-	// },
+	_handleUpdateInfo: function (e) {
+		e.preventDefault();
+	},
 
 	handleSendRequest: function (e) {
 		e.preventDefault();
@@ -115,7 +115,7 @@ var TimelineButtons = React.createClass({
 			);
 		} else if (this.props.user.id == this.props.currentUser.id){
 				friendButton = (
-					<a href='#' onClick={ this._openEdit } className="header-button-friends update-info">Update Info</a>
+					<a href='#' onClick={ this._handleUpdateInfo } className="header-button-friends update-info">Update Info</a>
 				);
 		} else {
 			switch(this.state.requestStatus) {

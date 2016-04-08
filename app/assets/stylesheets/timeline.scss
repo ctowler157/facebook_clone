@@ -4,7 +4,7 @@
 	margin: 0 auto;
   height: 357px;
   /*red*/
-  background-color: #FF5454;
+  background-color: #fff;
   width: 850px;
   border: 1px solid;
   border-color: #d3d6db;
@@ -31,6 +31,7 @@
   right: 12px;
 	bottom: 43px;
   width: 360px;
+  z-index: 2;
 }
 
 .timeline-header-buttons-list > li {
@@ -142,6 +143,7 @@
 }
 
 .timeline-profile-pic-container {
+  z-index: 3;
   box-shadow: none;
   position: absolute;
   background: rgba(0, 0, 0, .3);
@@ -192,12 +194,25 @@ a.edit-profile-pic-button > div:hover {
 opacity: 0.8;
 }
 // --------------------Cover Photo-----------
-.timeline-cover-photo {
+div.timeline-cover-photo {
   width: 100%;
   position: relative;
   height: 312px;
   background-color: transparent;
+  z-index: 1;
 }
+
+.timeline-cover-photo.cover-image {
+  width: 100%;
+  height: auto;
+  min-height: 312px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  max-height: 312px;
+  background-color: transparent;
+}
+
 a.edit-profile-pic-button {
   width: 160px;
   position: absolute;
@@ -281,4 +296,94 @@ li.selected > span {
 	float:left;
   /*green*/
 	background-color: #AAFF54;
+}
+
+.timeline-sidebar-item.friend-grid {
+  background-color: #fff;
+  border: 1px solid #D8D8DB;
+  max-height: 311px;
+}
+
+.friend-grid-header {
+  margin: 0 12px;
+  padding: 12px 0;
+}
+
+.friends-symbol-button {
+  background-image: url(image_path('friend_icon.png'));
+  background-size: auto;
+  width: 24px;
+  height: 24px;
+  background-position: 0 -462px;
+  float: left;
+  margin-right: 9px;
+
+
+}
+
+.friend-grid-text {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: normal;
+  color: #141823;
+  font-family: helvetica, arial, sans-serif;
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+  padding-top: 4px;
+}
+
+.friend-grid-text:hover {
+  text-decoration: underline;
+}
+
+.friend-count {
+  color: #9197a3;
+  font-size: 14px;
+  line-height: 18px;
+  display: inline;
+  margin-left: 10px;
+}
+
+.friends-grid-container {
+  // height: 311px;
+  width: 311px;
+  margin: 6px;
+  overflow: hidden;
+}
+
+.friend-icon-list {
+  margin: 0;
+  padding: 0;
+}
+
+.friend-icon-list > li {
+  margin: 0px;
+}
+
+.friend-icon-item {
+  position: relative;
+  height: 100px;
+  width: 100px;
+  margin: 6px;
+
+}
+
+.friend-profile-thumb {
+  width: 99px;
+  height: auto;
+  border: 1px solid #ddd;
+  background-color: #dfe3ee;
+
+}
+
+.friend-name {
+  position: absolute;
+  font-size: 12px;
+  line-height: 16px;
+  font-family: helvetica, arial, sans-serif;
+  color: #fff;
+  bottom: 10px;
+  left: 10px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);;
 }

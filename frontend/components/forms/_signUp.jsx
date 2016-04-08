@@ -39,6 +39,17 @@ var SignUp = React.createClass({
     }
   },
 
+  signInAsGuest: function(e) {
+    e.preventDefault();
+    var data = new FormData();
+    data.append("user[email]", "guest");
+    data.append("user[first_name]", "Tulazy");
+    data.append("user[last_name]", "Tusynup");
+    data.append("user[password]", "123456");
+
+    UserUtil.trySignUp(data);
+  },
+
 	render: function () {
     var months = [
       "Month",
@@ -101,7 +112,12 @@ var SignUp = React.createClass({
         </select>
 
 				<input className="sign-up-button blue-button" type="submit" value="Sign Up"/>
+        <br/>
+        <br/>
+        <br/>
+        <a href="#" className="blue-button guest" onClick={ this.signInAsGuest }>Sign in as Guest</a>
 			</form>
+
 		);
 	}
 });

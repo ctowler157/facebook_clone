@@ -43,7 +43,7 @@ var PostForm = React.createClass({
 	},
 
 	render: function () {
-    var navClass = "post-form-top-nav clear-fix";
+    var navClass = "post-form-top-nav";
     // var navItems = ["Post", "Photo/Video"];
     var navItems = ["Post", "Photo"];
 
@@ -58,11 +58,11 @@ var PostForm = React.createClass({
         navItems = ["Status", "Photo"];
       }
     }
-
+    var preventDefault = this.preventRedirect;
     var navItemsList = (navItems.map(function (item, i) {
       return (
         <li key={ i }>
-          <a href="#" onClick={ this.preventRedirect }>{ item }</a>
+          <a href="#" onClick={ preventDefault }>{ item }</a>
         </li>
       );
     }));
@@ -76,13 +76,14 @@ var PostForm = React.createClass({
 		return(
 			<div className="post-form">
         { navBar }
-        <div className="post-pic-and-input clear-fix">
-          <div className="post-author-pic-thumb clear-fix"/>
-        <div className="post-input-padding">
-          <input type="textarea" className="post-form-body-input post-input"
-              value={ this.state.body} onChange={ this.updateBody }/>
+        <div className="post-pic-and-input feed-version clear-fix">
+          <img className="profile-pic-thumb post-form-version"
+            src={ this.props.user.profile_pic_url } />
+          <div className="post-input-padding">
+            <input type="textarea" className="post-form-body-input post-input"
+                value={ this.state.body} onChange={ this.updateBody }/>
+          </div>
         </div>
-      </div>
         <div className="bottom-of-post-form clear-fix">
           <button type="button" className="post-form-submit blue-button"
             onClick={ this.handleClick }>Post</button>
