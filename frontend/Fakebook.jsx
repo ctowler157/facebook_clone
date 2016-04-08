@@ -44,8 +44,9 @@ var ensureLoggedIn = function (nextState, replace, completion) {
 };
 // Test code
 // var FriendRequestUtil = require('./util/FriendRequestUtil');
-
+var Modal = require('react-modal');
 document.addEventListener("DOMContentLoaded", function(event) {
+  Modal.setAppElement(document.body);
   ReactDOM.render(
     <Router history={hashHistory}>{routes}</Router>, document.getElementById('root')
   );

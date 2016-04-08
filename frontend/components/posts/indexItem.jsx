@@ -1,19 +1,6 @@
 var React = require('react');
 var PostUtil = require('../../util/postUtil.js');
 // var Modal = require('react-modal');
-//
-// var customStyles = {
-//   content : {
-//     top                   : '50%',
-//     left                  : '50%',
-//     right                 : 'auto',
-//     bottom                : 'auto',
-//     marginRight           : '-50%',
-//     transform             : 'translate(-50%, -50%)'
-//   }
-// };
-// var appElement = document.getElementById('modal-element');
-// Modal.setAppElement(appElement); do this in component did mount?
 
 var PostIndexItem = React.createClass({
   getInitialState: function () {
@@ -214,7 +201,10 @@ var PostIndexItem = React.createClass({
 
   			<li className="post-list-item" id="modal-element">
           <section className="post-item-header">
-            <div className="post-author-pic-thumb clear-fix" />
+            <div className="post-author-pic-container clear-fix">
+              <img className="profile-pic-thumb"
+                src={ post.author.profile_pic_url } />
+            </div>
             { menuButton }
             <div>{ authorString }{ postArrow }{ recipientString }</div>
             <p className="timestamp">{ elapsed }</p>

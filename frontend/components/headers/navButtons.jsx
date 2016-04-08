@@ -29,7 +29,11 @@ var NavButtons = React.createClass({
 
 		return(
 			<ul className="header-nav-right nav-buttons">
-				<li><a className="left-buttons" href={ "#/user/" + user.id }>{ user.first_name }</a></li>
+				<li>
+          <a className="left-buttons user-name" href={ "#/user/" + user.id }
+            ><img src={ user.profile_pic_url } className="tiny-profile-pic-thumb"
+            /><span className="user-name-button">{ user.first_name }</span></a>
+        </li>
 				<li><a className="left-buttons home-button" href={ "#/" }>Home</a></li>
 				<li className="empty-li"></li>
 				<li>

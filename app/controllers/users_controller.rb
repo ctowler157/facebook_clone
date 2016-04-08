@@ -14,13 +14,17 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    @user = current_user
+    if @user.update(user_params)
+      render :show
+    else
+      render :json => @user.errors.full_messages
+    end
+  end
+
 	def show
 		@user = User.find(params[:id]);
-		# @user[:password_digest] = nil
-		# @user[:session_token] = nil
-		# @user[:created_at] = nil
-		# @user[:updated_at] = nil
-
 		render :show
 	end
 
@@ -36,13 +40,16 @@ class UsersController < ApplicationController
 
   def user_params
     user_params = parse_user_params
-    user_params[:birthday] = parse_birthday
+    if params[:birthday]
+      user_params[:birthday] = parse_birthday
+    end
     user_params
   end
 
   def parse_user_params
     params.require(:user).permit(
-    :password, :email, :first_name, :last_name, :birthday
+    :password, :email, :first_name, :last_name, :birthday,
+    :profile_pic, :cover_photo
     )
   end
 end

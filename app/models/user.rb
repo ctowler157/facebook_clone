@@ -2,6 +2,12 @@ class User < ActiveRecord::Base
   validates :email, :password_digest, :session_token, presence: true
   validates :password, length: { minimum: 6, allow_nil: true }
 
+  has_attached_file :profile_pic, default_url: "avatar.png"
+  validates_attachment_content_type :profile_pic, content_type: /\Aimage\/.*\Z/
+
+  has_attached_file :cover_photo, default_url: "default_cover.png"
+  validates_attachment_content_type :cover_photo, content_type: /\Aimage\/.*\Z/
+
   attr_reader :password
 
   has_many :posts, foreign_key: :author_id

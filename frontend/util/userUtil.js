@@ -33,6 +33,21 @@ var UserUtil = {
 		});
 	},
 
+  updateBio: function (id, formData) {
+    ApiUtil.ajax({
+			url: "/users/" + id,
+			method: "PATCH",
+      form: true,
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (user) {
+        UserActions.receiveNewBio(user);
+      },
+			error: function (response) { console.log("FAILURE\n" + response); },
+		});
+  }
+
 };
 
 module.exports = UserUtil;

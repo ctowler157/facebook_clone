@@ -7,6 +7,13 @@ var UserActions = {
       actionType: UserConstants.TIMELINE_USER_RECEIVED,
       user: user
     });
+  },
+
+  receiveNewBio: function (user) {
+    Dispatcher.dispatch({
+      actionType: UserConstants.BIO_RECEIVED,
+      user: user
+    });
   }
 };
 

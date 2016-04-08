@@ -2,11 +2,12 @@ var React = require('react');
 var FriendRequestUtil = require('../../util/friendRequestUtil');
 var FriendRequestStore = require('../../stores/friendRequestStore');
 var FriendUtil = require('../../util/friendUtil');
-// var FriendStore = require('../../stores/friendStore');
+var Modal = require('react-modal');
 
 var TimelineButtons = React.createClass({
 	getInitialState: function () {
-		return ({ requestStatus: "no request", friendshipId: "no friendship" });
+		return ({ requestStatus: "no request", friendshipId: "no friendship",
+      editingBio: false });
 	},
 
 	componentDidMount: function () {
@@ -61,9 +62,9 @@ var TimelineButtons = React.createClass({
     FriendUtil.removeFriend(this.state.friendshipId);
 	},
 
-	handleUpdateInfo: function (e) {
-		e.preventDefault();
-	},
+	// handleUpdateInfo: function (e) {
+	// 	e.preventDefault();
+	// },
 
 	handleSendRequest: function (e) {
 		e.preventDefault();
@@ -86,6 +87,16 @@ var TimelineButtons = React.createClass({
     FriendRequestUtil.updateRequest(response, req.id);
 	},
 
+  // _openEdit: function (e) {
+  //   e.preventDefault();
+  //   this.setState({ editingBio: true });
+  // },
+  //
+  // _closeEdit: function () {
+  //   // e.preventDefault();
+  //   this.setState({ editingBio: false });
+  // },
+
   render: function () {
     var user = this.props.user;
 		var friendButton = "Friends";
@@ -104,7 +115,7 @@ var TimelineButtons = React.createClass({
 			);
 		} else if (this.props.user.id == this.props.currentUser.id){
 				friendButton = (
-					<a href='#' onClick={ this.handleUpdateInfo } className="header-button-friends update-info">Update Info</a>
+					<a href='#' onClick={ this._openEdit } className="header-button-friends update-info">Update Info</a>
 				);
 		} else {
 			switch(this.state.requestStatus) {
@@ -128,15 +139,23 @@ var TimelineButtons = React.createClass({
 		}
 
 
+    // <li><a href='#'>Following</a></li>
+    // <li><a href='#'>Message</a></li>
 
 
-		// <li><a href='#'>Following</a></li>
-		// <li><a href='#'>Message</a></li>
+    // <Modal
+    //   isOpen={ this.state.editingBio }
+    //   onRequestClose={ this._closeEdit }>
+    //   <h1>Hello Modal!</h1>
+    // </Modal>
 
 		return(
-			<ul className="timeline-header-buttons-list">
-        <li>{ friendButton }</li>
-      </ul>
+
+      <div>
+        <ul className="timeline-header-buttons-list">
+          <li>{ friendButton }</li>
+        </ul>
+      </div>
 		);
 	}
 });

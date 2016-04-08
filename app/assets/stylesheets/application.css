@@ -14,7 +14,7 @@
  *= require_tree .
  */
 
-body, header, a, div, button, p {
+body, header, a, div, button, p, span {
   margin: 0;
   border: 0;
   outline: 0;

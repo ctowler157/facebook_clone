@@ -5,7 +5,12 @@ var TimelineSidebar = React.createClass({
   render: function () {
 		return(
 			<section className="timeline-sidebar clear-fix">
-        this will be the sidebar for { this.props.user.first_name }
+        <section className="timeline-sidebar-item user-bio">
+          This will be the bio
+        </section>
+        <section className="timeline-sidebar-item friends-grid">
+          This will be the friends grid
+        </section>
       </section>
 		);
 	}

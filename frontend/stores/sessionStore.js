@@ -24,10 +24,9 @@ SessionStore.userFetched = function () {
 
 SessionStore.getCurrentUser = function () {
   var user = {};
-	user.id = _currentUser.id;
-	user.email = _currentUser.email;
-	user.online = _currentUser.online;
-  user.first_name = _currentUser.first_name;
+  for (var id in _currentUser) {
+    user[id] = _currentUser[id];
+  }
 	return user;
 };
 

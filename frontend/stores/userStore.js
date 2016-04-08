@@ -48,6 +48,11 @@ UserStore.__onDispatch = function (payload) {
 			timelineUserFetched = true;
       UserStore.__emitChange();
       break;
+    case UserConstants.BIO_RECEIVED:
+      setTimelineUser(payload.user);
+			timelineUserFetched = true;
+      UserStore.__emitChange();
+      break;
     // case UserConstants.NO_USER_RECEIVED:
 		// 	timelineUserFetched = true;
     //   UserStore.__emitChange();

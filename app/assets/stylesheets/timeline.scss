@@ -129,16 +129,16 @@
 .timeline-header-tabs > li > a:hover {
   cursor: pointer;
 }
-
+// ------------Profile Pic ------------------
 .timeline-header-profile-picture {
-  position: absolute;
+  display: block;
   width: 160px;
-  height: 160px;
+  height: auto;
   border: 4px solid #fff;
   border-radius: 2px;
   margin: 0;
   /*purple*/
-  background-color: #AA54FF;
+  background-color: #dfe3ee;
 }
 
 .timeline-profile-pic-container {
@@ -152,13 +152,98 @@
   padding: 1px;
 }
 
+a.edit-profile-pic-button {
+  width: 160px;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
+
+i.camera-icon {
+  position: absolute;
+  z-index: 3;
+
+  background-image: url(image_path('fakebook_camera.png'));
+  width: 26px;
+  height: 21px;
+  background-position: -26px -19px;
+  bottom: 15px;
+  left: 5px;
+  opacity: 1;
+  transform: none;
+}
+
+
+a.edit-profile-pic-button > div {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 700;
+  line-height: 1.34;
+  font-size: 12px;
+  font-family: helvetica, arial, sans-serif;
+  color: #fff;
+  padding: 10px 12px 10px 35px;
+
+  background-color: #000;
+  opacity: 0;
+  transition: opacity .13s ease-out;
+}
+
+a.edit-profile-pic-button > div:hover {
+opacity: 0.8;
+}
+// --------------------Cover Photo-----------
 .timeline-cover-photo {
   width: 100%;
   position: relative;
   height: 312px;
   background-color: transparent;
 }
+a.edit-profile-pic-button {
+  width: 160px;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
 
+i.camera-icon {
+  position: absolute;
+  z-index: 3;
+
+  background-image: url(image_path('fakebook_camera.png'));
+  width: 26px;
+  height: 21px;
+  background-position: -26px -19px;
+  bottom: 15px;
+  left: 5px;
+  opacity: 1;
+  transform: none;
+}
+
+a.edit-cover-button {
+  width: 160px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+a.edit-cover-button > div {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 700;
+  line-height: 1.34;
+  font-size: 12px;
+  font-family: helvetica, arial, sans-serif;
+  color: #fff;
+  padding: 10px 12px 10px 35px;
+
+  background-color: #000;
+  opacity: 0;
+  transition: opacity .13s ease-out;
+}
+
+a.edit-cover-button > div:hover {
+opacity: 0.8;
+}
+// --------------------------------------------------
 h6.friends-button-mutual-friends {
   display: inline;
   vertical-align: middle;
