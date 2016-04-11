@@ -1,5 +1,6 @@
 var React = require('react');
 var UserUtil = require('../../util/userUtil');
+var SessionUtil = require('../../util/sessionUtil');
 
 var SignUp = React.createClass({
   getInitialState: function () {
@@ -42,12 +43,10 @@ var SignUp = React.createClass({
   signInAsGuest: function(e) {
     e.preventDefault();
     var data = new FormData();
-    data.append("user[email]", "guest");
-    data.append("user[first_name]", "Tulazy");
-    data.append("user[last_name]", "Tusynup");
+    data.append("user[email]", "guestEmail");
     data.append("user[password]", "123456");
 
-    UserUtil.trySignUp(data);
+    SessionUtil.tryLogIn(data);
   },
 
 	render: function () {

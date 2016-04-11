@@ -53,7 +53,7 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(216);
-	var Timeline = __webpack_require__(262);
+	var Timeline = __webpack_require__(282);
 	var LogIn = __webpack_require__(218);
 	var SessionStore = __webpack_require__(228);
 	var SessionUtil = __webpack_require__(219);
@@ -89,7 +89,7 @@
 	};
 	// Test code
 	// var FriendRequestUtil = require('./util/FriendRequestUtil');
-	var Modal = __webpack_require__(274);
+	var Modal = __webpack_require__(256);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	  Modal.setAppElement(document.body);
 	  ReactDOM.render(React.createElement(
@@ -24777,7 +24777,7 @@
 	var SessionStore = __webpack_require__(228);
 	var SessionUtil = __webpack_require__(219);
 	var LoggedInDisplay = __webpack_require__(251);
-	var LoggedOutDisplay = __webpack_require__(256);
+	var LoggedOutDisplay = __webpack_require__(276);
 	
 	module.exports = React.createClass({
 		displayName: 'exports',
@@ -32635,7 +32635,7 @@
 
 	var React = __webpack_require__(1);
 	var PostUtil = __webpack_require__(248);
-	var Modal = __webpack_require__(274);
+	var Modal = __webpack_require__(256);
 	
 	var PostIndexItem = React.createClass({
 	  displayName: 'PostIndexItem',
@@ -32976,1171 +32976,20 @@
 /* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(252);
-	var PostIndex = __webpack_require__(253);
-	var ConnectWithFriends = __webpack_require__(257);
-	var SignUp = __webpack_require__(258);
+	module.exports = __webpack_require__(257);
 	
-	var LoggedOutDisplay = React.createClass({
-		displayName: 'LoggedOutDisplay',
-	
-		render: function () {
-			return React.createElement(
-				'div',
-				{ className: 'signed-out-homepage' },
-				React.createElement(
-					'section',
-					{ className: 'connect-with-friends' },
-					React.createElement(ConnectWithFriends, null)
-				),
-				React.createElement(
-					'section',
-					{ className: 'sign-up-homepage' },
-					React.createElement(SignUp, null)
-				)
-			);
-		}
-	});
-	
-	module.exports = LoggedOutDisplay;
+
 
 /***/ },
 /* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	
-	var ConnectWithFriends = React.createClass({
-		displayName: "ConnectWithFriends",
-	
-	
-		render: function () {
-			var strings = [];
-			strings.push(["See photos and updates", "from friends in News Feed."]);
-			strings.push(["Share what's new", "in your life on your Timeline."]);
-			strings.push(["Find more", "of what you're looking for with Facebook Search."]);
-	
-			var images = ["connect-images photosCI", "connect-images shareCI", "connect-images findCI"];
-			var htmlMaker = function (image, bold, plain) {
-				return React.createElement(
-					"div",
-					{ className: "connect-bullet-item" },
-					React.createElement("div", { className: image }),
-					React.createElement(
-						"div",
-						{ className: "connect-bullet-text" },
-						React.createElement(
-							"p",
-							{ className: "connect-bullet-text-bold" },
-							bold
-						),
-						React.createElement(
-							"p",
-							{ className: "connect-bullet-text-plain" },
-							plain
-						)
-					)
-				);
-			};
-	
-			bullet0 = htmlMaker(images[0], strings[0][0], strings[0][1]);
-			bullet1 = htmlMaker(images[1], strings[1][0], strings[1][1]);
-			bullet2 = htmlMaker(images[2], strings[2][0], strings[2][1]);
-	
-			return React.createElement(
-				"div",
-				{ className: "connect-with-friends" },
-				React.createElement(
-					"h2",
-					{ className: "connect-with-header" },
-					" Connect with friends and the",
-					React.createElement("br", null),
-					"world around you on Facebook. "
-				),
-				React.createElement(
-					"div",
-					{ className: "connect-bullets" },
-					bullet0,
-					bullet1,
-					bullet2
-				)
-			);
-		}
-	});
-	
-	module.exports = ConnectWithFriends;
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
-	
-	var SignUp = React.createClass({
-	  displayName: 'SignUp',
-	
-	  getInitialState: function () {
-	    return { errors: [] };
-	  },
-	
-	  _handleSubmit: function (event) {
-	    event.preventDefault();
-	    var form = event.currentTarget;
-	    var result = this.validateForm(form);
-	    if (result.valid) {
-	      var data = new FormData(form);
-	      UserUtil.trySignUp(data);
-	    } else {
-	      this.setState({ errors: result.errors });
-	    }
-	  },
-	
-	  validateForm: function (form) {
-	    var result = { valid: true };
-	    // validate entries haha
-	    // if (form.)
-	    return result;
-	  },
-	
-	  clearInput: function (e) {
-	    var input = e.currentTarget;
-	    if (input.value === input.defaultValue) {
-	      input.value = "";
-	    }
-	  },
-	
-	  resetInput: function (e) {
-	    var input = e.currentTarget;
-	    if (input.value === "") {
-	      input.value = input.defaultValue;
-	    }
-	  },
-	
-	  signInAsGuest: function (e) {
-	    e.preventDefault();
-	    var data = new FormData();
-	    data.append("user[email]", "guest");
-	    data.append("user[first_name]", "Tulazy");
-	    data.append("user[last_name]", "Tusynup");
-	    data.append("user[password]", "123456");
-	
-	    UserUtil.trySignUp(data);
-	  },
-	
-	  render: function () {
-	    var months = ["Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	
-	    var dates = ["Day"];
-	    for (var i = 1; i < 32; i++) {
-	      dates.push(i);
-	    }
-	
-	    var years = ["Year"];
-	    for (i = 2016; i > 1904; i--) {
-	      years.push(i);
-	    }
-	
-	    var selector = function (thing, i) {
-	      return React.createElement(
-	        'option',
-	        { key: i, value: thing },
-	        thing
-	      );
-	    };
-	
-	    return React.createElement(
-	      'form',
-	      { ref: 'signUpForm', className: 'sign-up-form', onSubmit: this._handleSubmit },
-	      React.createElement('input', { className: 'first-name-input', type: 'text',
-	        name: 'user[first_name]', defaultValue: 'First name',
-	        onFocus: this.clearInput, onBlur: this.resetInput }),
-	      React.createElement('input', { className: 'last-name-input', type: 'text',
-	        name: 'user[last_name]', defaultValue: 'Last name',
-	        onFocus: this.clearInput, onBlur: this.resetInput }),
-	      React.createElement('input', { className: 'email-input', type: 'text',
-	        name: 'user[email]', defaultValue: 'Email',
-	        onFocus: this.clearInput, onBlur: this.resetInput }),
-	      React.createElement('input', { className: 'email-verify-input', type: 'text',
-	        name: 'user[email_verify]', defaultValue: 'Re-enter email',
-	        onFocus: this.clearInput, onBlur: this.resetInput }),
-	      React.createElement('input', { className: 'password-input', type: 'password',
-	        name: 'user[password]', defaultValue: 'New password',
-	        onFocus: this.clearInput, onBlur: this.resetInput }),
-	      React.createElement(
-	        'select',
-	        { name: 'birthday[month]' },
-	        months.map(selector)
-	      ),
-	      React.createElement(
-	        'select',
-	        { name: 'birthday[date]' },
-	        dates.map(selector)
-	      ),
-	      React.createElement(
-	        'select',
-	        { name: 'birthday[year]' },
-	        years.map(selector)
-	      ),
-	      React.createElement('input', { className: 'sign-up-button blue-button', type: 'submit', value: 'Sign Up' }),
-	      React.createElement('br', null),
-	      React.createElement('br', null),
-	      React.createElement('br', null),
-	      React.createElement(
-	        'a',
-	        { href: '#', className: 'blue-button guest', onClick: this.signInAsGuest },
-	        'Sign in as Guest'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = SignUp;
-
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var SessionActions = __webpack_require__(221);
-	var UserActions = __webpack_require__(260);
-	
-	var UserUtil = {
-		fetchTimelineUser: function (id) {
-			ApiUtil.ajax({
-				url: "/users/" + id,
-				method: "GET",
-				success: function (user) {
-					UserActions.receiveTimelineUser(user);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		trySignUp: function (formData) {
-	
-			ApiUtil.ajax({
-				url: "/users",
-				method: "POST",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (user) {
-					user.type = "new";
-					SessionActions.receiveCurrentUser(user);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		updateBio: function (id, formData) {
-			ApiUtil.ajax({
-				url: "/users/" + id,
-				method: "PATCH",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (user) {
-					UserActions.receiveNewBio(user);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	
-	};
-	
-	module.exports = UserUtil;
-
-/***/ },
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var UserConstants = __webpack_require__(261);
-	
-	var UserActions = {
-	  receiveTimelineUser: function (user) {
-	    Dispatcher.dispatch({
-	      actionType: UserConstants.TIMELINE_USER_RECEIVED,
-	      user: user
-	    });
-	  },
-	
-	  receiveNewBio: function (user) {
-	    Dispatcher.dispatch({
-	      actionType: UserConstants.BIO_RECEIVED,
-	      user: user
-	    });
-	  }
-	};
-	
-	module.exports = UserActions;
-
-/***/ },
-/* 261 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  TIMELINE_USER_RECEIVED: "TIMELINE_USER_RECEIVED",
-	  BIO_RECEIVED: "BIO_RECEIVED"
-	};
-
-/***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(252);
-	var PostIndex = __webpack_require__(253);
-	var TimelineSidebar = __webpack_require__(263);
-	var TimelineHeader = __webpack_require__(264);
-	
-	var UserUtil = __webpack_require__(259);
-	var UserStore = __webpack_require__(295);
-	var SessionStore = __webpack_require__(228);
-	var FriendUtil = __webpack_require__(271);
-	var FriendRequestUtil = __webpack_require__(267);
-	var FriendStore = __webpack_require__(296);
-	var FriendRequestStore = __webpack_require__(270);
-	
-	var Timeline = React.createClass({
-		displayName: 'Timeline',
-	
-		getInitialState: function () {
-			return { user: {}, currentUser: SessionStore.getCurrentUser(), friends: [] };
-		},
-	
-		componentDidMount: function () {
-			this.postListener = UserStore.addListener(this._onChange);
-			this.sessionListener = SessionStore.addListener(this._onSessionChange);
-			UserUtil.fetchTimelineUser(this.props.params.id);
-	
-			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
-			FriendUtil.fetchFriends(this.props.params.id);
-	
-			if (this.state.currentUser.id != this.props.params.id) {
-				this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
-			}
-		},
-	
-		componentWillUnmount: function () {
-			this.postListener.remove();
-			this.sessionListener.remove();
-			this.friendsListener.remove();
-	
-			if (this.friendRequestsListener) {
-				this.requestsListener.remove();
-			}
-		},
-	
-		componentWillReceiveProps: function (newProps) {
-			UserUtil.fetchTimelineUser(newProps.params.id);
-		},
-	
-		_onChange: function () {
-			var user = UserStore.getTimelineUser();
-			this.setState({ user: user });
-		},
-	
-		_onFriendsChange: function () {
-			var friends = FriendStore.getFriendsArr();
-			this.setState({ friends: friends });
-		},
-	
-		_onRequestsChange: function () {},
-	
-		_onSessionChange: function () {
-			var user = SessionStore.getCurrentUser();
-			this.setState({ currentUser: user });
-		},
-	
-		render: function () {
-	
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(TimelineHeader, { userId: this.props.params.id, user: this.state.user,
-					currentUser: this.state.currentUser,
-					friends: this.state.friends }),
-				React.createElement(TimelineSidebar, { user: this.state.user,
-					currentUser: this.state.currentUser,
-					friends: this.state.friends }),
-				React.createElement(
-					'section',
-					{ className: 'timeline-post-index' },
-					React.createElement(PostForm, {
-						timelineId: this.props.params.id,
-						user: this.state.currentUser }),
-					React.createElement(PostIndex, { timelineId: this.props.params.id, user: this.state.currentUser })
-				)
-			);
-		}
-	});
-	
-	module.exports = Timeline;
-
-/***/ },
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
-	var FriendBox = __webpack_require__(297);
-	
-	var TimelineSidebar = React.createClass({
-	  displayName: 'TimelineSidebar',
-	
-	  render: function () {
-	    // <section className="timeline-sidebar-item user-bio">
-	    //   This will be the bio
-	    // </section>
-	    return React.createElement(
-	      'section',
-	      { className: 'timeline-sidebar clear-fix' },
-	      React.createElement(FriendBox, { friends: this.props.friends,
-	        user: this.props.user })
-	    );
-	  }
-	});
-	
-	module.exports = TimelineSidebar;
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
-	var TimelineTabs = __webpack_require__(265);
-	var TimelineButtons = __webpack_require__(266);
-	var Modal = __webpack_require__(274);
-	var FileUploadForm = __webpack_require__(294);
-	
-	var TimelineHeader = React.createClass({
-	  displayName: 'TimelineHeader',
-	
-	  getInitialState: function () {
-	    return { profilePicUrl: "", coverPhotoUrl: "",
-	      openUploadPro: false, openUploadCover: false
-	    };
-	  },
-	
-	  // -------------Picture Uploads---------------
-	  openUploadProfilePic: function (e) {
-	    e.preventDefault();
-	    this.setState({ openUploadPro: true });
-	  },
-	  closeUploadProfilePic: function () {
-	    this.setState({ openUploadPro: false });
-	  },
-	  openUploadCover: function (e) {
-	    e.preventDefault();
-	    this.setState({ openUploadCover: true });
-	  },
-	  closeUploadCover: function () {
-	    this.setState({ openUploadCover: false });
-	  },
-	
-	  // -------------------------------------------
-	  render: function () {
-	    var user = this.props.user;
-	
-	    var coverButton;
-	    var profileButton;
-	
-	    if (this.props.currentUser.id == user.id) {
-	      coverButton = React.createElement(
-	        'a',
-	        { href: '#/upload.cover.photo', className: 'edit-cover-button',
-	          onClick: this.openUploadCover },
-	        React.createElement('i', { className: 'camera-icon' }),
-	        React.createElement(
-	          'div',
-	          null,
-	          'Update Cover Photo'
-	        )
-	      );
-	      profileButton = React.createElement(
-	        'a',
-	        { href: '#/upload.profile.pic', className: 'edit-profile-pic-button',
-	          onClick: this.openUploadProfilePic },
-	        React.createElement('i', { className: 'camera-icon' }),
-	        React.createElement(
-	          'div',
-	          null,
-	          'Update Profile Picture'
-	        )
-	      );
-	    }
-	
-	    var profileModalStyle = {
-	      content: {
-	        top: '50%',
-	        left: '50%',
-	        right: 'auto',
-	        bottom: 'auto',
-	        marginRight: '-50%',
-	        transform: 'translate(-50%, -50%)'
-	      }
-	    };
-	
-	    return React.createElement(
-	      'section',
-	      { className: 'timeline-header clear-fix' },
-	      React.createElement(
-	        Modal,
-	        {
-	          isOpen: this.state.openUploadPro,
-	          onRequestClose: this.closeUploadProfilePic,
-	          style: profileModalStyle
-	        },
-	        React.createElement(FileUploadForm, { user: this.props.currentUser,
-	          callback: this.closeUploadProfilePic,
-	          string: 'profile_pic' })
-	      ),
-	      React.createElement(
-	        Modal,
-	        {
-	          isOpen: this.state.openUploadCover,
-	          onRequestClose: this.closeUploadCover,
-	          style: profileModalStyle
-	        },
-	        React.createElement(FileUploadForm, { user: this.props.currentUser,
-	          callback: this.closeUploadCover,
-	          string: 'cover_photo' })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'timeline-cover-photo clear-fix' },
-	        React.createElement('img', { className: 'timeline-cover-photo cover-image', src: user.cover_photo_url }),
-	        coverButton,
-	        React.createElement(
-	          'a',
-	          { className: 'timeline-header-name',
-	            href: '#' },
-	          user.first_name,
-	          ' ',
-	          user.last_name
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'timeline-header-tabs-container' },
-	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser,
-	          friends: this.props.friends, userId: this.props.userId }),
-	        React.createElement(
-	          'div',
-	          { className: 'timeline-profile-pic-container clear-fix' },
-	          React.createElement('img', { src: user.profile_pic_url,
-	            className: 'timeline-header-profile-picture' }),
-	          profileButton
-	        ),
-	        React.createElement(TimelineTabs, { user: user, currentUser: this.props.currentUser })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = TimelineHeader;
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
-	
-	var TimelineTabs = React.createClass({
-	  displayName: 'TimelineTabs',
-	
-	  _onClick: function (e) {
-	    e.preventDefault();
-	  },
-	
-	  render: function () {
-	    var user = this.props.user;
-	    var mutual = 19;
-	
-	    return React.createElement(
-	      'nav',
-	      { className: 'timeline-header-tabs-bar clear-fix' },
-	      React.createElement(
-	        'ul',
-	        { className: 'timeline-header-tabs' },
-	        React.createElement(
-	          'li',
-	          { className: 'selected' },
-	          React.createElement(
-	            'a',
-	            { onClick: this._onClick, href: '#' },
-	            'Timeline'
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this._onClick, href: '#' },
-	            'About'
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this._onClick, href: '#' },
-	            'Friends ',
-	            React.createElement(
-	              'h6',
-	              {
-	                className: 'friends-button-mutual-friends' },
-	              mutual + " Mutual"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this._onClick, href: '#' },
-	            'Photos'
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this._onClick, href: '#' },
-	            'More'
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = TimelineTabs;
-
-/***/ },
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var FriendRequestUtil = __webpack_require__(267);
-	var FriendRequestStore = __webpack_require__(270);
-	var FriendUtil = __webpack_require__(271);
-	var Modal = __webpack_require__(274);
-	
-	var TimelineButtons = React.createClass({
-	  displayName: 'TimelineButtons',
-	
-	  getInitialState: function () {
-	    return { requestStatus: "no request", friendshipId: "no friendship",
-	      editingBio: false };
-	  },
-	
-	  componentDidMount: function () {
-	    // this.friendsListener = FriendStore.addListener(this.addFriends);
-	    // FriendUtil.fetchFriends(this.props.userId);
-	    if (this.props.userId != this.props.currentUser.id) {
-	      this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
-	      FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
-	    }
-	  },
-	
-	  componentWillUnmount: function () {
-	    if (this.requestListener) {
-	      this.requestListener.remove();
-	    }
-	    // this.friendsListener.remove();
-	  },
-	
-	  addRequestStatus: function () {
-	    var requestStatus = FriendRequestStore.isRequested(this.props.userId);
-	    this.setState({ requestStatus: requestStatus });
-	  },
-	
-	  getFriendshipId: function (newProps) {
-	    var friendshipId = "no friendship";
-	    var user = this.props.currentUser;
-	
-	    newProps.friends.forEach(function (friend) {
-	      if (friend.id == user.id) {
-	        friendshipId = friend.friendshipId;
-	      }
-	    });
-	
-	    return friendshipId;
-	  },
-	
-	  // addFriends: function () {
-	  //   var friends = FriendStore.getFriendsArr();
-	  //   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
-	  //   this.setState({ friends: friends, friendshipId: friendshipId });
-	  // },
-	  componentWillReceiveProps: function (newProps) {
-	    if (this.props.userId != this.props.currentUser.id) {
-	      var friendshipId = this.getFriendshipId(newProps);
-	      this.setState({ friendshipId: friendshipId });
-	    }
-	  },
-	
-	  handleFriendsClick: function (e) {
-	    e.preventDefault();
-	    // form to choose
-	    FriendUtil.removeFriend(this.state.friendshipId);
-	  },
-	
-	  _handleUpdateInfo: function (e) {
-	    e.preventDefault();
-	  },
-	
-	  handleSendRequest: function (e) {
-	    e.preventDefault();
-	    var request = new FormData();
-	    request.append("request[target_id]", this.props.user.id);
-	    FriendRequestUtil.createRequest(request);
-	    // button inactive
-	  },
-	
-	  handleEditRequest: function (e) {
-	    e.preventDefault();
-	  },
-	
-	  handleRespond: function (e) {
-	    e.preventDefault();
-	    var req = FriendRequestStore.getRequest();
-	    // form to select response
-	    var response = new FormData();
-	    response.append("request[accepted]", true);
-	    FriendRequestUtil.updateRequest(response, req.id);
-	  },
-	
-	  // _openEdit: function (e) {
-	  //   e.preventDefault();
-	  //   this.setState({ editingBio: true });
-	  // },
-	  //
-	  // _closeEdit: function () {
-	  //   // e.preventDefault();
-	  //   this.setState({ editingBio: false });
-	  // },
-	
-	  render: function () {
-	    var user = this.props.user;
-	    var friendButton = "Friends";
-	
-	    var isFriend = false;
-	    var currentUser = this.props.currentUser;
-	    this.props.friends.forEach(function (friend) {
-	      if (friend.id == currentUser.id) {
-	        isFriend = true;
-	      }
-	    });
-	
-	    if (isFriend) {
-	      friendButton = React.createElement(
-	        'a',
-	        { href: '#', onClick: this.handleFriendsClick, className: 'header-button-friends confirmed' },
-	        React.createElement('img', { className: 'i1' }),
-	        'Friends',
-	        React.createElement('img', { className: 'tri-drop' })
-	      );
-	    } else if (this.props.user.id == this.props.currentUser.id) {
-	      friendButton = React.createElement(
-	        'a',
-	        { href: '#', onClick: this._handleUpdateInfo, className: 'header-button-friends update-info' },
-	        'Update Info'
-	      );
-	    } else {
-	      switch (this.state.requestStatus) {
-	        case "no request":
-	          friendButton = React.createElement(
-	            'a',
-	            { href: '#', onClick: this.handleSendRequest, className: 'header-button-request add-friend' },
-	            React.createElement('img', { className: 'add' }),
-	            'Add Friend'
-	          );
-	          break;
-	        case "sent":
-	          friendButton = React.createElement(
-	            'a',
-	            { href: '#', onClick: this.handleEditRequest, className: 'header-button-request request-sent' },
-	            'Friend Request Sent'
-	          );
-	          break;
-	        case "received":
-	          friendButton = React.createElement(
-	            'a',
-	            { href: '#', onClick: this.handleRespond, className: 'header-button-request respond-to' },
-	            'Respond to request'
-	          );
-	
-	          break;
-	      }
-	    }
-	
-	    // <li><a href='#'>Following</a></li>
-	    // <li><a href='#'>Message</a></li>
-	
-	    // <Modal
-	    //   isOpen={ this.state.editingBio }
-	    //   onRequestClose={ this._closeEdit }>
-	    //   <h1>Hello Modal!</h1>
-	    // </Modal>
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'ul',
-	        { className: 'timeline-header-buttons-list' },
-	        React.createElement(
-	          'li',
-	          null,
-	          friendButton
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = TimelineButtons;
-
-/***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var FriendRequestActions = __webpack_require__(268);
-	
-	var FriendRequestUtil = {
-		fetchPendingRequests: function () {
-			ApiUtil.ajax({
-				url: "/api/friend_requests",
-				method: "GET",
-				success: function (requests) {
-					FriendRequestActions.receivePendingRequests(requests);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		fetchRequestsWithUser: function (timelineId) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests/" + timelineId,
-				method: "GET",
-				success: function (request) {
-					FriendRequestActions.receiveUserRequest(request);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		createRequest: function (formData) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests",
-				method: "POST",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (request) {
-					FriendRequestActions.receiveNewRequest(request);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		updateRequest: function (formData, requestId) {
-			ApiUtil.ajax({
-				url: "/api/friend_requests/" + requestId,
-				method: "PATCH",
-				form: true,
-				data: formData,
-				contentType: false,
-				processData: false,
-				success: function (friend) {
-					// error handle
-					if (friend.friendshipId !== "no friendship") {
-						FriendRequestActions.receiveAcceptedRequest(friend);
-					} else {
-						FriendRequestActions.receiveRejectedRequest(friend);
-					}
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	
-	};
-	module.exports = FriendRequestUtil;
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var FriendRequestConstants = __webpack_require__(269);
-	
-	var FriendRequestActions = {
-	  receiveUserRequest: function (request) {
-	    Dispatcher.dispatch({
-	      actionType: FriendRequestConstants.USER_REQUEST_RECEIVED,
-	      request: request
-	    });
-	  },
-	
-	  receiveNewRequest: function (request) {
-	    Dispatcher.dispatch({
-	      actionType: FriendRequestConstants.NEW_REQUEST_RECEIVED,
-	      request: request
-	    });
-	  },
-	
-	  receiveAcceptedRequest: function (friend) {
-	    Dispatcher.dispatch({
-	      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
-	      friend: friend
-	    });
-	  },
-	
-	  receiveRejectedRequest: function (request) {
-	    Dispatcher.dispatch({
-	      actionType: FriendRequestConstants.REQUEST_REJECTED,
-	      request: request
-	    });
-	  },
-	
-	  receivePendingRequests: function (requests) {
-	    Dispatcher.dispatch({
-	      actionType: FriendRequestConstants.REQUESTS_RECEIVED,
-	      requests: requests
-	    });
-	  }
-	};
-	
-	// requestDeleted: function (request) {
-	// 	Dispatcher.dispatch({
-	// 		actionType: FriendRequestConstants.POST_DELETED,
-	// 		request: request
-	// 	});
-	// }
-	module.exports = FriendRequestActions;
-
-/***/ },
-/* 269 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
-		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
-		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
-		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
-		REQUEST_REJECTED: "REQUEST_REJECTED"
-	};
-
-/***/ },
-/* 270 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(229).Store;
-	var Dispatcher = __webpack_require__(222);
-	var FriendRequestConstants = __webpack_require__(269);
-	var FriendRequestStore = new Store(Dispatcher);
-	
-	var _requests = {};
-	
-	var _request = { id: "NO REQUEST" };
-	
-	var setRequest = function (request) {
-	  _request = request;
-	};
-	
-	var removeRequest = function (friend) {
-	  var removeId;
-	  for (var id in _requests) {
-	    if (_requests[id].target_id == friend.id) {
-	      removeId = undefined;
-	    }
-	  }
-	  _request = { id: "NO REQUEST" };
-	  delete _requests[removeId];
-	};
-	
-	var setRequests = function (requests) {
-	  _requests = {};
-	  requests.forEach(function (request) {
-	    _requests[request.id] = request;
-	  });
-	};
-	
-	FriendRequestStore.getAllRequests = function () {
-	  var requests = {};
-	  for (var id in _requests) {
-	    requests[id] = _requests[id];
-	  }
-	  return requests;
-	};
-	
-	FriendRequestStore.getRequest = function () {
-	  var request = {};
-	  for (var id in _request) {
-	    request[id] = _request[id];
-	  }
-	  return request;
-	};
-	
-	FriendRequestStore.isRequested = function (timelineId) {
-	  if (_request.id == "NO REQUEST") {
-	    console.log("none");
-	    return "no request";
-	  } else if (timelineId == _request.target_id) {
-	    console.log("sent");
-	    return "sent";
-	  } else if (timelineId == _request.sender_id) {
-	    console.log("received");
-	    return "received";
-	  } else {
-	    debugger;
-	  }
-	};
-	
-	FriendRequestStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case FriendRequestConstants.USER_REQUEST_RECEIVED:
-	      setRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.NEW_REQUEST_RECEIVED:
-	      setRequest(payload.request);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUEST_ACCEPTED:
-	      removeRequest(payload.friend);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUEST_REJECTED:
-	      removeRequest(payload.friend);
-	      FriendRequestStore.__emitChange();
-	      break;
-	    case FriendRequestConstants.REQUESTS_RECEIVED:
-	      setRequests(payload.requests);
-	      FriendRequestStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = FriendRequestStore;
-
-/***/ },
-/* 271 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiUtil = __webpack_require__(220);
-	var FriendActions = __webpack_require__(272);
-	
-	var FriendUtil = {
-		fetchFriends: function (userId) {
-			ApiUtil.ajax({
-				url: "/api/friendships/" + userId,
-				method: "GET",
-				success: function (friends) {
-					FriendActions.receiveFriends(friends);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		},
-	
-		removeFriend: function (friendshipId) {
-			ApiUtil.ajax({
-				url: "/api/friendships/" + friendshipId,
-				method: "DELETE",
-				success: function (friendships) {
-					FriendActions.friendshipOver(friendships);
-				},
-				error: function (response) {
-					console.log("FAILURE\n" + response);
-				}
-			});
-		}
-	};
-	module.exports = FriendUtil;
-
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(222);
-	var FriendConstants = __webpack_require__(273);
-	
-	var FriendActions = {
-	  receiveFriends: function (friends) {
-	    Dispatcher.dispatch({
-	      actionType: FriendConstants.FRIENDS_RECEIVED,
-	      friends: friends
-	    });
-	  },
-	
-	  friendshipOver: function (friendships) {
-	    Dispatcher.dispatch({
-	      actionType: FriendConstants.FRIENDSHIP_OVER,
-	      friendships: friendships
-	    });
-	  }
-	};
-	
-	module.exports = FriendActions;
-
-/***/ },
-/* 273 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		FRIENDS_RECEIVED: "FRIENDS_RECEIVED",
-		FRIENDSHIP_OVER: "FRIENDSHIP_OVER"
-	};
-
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(275);
-	
-
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-	var ExecutionEnvironment = __webpack_require__(276);
-	var ModalPortal = React.createFactory(__webpack_require__(277));
-	var ariaAppHider = __webpack_require__(292);
-	var elementClass = __webpack_require__(293);
+	var ExecutionEnvironment = __webpack_require__(258);
+	var ModalPortal = React.createFactory(__webpack_require__(259));
+	var ariaAppHider = __webpack_require__(274);
+	var elementClass = __webpack_require__(275);
 	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
 	
 	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
@@ -34219,7 +33068,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 276 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -34264,14 +33113,14 @@
 
 
 /***/ },
-/* 277 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var div = React.DOM.div;
-	var focusManager = __webpack_require__(278);
-	var scopeTab = __webpack_require__(280);
-	var Assign = __webpack_require__(281);
+	var focusManager = __webpack_require__(260);
+	var scopeTab = __webpack_require__(262);
+	var Assign = __webpack_require__(263);
 	
 	
 	// so that our CSS is statically analyzable
@@ -34468,10 +33317,10 @@
 
 
 /***/ },
-/* 278 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(279);
+	var findTabbable = __webpack_require__(261);
 	var modalElement = null;
 	var focusLaterElement = null;
 	var needToFocus = false;
@@ -34542,7 +33391,7 @@
 
 
 /***/ },
-/* 279 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/*!
@@ -34598,10 +33447,10 @@
 
 
 /***/ },
-/* 280 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(279);
+	var findTabbable = __webpack_require__(261);
 	
 	module.exports = function(node, event) {
 	  var tabbable = findTabbable(node);
@@ -34619,7 +33468,7 @@
 
 
 /***/ },
-/* 281 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34630,9 +33479,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseAssign = __webpack_require__(282),
-	    createAssigner = __webpack_require__(288),
-	    keys = __webpack_require__(284);
+	var baseAssign = __webpack_require__(264),
+	    createAssigner = __webpack_require__(270),
+	    keys = __webpack_require__(266);
 	
 	/**
 	 * A specialized version of `_.assign` for customizing assigned values without
@@ -34705,7 +33554,7 @@
 
 
 /***/ },
-/* 282 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34716,8 +33565,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseCopy = __webpack_require__(283),
-	    keys = __webpack_require__(284);
+	var baseCopy = __webpack_require__(265),
+	    keys = __webpack_require__(266);
 	
 	/**
 	 * The base implementation of `_.assign` without support for argument juggling,
@@ -34738,7 +33587,7 @@
 
 
 /***/ },
-/* 283 */
+/* 265 */
 /***/ function(module, exports) {
 
 	/**
@@ -34776,7 +33625,7 @@
 
 
 /***/ },
-/* 284 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34787,9 +33636,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var getNative = __webpack_require__(285),
-	    isArguments = __webpack_require__(286),
-	    isArray = __webpack_require__(287);
+	var getNative = __webpack_require__(267),
+	    isArguments = __webpack_require__(268),
+	    isArray = __webpack_require__(269);
 	
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -35018,7 +33867,7 @@
 
 
 /***/ },
-/* 285 */
+/* 267 */
 /***/ function(module, exports) {
 
 	/**
@@ -35161,7 +34010,7 @@
 
 
 /***/ },
-/* 286 */
+/* 268 */
 /***/ function(module, exports) {
 
 	/**
@@ -35410,7 +34259,7 @@
 
 
 /***/ },
-/* 287 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/**
@@ -35596,7 +34445,7 @@
 
 
 /***/ },
-/* 288 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35607,9 +34456,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var bindCallback = __webpack_require__(289),
-	    isIterateeCall = __webpack_require__(290),
-	    restParam = __webpack_require__(291);
+	var bindCallback = __webpack_require__(271),
+	    isIterateeCall = __webpack_require__(272),
+	    restParam = __webpack_require__(273);
 	
 	/**
 	 * Creates a function that assigns properties of source object(s) to a given
@@ -35654,7 +34503,7 @@
 
 
 /***/ },
-/* 289 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/**
@@ -35725,7 +34574,7 @@
 
 
 /***/ },
-/* 290 */
+/* 272 */
 /***/ function(module, exports) {
 
 	/**
@@ -35863,7 +34712,7 @@
 
 
 /***/ },
-/* 291 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/**
@@ -35936,7 +34785,7 @@
 
 
 /***/ },
-/* 292 */
+/* 274 */
 /***/ function(module, exports) {
 
 	var _element = typeof document !== 'undefined' ? document.body : null;
@@ -35983,7 +34832,7 @@
 
 
 /***/ },
-/* 293 */
+/* 275 */
 /***/ function(module, exports) {
 
 	module.exports = function(opts) {
@@ -36048,11 +34897,1242 @@
 
 
 /***/ },
-/* 294 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(259);
+	var PostForm = __webpack_require__(252);
+	var PostIndex = __webpack_require__(253);
+	var ConnectWithFriends = __webpack_require__(277);
+	var SignUp = __webpack_require__(278);
+	
+	var LoggedOutDisplay = React.createClass({
+		displayName: 'LoggedOutDisplay',
+	
+		render: function () {
+			return React.createElement(
+				'div',
+				{ className: 'signed-out-homepage' },
+				React.createElement(
+					'section',
+					{ className: 'connect-with-friends' },
+					React.createElement(ConnectWithFriends, null)
+				),
+				React.createElement(
+					'section',
+					{ className: 'sign-up-homepage' },
+					React.createElement(SignUp, null)
+				)
+			);
+		}
+	});
+	
+	module.exports = LoggedOutDisplay;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var ConnectWithFriends = React.createClass({
+		displayName: "ConnectWithFriends",
+	
+	
+		render: function () {
+			var strings = [];
+			strings.push(["See photos and updates", "from friends in News Feed."]);
+			strings.push(["Share what's new", "in your life on your Timeline."]);
+			strings.push(["Find more", "of what you're looking for with Facebook Search."]);
+	
+			var images = ["connect-images photosCI", "connect-images shareCI", "connect-images findCI"];
+			var htmlMaker = function (image, bold, plain) {
+				return React.createElement(
+					"div",
+					{ className: "connect-bullet-item" },
+					React.createElement("div", { className: image }),
+					React.createElement(
+						"div",
+						{ className: "connect-bullet-text" },
+						React.createElement(
+							"p",
+							{ className: "connect-bullet-text-bold" },
+							bold
+						),
+						React.createElement(
+							"p",
+							{ className: "connect-bullet-text-plain" },
+							plain
+						)
+					)
+				);
+			};
+	
+			bullet0 = htmlMaker(images[0], strings[0][0], strings[0][1]);
+			bullet1 = htmlMaker(images[1], strings[1][0], strings[1][1]);
+			bullet2 = htmlMaker(images[2], strings[2][0], strings[2][1]);
+	
+			return React.createElement(
+				"div",
+				{ className: "connect-with-friends" },
+				React.createElement(
+					"h2",
+					{ className: "connect-with-header" },
+					" Connect with friends and the",
+					React.createElement("br", null),
+					"world around you on Facebook. "
+				),
+				React.createElement(
+					"div",
+					{ className: "connect-bullets" },
+					bullet0,
+					bullet1,
+					bullet2
+				)
+			);
+		}
+	});
+	
+	module.exports = ConnectWithFriends;
+
+/***/ },
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(279);
+	var SessionUtil = __webpack_require__(219);
+	
+	var SignUp = React.createClass({
+	  displayName: 'SignUp',
+	
+	  getInitialState: function () {
+	    return { errors: [] };
+	  },
+	
+	  _handleSubmit: function (event) {
+	    event.preventDefault();
+	    var form = event.currentTarget;
+	    var result = this.validateForm(form);
+	    if (result.valid) {
+	      var data = new FormData(form);
+	      UserUtil.trySignUp(data);
+	    } else {
+	      this.setState({ errors: result.errors });
+	    }
+	  },
+	
+	  validateForm: function (form) {
+	    var result = { valid: true };
+	    // validate entries haha
+	    // if (form.)
+	    return result;
+	  },
+	
+	  clearInput: function (e) {
+	    var input = e.currentTarget;
+	    if (input.value === input.defaultValue) {
+	      input.value = "";
+	    }
+	  },
+	
+	  resetInput: function (e) {
+	    var input = e.currentTarget;
+	    if (input.value === "") {
+	      input.value = input.defaultValue;
+	    }
+	  },
+	
+	  signInAsGuest: function (e) {
+	    e.preventDefault();
+	    var data = new FormData();
+	    data.append("user[email]", "guestEmail");
+	    data.append("user[password]", "123456");
+	
+	    SessionUtil.tryLogIn(data);
+	  },
+	
+	  render: function () {
+	    var months = ["Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	
+	    var dates = ["Day"];
+	    for (var i = 1; i < 32; i++) {
+	      dates.push(i);
+	    }
+	
+	    var years = ["Year"];
+	    for (i = 2016; i > 1904; i--) {
+	      years.push(i);
+	    }
+	
+	    var selector = function (thing, i) {
+	      return React.createElement(
+	        'option',
+	        { key: i, value: thing },
+	        thing
+	      );
+	    };
+	
+	    return React.createElement(
+	      'form',
+	      { ref: 'signUpForm', className: 'sign-up-form', onSubmit: this._handleSubmit },
+	      React.createElement('input', { className: 'first-name-input', type: 'text',
+	        name: 'user[first_name]', defaultValue: 'First name',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'last-name-input', type: 'text',
+	        name: 'user[last_name]', defaultValue: 'Last name',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'email-input', type: 'text',
+	        name: 'user[email]', defaultValue: 'Email',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'email-verify-input', type: 'text',
+	        name: 'user[email_verify]', defaultValue: 'Re-enter email',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement('input', { className: 'password-input', type: 'password',
+	        name: 'user[password]', defaultValue: 'New password',
+	        onFocus: this.clearInput, onBlur: this.resetInput }),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[month]' },
+	        months.map(selector)
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[date]' },
+	        dates.map(selector)
+	      ),
+	      React.createElement(
+	        'select',
+	        { name: 'birthday[year]' },
+	        years.map(selector)
+	      ),
+	      React.createElement('input', { className: 'sign-up-button blue-button', type: 'submit', value: 'Sign Up' }),
+	      React.createElement('br', null),
+	      React.createElement('br', null),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'a',
+	        { href: '#', className: 'blue-button guest', onClick: this.signInAsGuest },
+	        'Sign in as Guest'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = SignUp;
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var SessionActions = __webpack_require__(221);
+	var UserActions = __webpack_require__(280);
+	
+	var UserUtil = {
+		fetchTimelineUser: function (id) {
+			ApiUtil.ajax({
+				url: "/users/" + id,
+				method: "GET",
+				success: function (user) {
+					UserActions.receiveTimelineUser(user);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		trySignUp: function (formData) {
+	
+			ApiUtil.ajax({
+				url: "/users",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (user) {
+					user.type = "new";
+					SessionActions.receiveCurrentUser(user);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		updateBio: function (id, formData) {
+			ApiUtil.ajax({
+				url: "/users/" + id,
+				method: "PATCH",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (user) {
+					UserActions.receiveNewBio(user);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	
+	};
+	
+	module.exports = UserUtil;
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var UserConstants = __webpack_require__(281);
+	
+	var UserActions = {
+	  receiveTimelineUser: function (user) {
+	    Dispatcher.dispatch({
+	      actionType: UserConstants.TIMELINE_USER_RECEIVED,
+	      user: user
+	    });
+	  },
+	
+	  receiveNewBio: function (user) {
+	    Dispatcher.dispatch({
+	      actionType: UserConstants.BIO_RECEIVED,
+	      user: user
+	    });
+	  }
+	};
+	
+	module.exports = UserActions;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  TIMELINE_USER_RECEIVED: "TIMELINE_USER_RECEIVED",
+	  BIO_RECEIVED: "BIO_RECEIVED"
+	};
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostForm = __webpack_require__(252);
+	var PostIndex = __webpack_require__(253);
+	var TimelineSidebar = __webpack_require__(283);
+	var TimelineHeader = __webpack_require__(285);
+	
+	var UserUtil = __webpack_require__(279);
+	var UserStore = __webpack_require__(296);
+	var SessionStore = __webpack_require__(228);
+	var FriendUtil = __webpack_require__(292);
+	var FriendRequestUtil = __webpack_require__(288);
+	var FriendStore = __webpack_require__(297);
+	var FriendRequestStore = __webpack_require__(291);
+	
+	var Timeline = React.createClass({
+		displayName: 'Timeline',
+	
+		getInitialState: function () {
+			return { user: {}, currentUser: SessionStore.getCurrentUser(), friends: [] };
+		},
+	
+		componentDidMount: function () {
+			this.postListener = UserStore.addListener(this._onChange);
+			this.sessionListener = SessionStore.addListener(this._onSessionChange);
+			UserUtil.fetchTimelineUser(this.props.params.id);
+	
+			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
+			FriendUtil.fetchFriends(this.props.params.id);
+	
+			if (this.state.currentUser.id != this.props.params.id) {
+				this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
+			}
+		},
+	
+		componentWillUnmount: function () {
+			this.postListener.remove();
+			this.sessionListener.remove();
+			this.friendsListener.remove();
+	
+			if (this.friendRequestsListener) {
+				this.requestsListener.remove();
+			}
+		},
+	
+		componentWillReceiveProps: function (newProps) {
+			UserUtil.fetchTimelineUser(newProps.params.id);
+		},
+	
+		_onChange: function () {
+			var user = UserStore.getTimelineUser();
+			this.setState({ user: user });
+		},
+	
+		_onFriendsChange: function () {
+			var friends = FriendStore.getFriendsArr();
+			this.setState({ friends: friends });
+		},
+	
+		_onRequestsChange: function () {},
+	
+		_onSessionChange: function () {
+			var user = SessionStore.getCurrentUser();
+			this.setState({ currentUser: user });
+		},
+	
+		render: function () {
+	
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(TimelineHeader, { userId: this.props.params.id, user: this.state.user,
+					currentUser: this.state.currentUser,
+					friends: this.state.friends }),
+				React.createElement(TimelineSidebar, { user: this.state.user,
+					currentUser: this.state.currentUser,
+					friends: this.state.friends }),
+				React.createElement(
+					'section',
+					{ className: 'timeline-post-index' },
+					React.createElement(PostForm, {
+						timelineId: this.props.params.id,
+						user: this.state.currentUser }),
+					React.createElement(PostIndex, { timelineId: this.props.params.id, user: this.state.currentUser })
+				)
+			);
+		}
+	});
+	
+	module.exports = Timeline;
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(279);
+	var FriendBox = __webpack_require__(284);
+	
+	var TimelineSidebar = React.createClass({
+	  displayName: 'TimelineSidebar',
+	
+	  render: function () {
+	    // <section className="timeline-sidebar-item user-bio">
+	    //   This will be the bio
+	    // </section>
+	    return React.createElement(
+	      'section',
+	      { className: 'timeline-sidebar clear-fix' },
+	      React.createElement(FriendBox, { friends: this.props.friends,
+	        user: this.props.user })
+	    );
+	  }
+	});
+	
+	module.exports = TimelineSidebar;
+
+/***/ },
+/* 284 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendBox = React.createClass({
+	  displayName: "FriendBox",
+	
+	
+	  preventDefault: function (e) {
+	    e.preventDefault();
+	  },
+	
+	  render: function () {
+	    var friends = this.props.friends;
+	    var user = this.props.user;
+	    var friendsLink = "#/user/" + user.id + "/friends";
+	
+	    var friendListItems = friends.map(function (friend) {
+	      var profileLink = "#/user/" + friend.id;
+	      var name = friend.first_name + " " + friend.last_name;
+	      return React.createElement(
+	        "li",
+	        { key: friend.id },
+	        React.createElement(
+	          "a",
+	          { href: profileLink, className: "friend-icon-item"
+	          },
+	          React.createElement("img", { src: friend.profile_pic_url,
+	            className: "friend-profile-thumb" }),
+	          React.createElement(
+	            "div",
+	            {
+	              className: "friend-name" },
+	            name
+	          )
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      "section",
+	      { className: "timeline-sidebar-item friend-grid" },
+	      React.createElement(
+	        "div",
+	        { className: "friend-grid-header" },
+	        React.createElement("a", { className: "friends-symbol-button",
+	          href: friendsLink,
+	          onClick: this.preventDefault }),
+	        React.createElement(
+	          "div",
+	          { className: "friend-grid-text" },
+	          React.createElement(
+	            "a",
+	            { href: friendsLink,
+	              onClick: this.preventDefault
+	            },
+	            "Friends"
+	          ),
+	          React.createElement(
+	            "p",
+	            { className: "friend-count" },
+	            friends.length
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "friends-grid-container" },
+	        React.createElement(
+	          "ul",
+	          { className: "friend-icon-list" },
+	          friendListItems
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = FriendBox;
+
+/***/ },
+/* 285 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(279);
+	var TimelineTabs = __webpack_require__(286);
+	var TimelineButtons = __webpack_require__(287);
+	var Modal = __webpack_require__(256);
+	var FileUploadForm = __webpack_require__(295);
+	
+	var TimelineHeader = React.createClass({
+	  displayName: 'TimelineHeader',
+	
+	  getInitialState: function () {
+	    return { profilePicUrl: "", coverPhotoUrl: "",
+	      openUploadPro: false, openUploadCover: false
+	    };
+	  },
+	
+	  // -------------Picture Uploads---------------
+	  openUploadProfilePic: function (e) {
+	    e.preventDefault();
+	    this.setState({ openUploadPro: true });
+	  },
+	  closeUploadProfilePic: function () {
+	    this.setState({ openUploadPro: false });
+	  },
+	  openUploadCover: function (e) {
+	    e.preventDefault();
+	    this.setState({ openUploadCover: true });
+	  },
+	  closeUploadCover: function () {
+	    this.setState({ openUploadCover: false });
+	  },
+	
+	  // -------------------------------------------
+	  render: function () {
+	    var user = this.props.user;
+	
+	    var coverButton;
+	    var profileButton;
+	
+	    if (this.props.currentUser.id == user.id) {
+	      coverButton = React.createElement(
+	        'a',
+	        { href: '#/upload.cover.photo', className: 'edit-cover-button',
+	          onClick: this.openUploadCover },
+	        React.createElement('i', { className: 'camera-icon' }),
+	        React.createElement(
+	          'div',
+	          null,
+	          'Update Cover Photo'
+	        )
+	      );
+	      profileButton = React.createElement(
+	        'a',
+	        { href: '#/upload.profile.pic', className: 'edit-profile-pic-button',
+	          onClick: this.openUploadProfilePic },
+	        React.createElement('i', { className: 'camera-icon' }),
+	        React.createElement(
+	          'div',
+	          null,
+	          'Update Profile Picture'
+	        )
+	      );
+	    }
+	
+	    var profileModalStyle = {
+	      content: {
+	        top: '50%',
+	        left: '50%',
+	        right: 'auto',
+	        bottom: 'auto',
+	        marginRight: '-50%',
+	        transform: 'translate(-50%, -50%)'
+	      }
+	    };
+	
+	    return React.createElement(
+	      'section',
+	      { className: 'timeline-header clear-fix' },
+	      React.createElement(
+	        Modal,
+	        {
+	          isOpen: this.state.openUploadPro,
+	          onRequestClose: this.closeUploadProfilePic,
+	          style: profileModalStyle
+	        },
+	        React.createElement(FileUploadForm, { user: this.props.currentUser,
+	          callback: this.closeUploadProfilePic,
+	          string: 'profile_pic' })
+	      ),
+	      React.createElement(
+	        Modal,
+	        {
+	          isOpen: this.state.openUploadCover,
+	          onRequestClose: this.closeUploadCover,
+	          style: profileModalStyle
+	        },
+	        React.createElement(FileUploadForm, { user: this.props.currentUser,
+	          callback: this.closeUploadCover,
+	          string: 'cover_photo' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'timeline-cover-photo clear-fix' },
+	        React.createElement('img', { className: 'timeline-cover-photo cover-image', src: user.cover_photo_url }),
+	        coverButton,
+	        React.createElement(
+	          'a',
+	          { className: 'timeline-header-name',
+	            href: '#' },
+	          user.first_name,
+	          ' ',
+	          user.last_name
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'timeline-header-tabs-container' },
+	        React.createElement(TimelineButtons, { user: user, currentUser: this.props.currentUser,
+	          friends: this.props.friends, userId: this.props.userId }),
+	        React.createElement(
+	          'div',
+	          { className: 'timeline-profile-pic-container clear-fix' },
+	          React.createElement('img', { src: user.profile_pic_url,
+	            className: 'timeline-header-profile-picture' }),
+	          profileButton
+	        ),
+	        React.createElement(TimelineTabs, { user: user, currentUser: this.props.currentUser })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = TimelineHeader;
+
+/***/ },
+/* 286 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(279);
+	
+	var TimelineTabs = React.createClass({
+	  displayName: 'TimelineTabs',
+	
+	  _onClick: function (e) {
+	    e.preventDefault();
+	  },
+	
+	  render: function () {
+	    var user = this.props.user;
+	    var mutual = 19;
+	
+	    return React.createElement(
+	      'nav',
+	      { className: 'timeline-header-tabs-bar clear-fix' },
+	      React.createElement(
+	        'ul',
+	        { className: 'timeline-header-tabs' },
+	        React.createElement(
+	          'li',
+	          { className: 'selected' },
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Timeline'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'About'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Friends ',
+	            React.createElement(
+	              'h6',
+	              {
+	                className: 'friends-button-mutual-friends' },
+	              mutual + " Mutual"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'Photos'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: this._onClick, href: '#' },
+	            'More'
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = TimelineTabs;
+
+/***/ },
+/* 287 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var FriendRequestUtil = __webpack_require__(288);
+	var FriendRequestStore = __webpack_require__(291);
+	var FriendUtil = __webpack_require__(292);
+	var Modal = __webpack_require__(256);
+	
+	var TimelineButtons = React.createClass({
+	  displayName: 'TimelineButtons',
+	
+	  getInitialState: function () {
+	    return { requestStatus: "no request", friendshipId: "no friendship",
+	      editingBio: false };
+	  },
+	
+	  componentDidMount: function () {
+	    // this.friendsListener = FriendStore.addListener(this.addFriends);
+	    // FriendUtil.fetchFriends(this.props.userId);
+	    if (this.props.userId != this.props.currentUser.id) {
+	      this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
+	      FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
+	    }
+	  },
+	
+	  componentWillUnmount: function () {
+	    if (this.requestListener) {
+	      this.requestListener.remove();
+	    }
+	    // this.friendsListener.remove();
+	  },
+	
+	  addRequestStatus: function () {
+	    var requestStatus = FriendRequestStore.isRequested(this.props.userId);
+	    this.setState({ requestStatus: requestStatus });
+	  },
+	
+	  getFriendshipId: function (newProps) {
+	    var friendshipId = "no friendship";
+	    var user = this.props.currentUser;
+	
+	    newProps.friends.forEach(function (friend) {
+	      if (friend.id == user.id) {
+	        friendshipId = friend.friendshipId;
+	      }
+	    });
+	
+	    return friendshipId;
+	  },
+	
+	  // addFriends: function () {
+	  //   var friends = FriendStore.getFriendsArr();
+	  //   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
+	  //   this.setState({ friends: friends, friendshipId: friendshipId });
+	  // },
+	  componentWillReceiveProps: function (newProps) {
+	    if (this.props.userId != this.props.currentUser.id) {
+	      var friendshipId = this.getFriendshipId(newProps);
+	      this.setState({ friendshipId: friendshipId });
+	    }
+	  },
+	
+	  handleFriendsClick: function (e) {
+	    e.preventDefault();
+	    // form to choose
+	    FriendUtil.removeFriend(this.state.friendshipId);
+	  },
+	
+	  _handleUpdateInfo: function (e) {
+	    e.preventDefault();
+	  },
+	
+	  handleSendRequest: function (e) {
+	    e.preventDefault();
+	    var request = new FormData();
+	    request.append("request[target_id]", this.props.user.id);
+	    FriendRequestUtil.createRequest(request);
+	    // button inactive
+	  },
+	
+	  handleEditRequest: function (e) {
+	    e.preventDefault();
+	  },
+	
+	  handleRespond: function (e) {
+	    e.preventDefault();
+	    var req = FriendRequestStore.getRequest();
+	    // form to select response
+	    var response = new FormData();
+	    response.append("request[accepted]", true);
+	    FriendRequestUtil.updateRequest(response, req.id);
+	  },
+	
+	  // _openEdit: function (e) {
+	  //   e.preventDefault();
+	  //   this.setState({ editingBio: true });
+	  // },
+	  //
+	  // _closeEdit: function () {
+	  //   // e.preventDefault();
+	  //   this.setState({ editingBio: false });
+	  // },
+	
+	  render: function () {
+	    var user = this.props.user;
+	    var friendButton = "Friends";
+	
+	    var isFriend = false;
+	    var currentUser = this.props.currentUser;
+	    this.props.friends.forEach(function (friend) {
+	      if (friend.id == currentUser.id) {
+	        isFriend = true;
+	      }
+	    });
+	
+	    if (isFriend) {
+	      friendButton = React.createElement(
+	        'a',
+	        { href: '#', onClick: this.handleFriendsClick, className: 'header-button-friends confirmed' },
+	        React.createElement('img', { className: 'i1' }),
+	        'Friends',
+	        React.createElement('img', { className: 'tri-drop' })
+	      );
+	    } else if (this.props.user.id == this.props.currentUser.id) {
+	      friendButton = React.createElement(
+	        'a',
+	        { href: '#', onClick: this._handleUpdateInfo, className: 'header-button-friends update-info' },
+	        'Update Info'
+	      );
+	    } else {
+	      switch (this.state.requestStatus) {
+	        case "no request":
+	          friendButton = React.createElement(
+	            'a',
+	            { href: '#', onClick: this.handleSendRequest, className: 'header-button-request add-friend' },
+	            React.createElement('img', { className: 'add' }),
+	            'Add Friend'
+	          );
+	          break;
+	        case "sent":
+	          friendButton = React.createElement(
+	            'a',
+	            { href: '#', onClick: this.handleEditRequest, className: 'header-button-request request-sent' },
+	            'Friend Request Sent'
+	          );
+	          break;
+	        case "received":
+	          friendButton = React.createElement(
+	            'a',
+	            { href: '#', onClick: this.handleRespond, className: 'header-button-request respond-to' },
+	            'Respond to request'
+	          );
+	
+	          break;
+	      }
+	    }
+	
+	    // <li><a href='#'>Following</a></li>
+	    // <li><a href='#'>Message</a></li>
+	
+	    // <Modal
+	    //   isOpen={ this.state.editingBio }
+	    //   onRequestClose={ this._closeEdit }>
+	    //   <h1>Hello Modal!</h1>
+	    // </Modal>
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'ul',
+	        { className: 'timeline-header-buttons-list' },
+	        React.createElement(
+	          'li',
+	          null,
+	          friendButton
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = TimelineButtons;
+
+/***/ },
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendRequestActions = __webpack_require__(289);
+	
+	var FriendRequestUtil = {
+		fetchPendingRequests: function () {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "GET",
+				success: function (requests) {
+					FriendRequestActions.receivePendingRequests(requests);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		fetchRequestsWithUser: function (timelineId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + timelineId,
+				method: "GET",
+				success: function (request) {
+					FriendRequestActions.receiveUserRequest(request);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		createRequest: function (formData) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests",
+				method: "POST",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (request) {
+					FriendRequestActions.receiveNewRequest(request);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		updateRequest: function (formData, requestId) {
+			ApiUtil.ajax({
+				url: "/api/friend_requests/" + requestId,
+				method: "PATCH",
+				form: true,
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (friend) {
+					// error handle
+					if (friend.friendshipId !== "no friendship") {
+						FriendRequestActions.receiveAcceptedRequest(friend);
+					} else {
+						FriendRequestActions.receiveRejectedRequest(friend);
+					}
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	
+	};
+	module.exports = FriendRequestUtil;
+
+/***/ },
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var FriendRequestConstants = __webpack_require__(290);
+	
+	var FriendRequestActions = {
+	  receiveUserRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.USER_REQUEST_RECEIVED,
+	      request: request
+	    });
+	  },
+	
+	  receiveNewRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.NEW_REQUEST_RECEIVED,
+	      request: request
+	    });
+	  },
+	
+	  receiveAcceptedRequest: function (friend) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUEST_ACCEPTED,
+	      friend: friend
+	    });
+	  },
+	
+	  receiveRejectedRequest: function (request) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUEST_REJECTED,
+	      request: request
+	    });
+	  },
+	
+	  receivePendingRequests: function (requests) {
+	    Dispatcher.dispatch({
+	      actionType: FriendRequestConstants.REQUESTS_RECEIVED,
+	      requests: requests
+	    });
+	  }
+	};
+	
+	// requestDeleted: function (request) {
+	// 	Dispatcher.dispatch({
+	// 		actionType: FriendRequestConstants.POST_DELETED,
+	// 		request: request
+	// 	});
+	// }
+	module.exports = FriendRequestActions;
+
+/***/ },
+/* 290 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		NEW_REQUEST_RECEIVED: "NEW_REQUEST_RECEIVED",
+		USER_REQUEST_RECEIVED: "USER_REQUEST_RECEIVED",
+		REQUESTS_RECEIVED: "REQUESTS_RECEIVED",
+		REQUEST_ACCEPTED: "REQUEST_ACCEPTED",
+		REQUEST_REJECTED: "REQUEST_REJECTED"
+	};
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var Dispatcher = __webpack_require__(222);
+	var FriendRequestConstants = __webpack_require__(290);
+	var FriendRequestStore = new Store(Dispatcher);
+	
+	var _requests = {};
+	
+	var _request = { id: "NO REQUEST" };
+	
+	var setRequest = function (request) {
+	  _request = request;
+	};
+	
+	var removeRequest = function (friend) {
+	  var removeId;
+	  for (var id in _requests) {
+	    if (_requests[id].target_id == friend.id) {
+	      removeId = undefined;
+	    }
+	  }
+	  _request = { id: "NO REQUEST" };
+	  delete _requests[removeId];
+	};
+	
+	var setRequests = function (requests) {
+	  _requests = {};
+	  requests.forEach(function (request) {
+	    _requests[request.id] = request;
+	  });
+	};
+	
+	FriendRequestStore.getAllRequests = function () {
+	  var requests = {};
+	  for (var id in _requests) {
+	    requests[id] = _requests[id];
+	  }
+	  return requests;
+	};
+	
+	FriendRequestStore.getRequest = function () {
+	  var request = {};
+	  for (var id in _request) {
+	    request[id] = _request[id];
+	  }
+	  return request;
+	};
+	
+	FriendRequestStore.isRequested = function (timelineId) {
+	  if (_request.id == "NO REQUEST") {
+	    console.log("none");
+	    return "no request";
+	  } else if (timelineId == _request.target_id) {
+	    console.log("sent");
+	    return "sent";
+	  } else if (timelineId == _request.sender_id) {
+	    console.log("received");
+	    return "received";
+	  } else {
+	    debugger;
+	  }
+	};
+	
+	FriendRequestStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case FriendRequestConstants.USER_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.NEW_REQUEST_RECEIVED:
+	      setRequest(payload.request);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_ACCEPTED:
+	      removeRequest(payload.friend);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUEST_REJECTED:
+	      removeRequest(payload.friend);
+	      FriendRequestStore.__emitChange();
+	      break;
+	    case FriendRequestConstants.REQUESTS_RECEIVED:
+	      setRequests(payload.requests);
+	      FriendRequestStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FriendRequestStore;
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiUtil = __webpack_require__(220);
+	var FriendActions = __webpack_require__(293);
+	
+	var FriendUtil = {
+		fetchFriends: function (userId) {
+			ApiUtil.ajax({
+				url: "/api/friendships/" + userId,
+				method: "GET",
+				success: function (friends) {
+					FriendActions.receiveFriends(friends);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		},
+	
+		removeFriend: function (friendshipId) {
+			ApiUtil.ajax({
+				url: "/api/friendships/" + friendshipId,
+				method: "DELETE",
+				success: function (friendships) {
+					FriendActions.friendshipOver(friendships);
+				},
+				error: function (response) {
+					console.log("FAILURE\n" + response);
+				}
+			});
+		}
+	};
+	module.exports = FriendUtil;
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(222);
+	var FriendConstants = __webpack_require__(294);
+	
+	var FriendActions = {
+	  receiveFriends: function (friends) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDS_RECEIVED,
+	      friends: friends
+	    });
+	  },
+	
+	  friendshipOver: function (friendships) {
+	    Dispatcher.dispatch({
+	      actionType: FriendConstants.FRIENDSHIP_OVER,
+	      friendships: friendships
+	    });
+	  }
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 294 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		FRIENDS_RECEIVED: "FRIENDS_RECEIVED",
+		FRIENDSHIP_OVER: "FRIENDSHIP_OVER"
+	};
+
+/***/ },
+/* 295 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserUtil = __webpack_require__(279);
 	
 	var UploadForm = React.createClass({
 	  displayName: "UploadForm",
@@ -36138,12 +36218,12 @@
 	module.exports = UploadForm;
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
-	var UserConstants = __webpack_require__(261);
+	var UserConstants = __webpack_require__(281);
 	var UserStore = new Store(Dispatcher);
 	
 	console.log('loaded UserStore!');
@@ -36210,13 +36290,13 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(229).Store;
 	var Dispatcher = __webpack_require__(222);
-	var FriendConstants = __webpack_require__(273);
-	var FriendRequestConstants = __webpack_require__(269);
+	var FriendConstants = __webpack_require__(294);
+	var FriendRequestConstants = __webpack_require__(290);
 	var FriendStore = new Store(Dispatcher);
 	
 	console.log('loaded FriendStore!');
@@ -36287,87 +36367,6 @@
 	};
 	
 	module.exports = FriendStore;
-
-/***/ },
-/* 297 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var FriendBox = React.createClass({
-	  displayName: "FriendBox",
-	
-	
-	  preventDefault: function (e) {
-	    e.preventDefault();
-	  },
-	
-	  render: function () {
-	    var friends = this.props.friends;
-	    var user = this.props.user;
-	    var friendsLink = "#/user/" + user.id + "/friends";
-	
-	    var friendListItems = friends.map(function (friend) {
-	      var profileLink = "#/user/" + friend.id;
-	      var name = friend.first_name + " " + friend.last_name;
-	      return React.createElement(
-	        "li",
-	        { key: friend.id },
-	        React.createElement(
-	          "a",
-	          { href: profileLink, className: "friend-icon-item"
-	          },
-	          React.createElement("img", { src: friend.profile_pic_url,
-	            className: "friend-profile-thumb" }),
-	          React.createElement(
-	            "div",
-	            {
-	              className: "friend-name" },
-	            name
-	          )
-	        )
-	      );
-	    });
-	    return React.createElement(
-	      "section",
-	      { className: "timeline-sidebar-item friend-grid" },
-	      React.createElement(
-	        "div",
-	        { className: "friend-grid-header" },
-	        React.createElement("a", { className: "friends-symbol-button",
-	          href: friendsLink,
-	          onClick: this.preventDefault }),
-	        React.createElement(
-	          "div",
-	          { className: "friend-grid-text" },
-	          React.createElement(
-	            "a",
-	            { href: friendsLink,
-	              onClick: this.preventDefault
-	            },
-	            "Friends"
-	          ),
-	          React.createElement(
-	            "p",
-	            { className: "friend-count" },
-	            friends.length
-	          )
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "friends-grid-container" },
-	        React.createElement(
-	          "ul",
-	          { className: "friend-icon-list" },
-	          friendListItems
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = FriendBox;
 
 /***/ }
 /******/ ]);

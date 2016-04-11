@@ -301,7 +301,8 @@ li.selected > span {
 .timeline-sidebar-item.friend-grid {
   background-color: #fff;
   border: 1px solid #D8D8DB;
-  max-height: 311px;
+  max-height: 367px;
+  overflow: hidden;
 }
 
 .friend-grid-header {
@@ -348,17 +349,17 @@ li.selected > span {
 .friends-grid-container {
   // height: 311px;
   width: 311px;
-  margin: 6px;
-  overflow: hidden;
+  margin: 0px;
 }
 
 .friend-icon-list {
   margin: 0;
   padding: 0;
+  float: left;
 }
 
 .friend-icon-list > li {
-  margin: 0px;
+  float: left;
 }
 
 .friend-icon-item {
