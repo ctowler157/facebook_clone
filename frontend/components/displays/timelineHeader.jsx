@@ -62,6 +62,7 @@ var TimelineHeader = React.createClass({
 		return(
 			<section className="timeline-header clear-fix">
         <Modal
+          className="upload-modal"
           isOpen={ this.state.openUploadPro }
           onRequestClose={ this.closeUploadProfilePic }
           style={ profileModalStyle }

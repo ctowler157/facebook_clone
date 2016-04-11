@@ -44,7 +44,7 @@ module.exports = React.createClass({
 			mainString = display;
 		}
     return(
-      <div className="whole-page">
+      <div className="whole-page clear-fix">
 				<header>
 					{ header }
 				</header>

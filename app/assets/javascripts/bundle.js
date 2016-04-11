@@ -24819,7 +24819,7 @@
 			}
 			return React.createElement(
 				'div',
-				{ className: 'whole-page' },
+				{ className: 'whole-page clear-fix' },
 				React.createElement(
 					'header',
 					null,
@@ -35503,6 +35503,7 @@
 	      React.createElement(
 	        Modal,
 	        {
+	          className: 'upload-modal',
 	          isOpen: this.state.openUploadPro,
 	          onRequestClose: this.closeUploadProfilePic,
 	          style: profileModalStyle

@@ -19,6 +19,7 @@ body, header, a, div, button, p, span {
   border: 0;
   outline: 0;
   padding: 0;
+  background-color: transparent;
 
   /*font: inherit;*/
   text-decoration: inherit;
@@ -50,6 +51,6 @@ body, header, a, div, button, p, span {
  }
 
  .whole-page {
-	 background-color: #edf0f5;
-   /*background-color: #000;*/
+	background-color: #edf0f5;
+  bottom: 0; 
  }
