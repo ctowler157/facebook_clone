@@ -53,7 +53,7 @@ var UploadForm = React.createClass({
 
   render: function () {
     return(
-      <div>
+      <div className="upload-form">
         <form onSubmit={ this.handleSubmit }>
           <label>File
             <input

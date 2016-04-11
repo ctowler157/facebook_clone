@@ -1,8 +1,6 @@
 var ApiUtil = require('./apiUtil');
 var SessionActions = require('../actions/sessionActions');
 
-console.log("Loaded SessionUtil!");
-
 var SessionUtil = {
 	fetchCurrentUser: function (completion) {
 		ApiUtil.ajax({
@@ -27,8 +25,6 @@ var SessionUtil = {
 	},
 
 	tryLogIn: function (formData) {
-
-		console.log("Made it to tryLogIn in SessionUtil!");
 
 		ApiUtil.ajax({
 			url: "/api/session",

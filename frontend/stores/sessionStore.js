@@ -3,8 +3,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 var SessionConstants = require('../constants/sessionConstants');
 var SessionStore = new Store(Dispatcher);
 
-console.log('loaded SessionStore!');
-
 var currentUserFetched = false;
 
 var _currentUser = { online: false };

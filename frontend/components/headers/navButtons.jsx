@@ -1,15 +1,27 @@
 var React = require('react');
 var SessionUtil = require('../../util/sessionUtil.js');
 var SessionStore = require('./../../stores/sessionStore');
+var Modal = require('react-modal');
+var RequestsIndex = require('../requests/index')
+
 
 var NavButtons = React.createClass({
-  // contextTypes: {
-  //   router: React.PropTypes.object.isRequired
-  // },
+  getInitialState: function () {
+    return { showRequests: false }
+  },
 
 	prevDef: function (e) {
 		e.preventDefault();
 	},
+
+  showRequests: function (e) {
+    e.preventDefault();
+    this.setState({ showRequests: true })
+  },
+
+  hideRequests: function (e) {
+    this.setState({ showRequests: false })
+  },
 
 
 	logOut: function () {
@@ -25,7 +37,37 @@ var NavButtons = React.createClass({
 	},
 
 	render: function () {
+
+    // ---------Modal Styles----------------
+
+    var requestsModalStyle = {
+      content : {
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -50%)'
+     },
+     overlay : {
+       backgroundColor   : 'rgba(95, 95, 95, 0.75)'
+     }
+    };
+
+
 		var user = this.props.user;
+
+    var reqModal = (
+      <Modal
+        isOpen={ this.state.showRequests }
+        onRequestClose={ this.hideRequests }
+        style={ requestsModalStyle }
+        >
+        <div className="notifications-container">
+          <RequestsIndex />
+        </div>
+      </Modal>
+    );
 
 		return(
 			<ul className="header-nav-right nav-buttons">
@@ -38,7 +80,8 @@ var NavButtons = React.createClass({
 				<li className="empty-li"></li>
 				<li>
 					<a href="#/requests" className="notis requests-button"
-						onClick={ this.prevDef }></a>
+						onClick={ this.showRequests }></a>
+          { reqModal }
 				</li>
 				<li>
 					<a href="#/messages" className="notis messages-button"

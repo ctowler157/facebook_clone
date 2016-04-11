@@ -3,8 +3,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 var UserConstants = require('../constants/userConstants');
 var UserStore = new Store(Dispatcher);
 
-console.log('loaded UserStore!');
-
 var timelineUserFetched = false;
 
 var _timelineUser = {} ;

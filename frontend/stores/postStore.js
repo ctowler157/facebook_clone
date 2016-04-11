@@ -3,8 +3,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 var PostConstants = require('../constants/postConstants');
 var PostStore = new Store(Dispatcher);
 
-console.log('loaded PostStore!');
-
 var _posts = {};
 
 var resetPosts = function (posts) {
@@ -28,7 +26,7 @@ PostStore.all = function () {
     posts.push(_posts[id]);
   }
   posts.reverse();
-  
+
   return posts;
 };
 

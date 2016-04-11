@@ -1,8 +1,6 @@
 var ApiUtil = require('./apiUtil');
 var PostActions = require('../actions/postActions');
 
-console.log("Loaded PostUtil!");
-
 var PostUtil = {
 	// getCurrentUser: function () {
 	//

@@ -4,8 +4,6 @@ var FriendConstants = require('../constants/friendConstants');
 var FriendRequestConstants = require('../constants/friendRequestConstants');
 var FriendStore = new Store(Dispatcher);
 
-console.log('loaded FriendStore!');
-
 var _friends = { };
 
 var setFriends = function (friends) {

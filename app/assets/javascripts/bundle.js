@@ -61,7 +61,13 @@
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App, onEntry: this.checkLoggedIn },
-	  React.createElement(Route, { path: '/user/:id', component: Timeline, onEntry: this.ensureLoggedIn }),
+	  React.createElement(
+	    Route,
+	    { path: '/user/:id', component: Timeline, onEntry: this.ensureLoggedIn },
+	    React.createElement(Route, { path: '/friends' }),
+	    React.createElement(Route, { path: '/about' }),
+	    React.createElement(IndexRoute, null)
+	  ),
 	  React.createElement(Route, { path: '/login', component: LogIn })
 	);
 	
@@ -25014,8 +25020,6 @@
 	var ApiUtil = __webpack_require__(220);
 	var SessionActions = __webpack_require__(221);
 	
-	console.log("Loaded SessionUtil!");
-	
 	var SessionUtil = {
 		fetchCurrentUser: function (completion) {
 			ApiUtil.ajax({
@@ -25040,8 +25044,6 @@
 		},
 	
 		tryLogIn: function (formData) {
-	
-			console.log("Made it to tryLogIn in SessionUtil!");
 	
 			ApiUtil.ajax({
 				url: "/api/session",
@@ -25079,7 +25081,6 @@
 /* 220 */
 /***/ function(module, exports) {
 
-	console.log("Loaded ApiUtil!!");
 	
 	var ApiUtil = {
 			// AJAX request:
@@ -25090,7 +25091,6 @@
 			// options.data: data
 			// options:form Boolean, do you need an auth token?
 			ajax: function (options) {
-					console.log("Made it to AJAX in ApiUtil!!");
 	
 					var request = new XMLHttpRequest();
 	
@@ -25131,7 +25131,6 @@
 			},
 	
 			_extend: function (base) {
-					console.log("Called extend in ApiUtil!!");
 					var otherObjs = Array.prototype.slice.call(arguments, 1);
 					otherObjs.forEach(function (obj) {
 							for (var prop in obj) {
@@ -25514,89 +25513,132 @@
 	var React = __webpack_require__(1);
 	var SessionUtil = __webpack_require__(219);
 	var SessionStore = __webpack_require__(228);
+	var Modal = __webpack_require__(256);
+	var RequestsIndex = __webpack_require__(298);
 	
 	var NavButtons = React.createClass({
-		displayName: 'NavButtons',
+	  displayName: 'NavButtons',
 	
-		// contextTypes: {
-		//   router: React.PropTypes.object.isRequired
-		// },
+	  getInitialState: function () {
+	    return { showRequests: false };
+	  },
 	
-		prevDef: function (e) {
-			e.preventDefault();
-		},
+	  prevDef: function (e) {
+	    e.preventDefault();
+	  },
 	
-		logOut: function () {
-			// var router = this.context.router;
+	  showRequests: function (e) {
+	    e.preventDefault();
+	    this.setState({ showRequests: true });
+	  },
 	
-			SessionUtil.logOut();
+	  hideRequests: function (e) {
+	    this.setState({ showRequests: false });
+	  },
 	
-			// SessionUtil.logOut(function () {
-			//   router.push("/");
-			// });
-		},
+	  logOut: function () {
+	    // var router = this.context.router;
 	
-		render: function () {
-			var user = this.props.user;
+	    SessionUtil.logOut();
 	
-			return React.createElement(
-				'ul',
-				{ className: 'header-nav-right nav-buttons' },
-				React.createElement(
-					'li',
-					null,
-					React.createElement(
-						'a',
-						{ className: 'left-buttons user-name', href: "#/user/" + user.id
-						},
-						React.createElement('img', { src: user.profile_pic_url, className: 'tiny-profile-pic-thumb'
-						}),
-						React.createElement(
-							'span',
-							{ className: 'user-name-button' },
-							user.first_name
-						)
-					)
-				),
-				React.createElement(
-					'li',
-					null,
-					React.createElement(
-						'a',
-						{ className: 'left-buttons home-button', href: "#/" },
-						'Home'
-					)
-				),
-				React.createElement('li', { className: 'empty-li' }),
-				React.createElement(
-					'li',
-					null,
-					React.createElement('a', { href: '#/requests', className: 'notis requests-button',
-						onClick: this.prevDef })
-				),
-				React.createElement(
-					'li',
-					null,
-					React.createElement('a', { href: '#/messages', className: 'notis messages-button',
-						onClick: this.prevDef })
-				),
-				React.createElement(
-					'li',
-					null,
-					React.createElement('a', { href: '#/notifications', className: 'notis notifications-button',
-						onClick: this.prevDef })
-				),
-				React.createElement(
-					'li',
-					null,
-					React.createElement(
-						'button',
-						{ type: 'button', className: 'blue-button', onClick: this.logOut },
-						'Log Out'
-					)
-				)
-			);
-		}
+	    // SessionUtil.logOut(function () {
+	    //   router.push("/");
+	    // });
+	  },
+	
+	  render: function () {
+	
+	    // ---------Modal Styles----------------
+	
+	    var requestsModalStyle = {
+	      content: {
+	        top: '50%',
+	        left: '50%',
+	        right: 'auto',
+	        bottom: 'auto',
+	        marginRight: '-50%',
+	        transform: 'translate(-50%, -50%)'
+	      },
+	      overlay: {
+	        backgroundColor: 'rgba(95, 95, 95, 0.75)'
+	      }
+	    };
+	
+	    var user = this.props.user;
+	
+	    var reqModal = React.createElement(
+	      Modal,
+	      {
+	        isOpen: this.state.showRequests,
+	        onRequestClose: this.hideRequests,
+	        style: requestsModalStyle
+	      },
+	      React.createElement(
+	        'div',
+	        { className: 'notifications-container' },
+	        React.createElement(RequestsIndex, null)
+	      )
+	    );
+	
+	    return React.createElement(
+	      'ul',
+	      { className: 'header-nav-right nav-buttons' },
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { className: 'left-buttons user-name', href: "#/user/" + user.id
+	          },
+	          React.createElement('img', { src: user.profile_pic_url, className: 'tiny-profile-pic-thumb'
+	          }),
+	          React.createElement(
+	            'span',
+	            { className: 'user-name-button' },
+	            user.first_name
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'a',
+	          { className: 'left-buttons home-button', href: "#/" },
+	          'Home'
+	        )
+	      ),
+	      React.createElement('li', { className: 'empty-li' }),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement('a', { href: '#/requests', className: 'notis requests-button',
+	          onClick: this.showRequests }),
+	        reqModal
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement('a', { href: '#/messages', className: 'notis messages-button',
+	          onClick: this.prevDef })
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement('a', { href: '#/notifications', className: 'notis notifications-button',
+	          onClick: this.prevDef })
+	      ),
+	      React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'button',
+	          { type: 'button', className: 'blue-button', onClick: this.logOut },
+	          'Log Out'
+	        )
+	      )
+	    );
+	  }
 	});
 	
 	module.exports = NavButtons;
@@ -25609,8 +25651,6 @@
 	var Dispatcher = __webpack_require__(222);
 	var SessionConstants = __webpack_require__(226);
 	var SessionStore = new Store(Dispatcher);
-	
-	console.log('loaded SessionStore!');
 	
 	var currentUserFetched = false;
 	
@@ -32192,8 +32232,6 @@
 	var ApiUtil = __webpack_require__(220);
 	var PostActions = __webpack_require__(249);
 	
-	console.log("Loaded PostUtil!");
-	
 	var PostUtil = {
 		// getCurrentUser: function () {
 		//
@@ -32576,8 +32614,6 @@
 	var Dispatcher = __webpack_require__(222);
 	var PostConstants = __webpack_require__(250);
 	var PostStore = new Store(Dispatcher);
-	
-	console.log('loaded PostStore!');
 	
 	var _posts = {};
 	
@@ -35477,10 +35513,10 @@
 	        'a',
 	        { href: '#/upload.profile.pic', className: 'edit-profile-pic-button',
 	          onClick: this.openUploadProfilePic },
-	        React.createElement('i', { className: 'camera-icon' }),
 	        React.createElement(
 	          'div',
 	          null,
+	          React.createElement('i', { className: 'camera-icon' }),
 	          'Update Profile Picture'
 	        )
 	      );
@@ -35503,7 +35539,6 @@
 	      React.createElement(
 	        Modal,
 	        {
-	          className: 'upload-modal',
 	          isOpen: this.state.openUploadPro,
 	          onRequestClose: this.closeUploadProfilePic,
 	          style: profileModalStyle
@@ -35606,12 +35641,8 @@
 	            'a',
 	            { onClick: this._onClick, href: '#' },
 	            'Friends ',
-	            React.createElement(
-	              'h6',
-	              {
-	                className: 'friends-button-mutual-friends' },
-	              mutual + " Mutual"
-	            )
+	            React.createElement('h6', {
+	              className: 'friends-button-mutual-friends' })
 	          )
 	        ),
 	        React.createElement(
@@ -36018,13 +36049,10 @@
 	
 	FriendRequestStore.isRequested = function (timelineId) {
 	  if (_request.id == "NO REQUEST") {
-	    console.log("none");
 	    return "no request";
 	  } else if (timelineId == _request.target_id) {
-	    console.log("sent");
 	    return "sent";
 	  } else if (timelineId == _request.sender_id) {
-	    console.log("received");
 	    return "received";
 	  } else {
 	    debugger;
@@ -36189,7 +36217,7 @@
 	  render: function () {
 	    return React.createElement(
 	      "div",
-	      null,
+	      { className: "upload-form" },
 	      React.createElement(
 	        "form",
 	        { onSubmit: this.handleSubmit },
@@ -36226,8 +36254,6 @@
 	var Dispatcher = __webpack_require__(222);
 	var UserConstants = __webpack_require__(281);
 	var UserStore = new Store(Dispatcher);
-	
-	console.log('loaded UserStore!');
 	
 	var timelineUserFetched = false;
 	
@@ -36300,8 +36326,6 @@
 	var FriendRequestConstants = __webpack_require__(290);
 	var FriendStore = new Store(Dispatcher);
 	
-	console.log('loaded FriendStore!');
-	
 	var _friends = {};
 	
 	var setFriends = function (friends) {
@@ -36368,6 +36392,62 @@
 	};
 	
 	module.exports = FriendStore;
+
+/***/ },
+/* 298 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var RequestUtil = __webpack_require__(288);
+	var RequestStore = __webpack_require__(291);
+	var RequestIndexItem = __webpack_require__(299);
+	
+	var RequestIndex = React.createClass({
+	  displayName: 'RequestIndex',
+	
+	  getInitialState: function () {
+	    return { requests: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    this.requestListener = RequestStore.addListener(this._onChange);
+	    RequestUtil.fetchPendingRequests();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.requestListener.remove();
+	  },
+	
+	  _onChange: function () {
+	    this.setState({ requests: RequestStore.getAllRequests() });
+	  },
+	
+	  render: function () {
+	    // var user = this.props.user;
+	    // var requests = this.state.requests;
+	    //
+	    // var liString = (requests.map(function (request) {
+	    //   return (<RequestIndexItem key={ request.id } request={ request }
+	    //     user={ user });
+	    // }));
+	    //  <ul>
+	    // 	 { liString }
+	    //  </ul>
+	    return React.createElement(
+	      'h1',
+	      null,
+	      'greetings from request index'
+	    );
+	  }
+	});
+	
+	module.exports = RequestIndex;
+
+/***/ },
+/* 299 */
+/***/ function(module, exports) {
+
+
 
 /***/ }
 /******/ ]);

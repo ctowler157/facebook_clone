@@ -48,15 +48,12 @@ FriendRequestStore.getRequest = function () {
 
 FriendRequestStore.isRequested = function (timelineId) {
 	if (_request.id == "NO REQUEST") {
-    console.log("none");
 		return "no request";
 	}
 	else if (timelineId == _request.target_id){
-    console.log("sent");
 		return "sent";
 	}
   else if (timelineId == _request.sender_id) {
-    console.log("received");
 		return "received";
 	} else { debugger}
 };

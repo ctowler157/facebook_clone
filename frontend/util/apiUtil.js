@@ -1,4 +1,3 @@
-console.log("Loaded ApiUtil!!");
 
 var ApiUtil = {
 	// AJAX request:
@@ -9,7 +8,6 @@ var ApiUtil = {
 	// options.data: data
 	// options:form Boolean, do you need an auth token?
 	ajax: function (options) {
-		console.log("Made it to AJAX in ApiUtil!!");
 
 		var request = new XMLHttpRequest();
 
@@ -50,7 +48,6 @@ var ApiUtil = {
 	},
 
 	_extend: function (base){
-		console.log("Called extend in ApiUtil!!");
     var otherObjs = Array.prototype.slice.call(arguments, 1);
     otherObjs.forEach(function(obj){
       for(var prop in obj){

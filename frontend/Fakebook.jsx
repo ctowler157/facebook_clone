@@ -14,7 +14,11 @@ var SessionUtil = require('./util/sessionUtil');
 
 var routes = (
   <Route path="/" component={App} onEntry={this.checkLoggedIn}>
-    <Route path="/user/:id" component={ Timeline } onEntry={this.ensureLoggedIn}/>
+    <Route path="/user/:id" component={ Timeline } onEntry={this.ensureLoggedIn}>
+      <Route path="/friends" />
+      <Route path="/about" />
+      <IndexRoute />
+    </Route>
 
 		<Route path="/login" component={LogIn}/>
   </Route>

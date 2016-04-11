@@ -42,8 +42,8 @@ var TimelineHeader = React.createClass({
         </a> );
       profileButton = (<a href="#/upload.profile.pic" className="edit-profile-pic-button"
           onClick={ this.openUploadProfilePic }>
-          <i className="camera-icon" />
-          <div>Update Profile Picture</div>
+
+          <div><i className="camera-icon" />Update Profile Picture</div>
         </a>);
 
     }
@@ -62,7 +62,6 @@ var TimelineHeader = React.createClass({
 		return(
 			<section className="timeline-header clear-fix">
         <Modal
-          className="upload-modal"
           isOpen={ this.state.openUploadPro }
           onRequestClose={ this.closeUploadProfilePic }
           style={ profileModalStyle }
