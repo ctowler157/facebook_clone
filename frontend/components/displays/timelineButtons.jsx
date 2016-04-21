@@ -87,6 +87,14 @@ var TimelineButtons = React.createClass({
     FriendRequestUtil.updateRequest(response, req.id);
 	},
 
+  openNoFeature: function (e) {
+    e.preventDefault();
+    this.setState({ noFeature: true });
+  },
+  closeNoFeature: function (e) {
+    this.setState({ noFeature: false });
+  },
+
   // _openEdit: function (e) {
   //   e.preventDefault();
   //   this.setState({ editingBio: true });
@@ -101,6 +109,28 @@ var TimelineButtons = React.createClass({
     var user = this.props.user;
 		var friendButton = "Friends";
 
+    var noFeatureModalStyle = {
+      content : {
+        padding                 : '20px',
+        top                     : '50%',
+        left                    : '50%',
+        right                   : 'auto',
+        bottom                  : 'auto',
+        marginRight             : '-50%',
+        transform               : 'translate(-50%, -50%)',
+        overflow                : 'hidden',
+        borderRadius            : '3px'
+      }
+    };
+    var noFeature = (
+      <Modal
+        isOpen={this.state.noFeature}
+        onRequestClose={this.closeNoFeature}
+        style={noFeatureModalStyle} >
+        <p className="modal-text">This feature is coming soon!</p>
+      </Modal>
+    );
+
 		var isFriend = false;
 		var currentUser = this.props.currentUser;
 		this.props.friends.forEach( function (friend){
@@ -111,11 +141,11 @@ var TimelineButtons = React.createClass({
 
 		if (isFriend) {
 			friendButton = (
-				<a href='#' onClick={ this.handleFriendsClick } className="header-button-friends confirmed"><img className="i1"/>Friends<img className="tri-drop"/></a>
+				<a href='#' onClick={ this.openNoFeature } className="header-button-friends confirmed"><img className="i1"/>Friends<img className="tri-drop"/></a>
 			);
 		} else if (this.props.user.id == this.props.currentUser.id){
 				friendButton = (
-					<a href='#' onClick={ this._handleUpdateInfo } className="header-button-friends update-info">Update Info</a>
+					<a href='#' onClick={ this.openNoFeature } className="header-button-friends update-info">Update Info</a>
 				);
 		} else {
 			switch(this.state.requestStatus) {
@@ -138,20 +168,10 @@ var TimelineButtons = React.createClass({
 			}
 		}
 
-
-    // <li><a href='#'>Following</a></li>
-    // <li><a href='#'>Message</a></li>
-
-
-    // <Modal
-    //   isOpen={ this.state.editingBio }
-    //   onRequestClose={ this._closeEdit }>
-    //   <h1>Hello Modal!</h1>
-    // </Modal>
-
 		return(
 
       <div>
+        { noFeature }
         <ul className="timeline-header-buttons-list">
           <li>{ friendButton }</li>
         </ul>

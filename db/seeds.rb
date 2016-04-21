@@ -45,7 +45,7 @@ kevin = User.create!(
 )
 guest = User.create!(
   email: "guestEmail", password: "123456",
-  first_name: "Tulazy", last_name: "Tusynup", birthday: "February 1 1881"
+  first_name: "Tulazy", last_name: "Tusynup", birthday: "February 1 1981"
 )
 
 
@@ -56,7 +56,7 @@ chris.posts.create!(body: "I'm makin a post", timeline_id: chris.id)
 gigi.posts.create!(body: "Wow, love this facebook clone", timeline_id: gigi.id)
 dan.posts.create!(body: "I should be coding rn LOL", timeline_id: dan.id)
 patrick.posts.create!(body: "I put the STYLE in METHOD STYLE!!", timeline_id: patrick.id)
-danP.posts.create!(body: "psshhh I remember my first facebook clone", timeline_id: chris.id)
+danP.posts.create!(body: "Good job, dude!", timeline_id: chris.id)
 brian.posts.create!(body: "a suh dude?", timeline_id: chris.id)
 
 

@@ -1,5 +1,6 @@
 var React = require('react');
 var PostUtil = require('../../util/postUtil.js');
+var Modal = require('react-modal');
 // var PostActions = require('../../actions');
 
 var PostForm = React.createClass({
@@ -9,7 +10,7 @@ var PostForm = React.createClass({
     if (timelineId === NEWS_FEED_CONSTANT) {
       timelineId = this.props.user.id;
     }
-		return({ body: "", timelineId: timelineId });
+		return({ body: "", timelineId: timelineId, noFeature: false });
 	},
 
 	componentDidMount: function () {
@@ -33,6 +34,14 @@ var PostForm = React.createClass({
 		this.setState({ body: "" });
 	},
 
+  openNoFeature: function (e) {
+    e.preventDefault();
+    this.setState({ noFeature: true });
+  },
+  closeNoFeature: function (e) {
+    this.setState({ noFeature: false });
+  },
+
 	tryCreatePost: function() {
 		var formData = new FormData();
 		formData.append("post[author_id]", this.props.user.id);
@@ -47,6 +56,28 @@ var PostForm = React.createClass({
     // var navItems = ["Post", "Photo/Video"];
     var navItems = ["Post", "Photo"];
 
+    var noFeatureModalStyle = {
+      content : {
+        padding                 : '20px',
+        top                     : '50%',
+        left                    : '50%',
+        right                   : 'auto',
+        bottom                  : 'auto',
+        marginRight             : '-50%',
+        transform               : 'translate(-50%, -50%)',
+        overflow                : 'hidden',
+        borderRadius            : '3px'
+      }
+    };
+    var noFeature = (
+      <Modal
+        isOpen={this.state.noFeature}
+        onRequestClose={this.closeNoFeature}
+        style={noFeatureModalStyle} >
+        <p className="modal-text">This feature is coming soon!</p>
+      </Modal>
+    );
+
     if (this.props.timelineId === "NEWS_FEED") {
       navClass += " news-feed-post-form";
       // navItems = ["Update Status", "Add Photo/Video", "Create Photo Album"];
@@ -58,7 +89,7 @@ var PostForm = React.createClass({
         navItems = ["Status", "Photo"];
       }
     }
-    var preventDefault = this.preventRedirect;
+    var preventDefault = this.openNoFeature;
     var navItemsList = (navItems.map(function (item, i) {
       return (
         <li key={ i }>
@@ -72,13 +103,13 @@ var PostForm = React.createClass({
         <ul>{ navItemsList }</ul>
       </nav>
     );
-
 		return(
 			<div className="post-form">
+        { noFeature }
         { navBar }
         <div className="post-pic-and-input feed-version clear-fix">
           <img className="profile-pic-thumb post-form-version"
-            src={ this.props.user.profile_pic_url } />
+            src={ this.props.user.profile_thumb_url } />
           <div className="post-input-padding">
             <input type="textarea" className="post-form-body-input post-input"
                 value={ this.state.body} onChange={ this.updateBody }/>

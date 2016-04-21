@@ -234,7 +234,7 @@ var PostIndexItem = React.createClass({
           <section className="post-item-header">
             <div className="post-author-pic-container clear-fix">
               <img className="profile-pic-thumb"
-                src={ post.author.profile_pic_url } />
+                src={ post.author.profile_thumb_url } />
             </div>
             { menuButton }
             <div>{ authorString }{ postArrow }{ recipientString }</div>

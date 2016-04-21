@@ -51,6 +51,10 @@ SessionStore.__onDispatch = function (payload) {
       logOutCurrentUser();
       SessionStore.__emitChange();
       break;
+    case SessionConstants.LOGIN_FAILED:
+
+      // SessionStore.__emitChange();
+      break;
   }
 };
 

@@ -52,20 +52,31 @@ var UploadForm = React.createClass({
   },
 
   render: function () {
+    var preview;
+
+    if (this.state.imageUrl) {
+      preview =(
+                <div>
+                  <p>Preview:</p>
+                  <img className="preview-image" src={this.state.imageUrl} />
+                </div>
+              );
+    }
+
     return(
       <div className="upload-form">
         <form onSubmit={ this.handleSubmit }>
-          <label>File
+          <label className="modal-text">
             <input
+              className="upload-input"
               type="file"
               onChange={this.handleFileChange}
             />
           </label>
+          { preview }
           <br/>
-          <input type="submit" value="Upload"/>
+          <input className="blue-button upload-input" type="submit" value="Upload"/>
         </form>
-        <p>Preview:</p>
-        <img className="preview-image" src={this.state.imageUrl} />
       </div>
     );
   }

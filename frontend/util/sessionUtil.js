@@ -12,10 +12,10 @@ var SessionUtil = {
 				} else {
 					SessionActions.receiveCurrentUser(user);
 				}
-			 },
+			},
 			error: function (response) {
-				console.log("FAILURE\n" + response);
-			 },
+				// SessionActions.loginFailed(response);
+			},
 			complete: function () {
 				if (completion){
 					completion();
@@ -24,7 +24,7 @@ var SessionUtil = {
 		});
 	},
 
-	tryLogIn: function (formData) {
+	tryLogIn: function (formData, failureCallback) {
 
 		ApiUtil.ajax({
 			url: "/api/session",
@@ -34,7 +34,9 @@ var SessionUtil = {
 			contentType: false,
 			processData: false,
 			success: function (user) { SessionActions.receiveCurrentUser(user); },
-			error: function (response) { console.log("FAILURE\n" + response); },
+			error: function (response) {
+        failureCallback();
+      },
 		});
 	},
 

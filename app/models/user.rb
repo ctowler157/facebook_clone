@@ -2,10 +2,12 @@ class User < ActiveRecord::Base
   validates :email, :password_digest, :session_token, presence: true
   validates :password, length: { minimum: 6, allow_nil: true }
 
-  has_attached_file :profile_pic, default_url: "avatar.png"
+  has_attached_file :profile_pic, default_url: "avatar.png",
+    styles: { original: "160x160#", thumb: "40x40#" }
   validates_attachment_content_type :profile_pic, content_type: /\Aimage\/.*\Z/
 
-  has_attached_file :cover_photo, default_url: "default_cover.png"
+  has_attached_file :cover_photo, default_url: "default_cover.png",
+    styles: { original: "980x312#" }
   validates_attachment_content_type :cover_photo, content_type: /\Aimage\/.*\Z/
 
   attr_reader :password

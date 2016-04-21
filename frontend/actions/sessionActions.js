@@ -17,7 +17,14 @@ var SessionActions = {
 		Dispatcher.dispatch({
 			actionType: SessionConstants.CURRENT_USER_DELETED
 		});
-	}
+	},
+
+  loginFailed: function (response) {
+    Dispatcher.dispatch({
+      actionType: SessionConstants.LOGIN_FAILED,
+      response: response
+    });
+  }
 };
 
 module.exports = SessionActions;
