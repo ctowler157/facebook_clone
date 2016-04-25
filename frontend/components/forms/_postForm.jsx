@@ -116,7 +116,7 @@ var PostForm = React.createClass({
           </div>
         </div>
         <div className="bottom-of-post-form clear-fix">
-          <button type="button" className="post-form-submit blue-button"
+          <button type="button" className="post-form-submit"
             onClick={ this.handleClick }>Post</button>
         </div>
 			</div>

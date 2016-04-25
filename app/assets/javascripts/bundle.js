@@ -34971,7 +34971,7 @@
 	        { className: 'bottom-of-post-form clear-fix' },
 	        React.createElement(
 	          'button',
-	          { type: 'button', className: 'post-form-submit blue-button',
+	          { type: 'button', className: 'post-form-submit',
 	            onClick: this.handleClick },
 	          'Post'
 	        )
