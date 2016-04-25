@@ -78,45 +78,49 @@ var SignUp = React.createClass({
     };
 
 		return (
-			<form ref="signUpForm" className="sign-up-form" onSubmit={ this._handleSubmit} >
-				<input className="first-name-input" type="text"
-          name="user[first_name]" defaultValue="First name"
-          onFocus={ this.clearInput } onBlur={ this.resetInput }/>
+      <section className="sign-up">
+        <h1 className="sign-up-header">Sign Up</h1>
+        <p className="free-always-will-be">It's free and always will be.</p>
+  			<form ref="signUpForm" className="sign-up-form" onSubmit={ this._handleSubmit} >
+  				<input className="first-name-input" type="text"
+            name="user[first_name]" defaultValue="First name"
+            onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
-				<input className="last-name-input" type="text"
-          name="user[last_name]" defaultValue="Last name"
-          onFocus={ this.clearInput } onBlur={ this.resetInput }/>
+  				<input className="last-name-input" type="text"
+            name="user[last_name]" defaultValue="Last name"
+            onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
-				<input className="email-input" type="text"
-          name="user[email]" defaultValue="Email"
-          onFocus={ this.clearInput } onBlur={ this.resetInput }/>
+  				<input className="email-input" type="text"
+            name="user[email]" defaultValue="Email"
+            onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
-				<input className="email-verify-input" type="text"
-          name="user[email_verify]" defaultValue="Re-enter email"
-          onFocus={ this.clearInput } onBlur={ this.resetInput }/>
+  				<input className="email-verify-input" type="text"
+            name="user[email_verify]" defaultValue="Re-enter email"
+            onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
-        <input className="password-input" type="password"
-          name="user[password]" defaultValue="New password"
-          onFocus={ this.clearInput } onBlur={ this.resetInput }/>
+          <input className="password-input" type="password"
+            name="user[password]" defaultValue="New password"
+            onFocus={ this.clearInput } onBlur={ this.resetInput }/>
 
+          <h4 className="birthday">Birthday</h4>
+          <select className="birthday-selector" name="birthday[month]">
+            { months.map(selector) }
+          </select>
+          <select className="birthday-selector" name="birthday[date]">
+            { dates.map(selector) }
+          </select>
+          <select className="birthday-selector" name="birthday[year]">
+            { years.map(selector) }
+          </select>
 
-        <select name="birthday[month]">
-          { months.map(selector) }
-        </select>
-        <select name="birthday[date]">
-          { dates.map(selector) }
-        </select>
-        <select name="birthday[year]">
-          { years.map(selector) }
-        </select>
-
-				<input className="sign-up-button blue-button" type="submit" value="Sign Up"/>
-        <br/>
-        <br/>
-        <br/>
-        <a href="#" className="blue-button guest" onClick={ this.signInAsGuest }>Sign in as Guest</a>
-			</form>
-
+          <p className="agreement">By clicking Sign Up, you agree to our Terms and that you have read our Data Policy, including our Cookie Use.</p>
+  				<input className="sign-up-button" type="submit" value="Sign Up"/>
+          <br/>
+          <br/>
+          <br/>
+          <a href="#" className="blue-button guest" onClick={ this.signInAsGuest }>Sign in as Guest</a>
+  			</form>
+      </section>
 		);
 	}
 });
