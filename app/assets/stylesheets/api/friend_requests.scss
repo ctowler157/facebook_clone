@@ -1,3 +1,105 @@
-// Place all the styles related to the Api::FriendRequests controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.notifications-container {
+  position: absolute;
+  top: 37px;
+  right: 70px;
+  border: 1px solid rgba(100, 100, 100, .4);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
+.hidden {
+  display: none;
+}
+
+.friend-request-list {
+  display: inherit;
+  margin: 0;
+  background-color: #fff;
+}
+
+.friend-request-index-item {
+  display: block;
+
+  padding: 4px 8px;
+  box-sizing: content-box;
+  height: 50px;
+  width: 414px;
+
+  font-family: helvetica, arial, sans-serif;
+
+  background: rgba(255,255,255,.98);
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  border-top: 0px;
+}
+
+
+.friend-request-header {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  padding: 8px 8px 6px 8px;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+}
+
+
+
+.friend-request-thumb {
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+  float: left;
+  cursor: pointer;
+  background-color: #dfe3ee;
+}
+
+.friend-request-name {
+  margin-top: 15px;
+  display: inline-block;
+
+  color: #3b5998;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.friend-request-name:hover {
+  text-decoration: underline;
+}
+
+.friend-request-index-item > button {
+  float: right;
+  margin-top: 12px;
+
+  cursor: pointer;
+
+  font-family: helvetica, arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 22px;
+
+  padding: 0px 8px;
+  border: 1px solid;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+button.friend-request-confirm {
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
+
+  background-color: #4e69a2;
+  border-color: #435a8b #3c5488 #334c83;
+}
+
+button.friend-request-delete {
+  margin-left: 4px;
+
+  color: #4e5665;
+  text-shadow: 0 1px 0 #fff;
+
+  background-color: #f6f7f8;
+  border-color: #cccccc #c5c6c8 #b6b7b9;
+}

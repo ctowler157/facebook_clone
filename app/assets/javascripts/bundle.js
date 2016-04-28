@@ -27484,6 +27484,7 @@
 	var Modal = __webpack_require__(227);
 	var RequestsIndex = __webpack_require__(266);
 	var NoFeature = __webpack_require__(272);
+	var ClearOverlay = __webpack_require__(301);
 	
 	var NavButtons = React.createClass({
 	  displayName: 'NavButtons',
@@ -27531,20 +27532,6 @@
 	
 	    // ---------Modal Styles----------------
 	
-	    var requestsModalStyle = {
-	      content: {
-	        top: '50%',
-	        left: '50%',
-	        right: 'auto',
-	        bottom: 'auto',
-	        marginRight: '-50%',
-	        transform: 'translate(-50%, -50%)'
-	      },
-	      overlay: {
-	        backgroundColor: 'rgba(95, 95, 95, 0.75)'
-	      }
-	    };
-	
 	    var noFeatureModalStyle = {
 	      content: {
 	        padding: '20px',
@@ -27560,19 +27547,10 @@
 	
 	    var user = this.props.user;
 	
-	    var reqModal = React.createElement(
-	      Modal,
-	      {
-	        isOpen: this.state.showRequests,
-	        onRequestClose: this.hideRequests,
-	        style: requestsModalStyle
-	      },
-	      React.createElement(
-	        'div',
-	        { className: 'notifications-container' },
-	        React.createElement(RequestsIndex, null)
-	      )
-	    );
+	    var requestsClass = " hidden";
+	    if (this.state.showRequests) {
+	      requestsClass = "";
+	    }
 	
 	    var noFeature = React.createElement(
 	      Modal,
@@ -27591,6 +27569,7 @@
 	      'ul',
 	      { className: 'header-nav-right nav-buttons' },
 	      noFeature,
+	      React.createElement(ClearOverlay, { open: this.state.showRequests, closeFunction: this.hideRequests }),
 	      React.createElement(
 	        'li',
 	        null,
@@ -27621,8 +27600,12 @@
 	        'li',
 	        null,
 	        React.createElement('a', { href: '#/requests', className: 'notis requests-button',
-	          onClick: this.openNoFeature }),
-	        reqModal
+	          onClick: this.showRequests })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: "notifications-container" + requestsClass, onClick: this.hideRequests },
+	        React.createElement(RequestsIndex, null)
 	      ),
 	      React.createElement(
 	        'li',
@@ -34193,20 +34176,22 @@
 	  },
 	
 	  render: function () {
-	    // var user = this.props.user;
-	    // var requests = this.state.requests;
-	    //
-	    // var liString = (requests.map(function (request) {
-	    //   return (<RequestIndexItem key={ request.id } request={ request }
-	    //     user={ user });
-	    // }));
-	    //  <ul>
-	    // 	 { liString }
-	    //  </ul>
+	    var user = this.props.user;
+	    var requests = this.state.requests;
+	
+	    var liString = requests.map(function (request) {
+	      return React.createElement(RequestIndexItem, { key: request.id, request: request,
+	        user: user });
+	    });
 	    return React.createElement(
-	      'h1',
-	      null,
-	      'greetings from request index'
+	      'ul',
+	      { className: 'friend-request-list' },
+	      React.createElement(
+	        'h1',
+	        { className: 'friend-request-header' },
+	        'Friend Requests'
+	      ),
+	      liString
 	    );
 	  }
 	});
@@ -34389,9 +34374,9 @@
 	};
 	
 	FriendRequestStore.getAllRequests = function () {
-	  var requests = {};
+	  var requests = [];
 	  for (var id in _requests) {
-	    requests[id] = _requests[id];
+	    requests.push(_requests[id]);
 	  }
 	  return requests;
 	};
@@ -34445,9 +34430,45 @@
 
 /***/ },
 /* 271 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-
+	var React = __webpack_require__(1);
+	var RequestUtil = __webpack_require__(267);
+	
+	var RequestIndexItem = React.createClass({
+	  displayName: 'RequestIndexItem',
+	
+	
+	  render: function () {
+	    var request = this.props.request;
+	    var sender = request.sender;
+	    var senderUrl = "#/user/" + request.sender_id;
+	    var name = sender.first_name + " " + sender.last_name;
+	
+	    return React.createElement(
+	      'li',
+	      { className: 'friend-request-index-item clear-fix' },
+	      React.createElement('img', { className: 'friend-request-thumb', src: sender.profile_thumb_url }),
+	      React.createElement(
+	        'a',
+	        { href: senderUrl, className: 'friend-request-name' },
+	        name
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'friend-request-delete' },
+	        'Delete Request'
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'friend-request-confirm' },
+	        'Confirm'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = RequestIndexItem;
 
 /***/ },
 /* 272 */
@@ -34535,7 +34556,7 @@
 						React.createElement('a', { href: '#/', className: 'header-nav-thumb-logo' })
 					)
 				),
-				React.createElement(NavButtons, { user: this.props.user })
+				React.createElement(NavButtons, { id: 'nav-buttons', user: this.props.user })
 			);
 		}
 	});
@@ -35100,23 +35121,15 @@
 	var React = __webpack_require__(1);
 	var PostUtil = __webpack_require__(275);
 	var Modal = __webpack_require__(227);
+	var ClearOverlay = __webpack_require__(301);
 	
 	var PostIndexItem = React.createClass({
 	  displayName: 'PostIndexItem',
 	
 	  getInitialState: function () {
 	    return { editing: false, body: this.props.post.body,
-	      // modalIsOpen: false,
-	      dropDownState: " hidden" };
+	      dropDownState: false };
 	  },
-	
-	  // openModal: function() {
-	  //   this.setState({ modalIsOpen: true });
-	  // },
-	  //
-	  // closeModal: function() {
-	  //   this.setState({ modalIsOpen: false });
-	  // },
 	
 	  _handleEdit: function (event) {
 	    event.preventDefault();
@@ -35133,8 +35146,6 @@
 	  submitEdit: function (event) {
 	    event.preventDefault();
 	
-	    // this.setState({ dropDownState: " hidden" });
-	    // this.hideDropDown();
 	    var postId = this.props.post.id;
 	    var formData = new FormData();
 	    formData.append("post[body]", this.state.body);
@@ -35153,18 +35164,15 @@
 	  },
 	
 	  toggleDropDownState: function (e) {
-	    if (this.state.dropDownState === "") {
-	      this.setState({ dropDownState: " hidden" });
+	    if (this.state.dropDownState) {
+	      this.setState({ dropDownState: false });
 	    } else {
-	      this.setState({ dropDownState: "" });
+	      this.setState({ dropDownState: true });
 	    }
 	  },
 	
 	  hideDropDown: function (e) {
-	    // if (e === undefined ||
-	    // e.currentTarget.className !== "post-drop-down-button") {
-	    this.setState({ dropDownState: " hidden" });
-	    // }
+	    this.setState({ dropDownState: false });
 	  },
 	
 	  render: function () {
@@ -35249,10 +35257,13 @@
 	    var dropDown;
 	    var menuButton;
 	    if (post.author_id === this.props.user.id) {
+	      var dropDownClass = " hidden";
+	      if (this.state.dropDownState) {
+	        dropDownClass = "";
+	      }
 	      dropDown = React.createElement(
 	        'div',
-	        { className: "post-drop-down" + this.state.dropDownState,
-	          onBlur: this.hideDropDown },
+	        { className: "post-drop-down" + dropDownClass },
 	        React.createElement(
 	          'ul',
 	          { className: 'post-options-drop-down' },
@@ -35286,34 +35297,6 @@
 	        '  '
 	      );
 	    }
-	    //---------------conditional rendering----------------------
-	    // if (this.state.editing === true){
-	    //   return (
-	    //     <li className="post-list-item edit-post">
-	    //       <form>
-	    //         <section className="post-item-header">
-	    //           <nav className="edit-post-heading">
-	    //             <ul><li><h3 className="edit-status">Edit Post</h3></li></ul>
-	    //             <button className="cancel-edit-button"
-	    //               onClick={ this.cancelEdit }></button>
-	    //           </nav>
-	    //           <div className="post-pic-and-input post-form-version clear-fix">
-	    //             <img className="profile-pic-thumb post-form-version"
-	    //               src={ post.author.profile_pic_url } />
-	    //             <div className="post-input-padding">
-	    //               <input className="post-input" type="textArea" value={ this.state.body }
-	    //                 onChange={ this._updateBody }/>
-	    //             </div>
-	    //           </div>
-	    //         </section>
-	    //         <section className="bottom-of-post-form clear-fix">
-	    //           <button className="submit-edit-button blue-button"
-	    //             onClick={ this.submitEdit }>Save</button>
-	    //         </section>
-	    //       </form>
-	    // 	</li>
-	    //   );
-	    // } else {
 	
 	    var profileModalStyle = {
 	      content: {
@@ -35331,106 +35314,103 @@
 	        backgroundColor: 'rgba(95, 95, 95, 0.75)'
 	      }
 	    };
-	    return(
-	      // <div>
-	
+	    return React.createElement(
+	      'li',
+	      { className: 'post-list-item' },
+	      React.createElement(ClearOverlay, { open: this.state.dropDownState, closeFunction: this.hideDropDown }),
 	      React.createElement(
-	        'li',
-	        { className: 'post-list-item' },
+	        Modal,
+	        {
+	          isOpen: this.state.editing,
+	          onRequestClose: this.cancelEdit,
+	          style: profileModalStyle },
 	        React.createElement(
-	          Modal,
-	          {
-	            isOpen: this.state.editing,
-	            onRequestClose: this.cancelEdit,
-	            style: profileModalStyle },
+	          'form',
+	          { className: 'editing-form-window' },
 	          React.createElement(
-	            'form',
-	            { className: 'editing-form-window' },
+	            'section',
+	            { className: 'post-item-header' },
 	            React.createElement(
-	              'section',
-	              { className: 'post-item-header' },
+	              'nav',
+	              { className: 'edit-post-heading' },
 	              React.createElement(
-	                'nav',
-	                { className: 'edit-post-heading' },
+	                'ul',
+	                null,
 	                React.createElement(
-	                  'ul',
+	                  'li',
 	                  null,
 	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'h3',
-	                      { className: 'edit-status' },
-	                      'Edit Post'
-	                    )
+	                    'h3',
+	                    { className: 'edit-status' },
+	                    'Edit Post'
 	                  )
-	                ),
-	                React.createElement('button', { className: 'cancel-edit-button',
-	                  onClick: this.cancelEdit })
-	              ),
-	              React.createElement(
-	                'div',
-	                { className: 'post-pic-and-input post-form-version clear-fix' },
-	                React.createElement('img', { className: 'profile-pic-thumb post-form-version',
-	                  src: post.author.profile_pic_url }),
-	                React.createElement(
-	                  'div',
-	                  { className: 'post-input-padding' },
-	                  React.createElement('input', { className: 'post-input', type: 'textArea', value: this.state.body,
-	                    onChange: this._updateBody })
 	                )
-	              )
+	              ),
+	              React.createElement('button', { className: 'cancel-edit-button',
+	                onClick: this.cancelEdit })
 	            ),
 	            React.createElement(
-	              'section',
-	              { className: 'bottom-of-post-form clear-fix' },
+	              'div',
+	              { className: 'post-pic-and-input post-form-version clear-fix' },
+	              React.createElement('img', { className: 'profile-pic-thumb post-form-version',
+	                src: post.author.profile_pic_url }),
 	              React.createElement(
-	                'button',
-	                { className: 'submit-edit-button blue-button',
-	                  onClick: this.submitEdit },
-	                'Save'
+	                'div',
+	                { className: 'post-input-padding' },
+	                React.createElement('input', { className: 'post-input', type: 'textArea', value: this.state.body,
+	                  onChange: this._updateBody })
 	              )
 	            )
-	          )
-	        ),
-	        React.createElement(
-	          'section',
-	          { className: 'post-item-header' },
-	          React.createElement(
-	            'div',
-	            { className: 'post-author-pic-container clear-fix' },
-	            React.createElement('img', { className: 'profile-pic-thumb',
-	              src: post.author.profile_thumb_url })
-	          ),
-	          menuButton,
-	          React.createElement(
-	            'div',
-	            null,
-	            authorString,
-	            postArrow,
-	            recipientString
 	          ),
 	          React.createElement(
-	            'p',
-	            { className: 'timestamp' },
-	            elapsed
+	            'section',
+	            { className: 'bottom-of-post-form clear-fix' },
+	            React.createElement(
+	              'button',
+	              { className: 'submit-edit-button blue-button',
+	                onClick: this.submitEdit },
+	              'Save'
+	            )
 	          )
+	        )
+	      ),
+	      React.createElement(
+	        'section',
+	        { className: 'post-item-header' },
+	        React.createElement(
+	          'div',
+	          { className: 'post-author-pic-container clear-fix' },
+	          React.createElement('img', { className: 'profile-pic-thumb',
+	            src: post.author.profile_thumb_url })
+	        ),
+	        menuButton,
+	        React.createElement(
+	          'div',
+	          null,
+	          authorString,
+	          postArrow,
+	          recipientString
 	        ),
 	        React.createElement(
-	          'section',
-	          { className: 'post-body-section' },
-	          React.createElement(
-	            'p',
-	            { className: 'post-body' },
-	            post.body
-	          )
-	        ),
-	        dropDown
-	      )
+	          'p',
+	          { className: 'timestamp' },
+	          elapsed
+	        )
+	      ),
+	      React.createElement(
+	        'section',
+	        { className: 'post-body-section' },
+	        React.createElement(
+	          'p',
+	          { className: 'post-body' },
+	          post.body
+	        )
+	      ),
+	      dropDown
+	    )
 	
-	      // </div>
-	
-	    );
+	    // </div>
+	    ;
 	  }
 	});
 	
@@ -36767,6 +36747,50 @@
 	};
 	
 	module.exports = FriendStore;
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Modal = __webpack_require__(227);
+	var ClearOverlay = __webpack_require__(301);
+	
+	var ClearOverlay = React.createClass({
+	  displayName: 'ClearOverlay',
+	
+	  closeModal: function () {
+	    console.log("closing modal ");
+	    this.setState({ open: false });
+	    this.props.closeFunction();
+	  },
+	
+	  render: function () {
+	    var clearModalStyle = {
+	      content: {
+	        padding: '0px',
+	        top: '0px',
+	        left: '0px',
+	        right: '100%',
+	        bottom: '100%',
+	        background: 'transparent',
+	        transform: 'translate(-50%, -50%)',
+	        overflow: 'hidden',
+	        borderRadius: '0px'
+	      },
+	      overlay: {
+	        backgroundColor: 'transparent'
+	      }
+	    };
+	    return React.createElement(Modal, {
+	      isOpen: this.props.open,
+	      onRequestClose: this.closeModal,
+	      style: clearModalStyle,
+	      onClick: this.closeModal });
+	  }
+	});
+	
+	module.exports = ClearOverlay;
 
 /***/ }
 /******/ ]);

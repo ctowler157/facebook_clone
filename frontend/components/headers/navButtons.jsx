@@ -4,7 +4,7 @@ var SessionStore = require('./../../stores/sessionStore');
 var Modal = require('react-modal');
 var RequestsIndex = require('../requests/index');
 var NoFeature = require('../windows/no_feature.jsx');
-
+var ClearOverlay = require('../windows/clearOverlay.jsx');
 
 var NavButtons = React.createClass({
   getInitialState: function () {
@@ -53,19 +53,6 @@ var NavButtons = React.createClass({
 
     // ---------Modal Styles----------------
 
-    var requestsModalStyle = {
-      content : {
-        top                   : '50%',
-        left                  : '50%',
-        right                 : 'auto',
-        bottom                : 'auto',
-        marginRight           : '-50%',
-        transform             : 'translate(-50%, -50%)'
-     },
-     overlay : {
-       backgroundColor   : 'rgba(95, 95, 95, 0.75)'
-     }
-    };
 
     var noFeatureModalStyle = {
       content : {
@@ -82,17 +69,10 @@ var NavButtons = React.createClass({
 
 		var user = this.props.user;
 
-    var reqModal = (
-      <Modal
-        isOpen={ this.state.showRequests }
-        onRequestClose={ this.hideRequests }
-        style={ requestsModalStyle }
-        >
-        <div className="notifications-container">
-          <RequestsIndex />
-        </div>
-      </Modal>
-    );
+    var requestsClass = " hidden";
+    if (this.state.showRequests) {
+      requestsClass = "";
+    }
 
     var noFeature = (
       <Modal
@@ -106,6 +86,7 @@ var NavButtons = React.createClass({
 		return(
 			<ul className="header-nav-right nav-buttons">
         { noFeature }
+        <ClearOverlay open={ this.state.showRequests } closeFunction={ this.hideRequests } />
 				<li>
           <a className="left-buttons user-name" href={ "#/user/" + user.id }
             ><img src={ user.profile_pic_url } className="tiny-profile-pic-thumb"
@@ -115,9 +96,11 @@ var NavButtons = React.createClass({
 				<li className="empty-li"></li>
 				<li>
 					<a href="#/requests" className="notis requests-button"
-						onClick={ this.openNoFeature }></a>
-          { reqModal }
+						onClick={ this.showRequests }></a>
 				</li>
+        <div className={ "notifications-container" + requestsClass } onClick={ this.hideRequests }>
+          <RequestsIndex />
+        </div>
 				<li>
 					<a href="#/messages" className="notis messages-button"
 						onClick={ this.openNoFeature }></a>

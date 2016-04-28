@@ -1,9 +1,9 @@
 class Api::FriendRequestsController < ApplicationController
 	def show
 		# fix these when you know what the params will actually be
-		@request = FriendRequest.find_by(
+		@request = FriendRequest.includes(:sender).find_by(
 			sender_id: params[:id], target_id: current_user.id
-			) || FriendRequest.find_by(
+			) || FriendRequest.includes(:sender).find_by(
 			sender_id: current_user.id, target_id: params[:id]
 			)
 		if @request

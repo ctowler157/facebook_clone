@@ -1,21 +1,13 @@
 var React = require('react');
 var PostUtil = require('../../util/postUtil.js');
 var Modal = require('react-modal');
+var ClearOverlay = require('../windows/clearOverlay.jsx');
 
 var PostIndexItem = React.createClass({
   getInitialState: function () {
     return({ editing: false, body: this.props.post.body,
-      // modalIsOpen: false,
-      dropDownState: " hidden" });
+      dropDownState: false });
   },
-
-  // openModal: function() {
-  //   this.setState({ modalIsOpen: true });
-  // },
-  //
-  // closeModal: function() {
-  //   this.setState({ modalIsOpen: false });
-  // },
 
   _handleEdit: function (event) {
     event.preventDefault();
@@ -32,8 +24,6 @@ var PostIndexItem = React.createClass({
   submitEdit: function (event) {
     event.preventDefault();
 
-    // this.setState({ dropDownState: " hidden" });
-    // this.hideDropDown();
     var postId = this.props.post.id;
     var formData = new FormData();
     formData.append("post[body]", this.state.body);
@@ -52,18 +42,15 @@ var PostIndexItem = React.createClass({
   },
 
   toggleDropDownState: function (e) {
-    if (this.state.dropDownState === "") {
-      this.setState({ dropDownState: " hidden"});
+    if (this.state.dropDownState) {
+      this.setState({ dropDownState: false});
     } else {
-      this.setState({ dropDownState: ""});
+      this.setState({ dropDownState: true});
     }
   },
 
   hideDropDown: function (e) {
-    // if (e === undefined ||
-      // e.currentTarget.className !== "post-drop-down-button") {
-      this.setState({ dropDownState: " hidden"});
-    // }
+    this.setState({ dropDownState: false });
   },
 
 	render: function () {
@@ -133,9 +120,12 @@ var PostIndexItem = React.createClass({
     var dropDown;
     var menuButton;
     if (post.author_id === this.props.user.id){
+      var dropDownClass = " hidden";
+      if (this.state.dropDownState) {
+        dropDownClass = "";
+      }
       dropDown = (
-        <div className={ "post-drop-down" + this.state.dropDownState }
-          onBlur={ this.hideDropDown }>
+        <div className={ "post-drop-down" + dropDownClass }>
           <ul className="post-options-drop-down">
             <li>
               <a className="post-options-item" href="#"
@@ -154,34 +144,6 @@ var PostIndexItem = React.createClass({
           >  </button>
       );
     }
-//---------------conditional rendering----------------------
-    // if (this.state.editing === true){
-    //   return (
-    //     <li className="post-list-item edit-post">
-    //       <form>
-    //         <section className="post-item-header">
-    //           <nav className="edit-post-heading">
-    //             <ul><li><h3 className="edit-status">Edit Post</h3></li></ul>
-    //             <button className="cancel-edit-button"
-    //               onClick={ this.cancelEdit }></button>
-    //           </nav>
-    //           <div className="post-pic-and-input post-form-version clear-fix">
-    //             <img className="profile-pic-thumb post-form-version"
-    //               src={ post.author.profile_pic_url } />
-    //             <div className="post-input-padding">
-    //               <input className="post-input" type="textArea" value={ this.state.body }
-    //                 onChange={ this._updateBody }/>
-    //             </div>
-    //           </div>
-    //         </section>
-    //         <section className="bottom-of-post-form clear-fix">
-    //           <button className="submit-edit-button blue-button"
-    //             onClick={ this.submitEdit }>Save</button>
-    //         </section>
-    //       </form>
-		// 	</li>
-    //   );
-    // } else {
 
     var profileModalStyle = {
       content : {
@@ -200,10 +162,8 @@ var PostIndexItem = React.createClass({
       }
     };
   		return(
-        // <div>
-
-
   			<li className="post-list-item">
+          <ClearOverlay open={ this.state.dropDownState } closeFunction={ this.hideDropDown } />
           <Modal
             isOpen={this.state.editing}
             onRequestClose={this.cancelEdit}

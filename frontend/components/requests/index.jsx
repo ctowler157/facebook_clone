@@ -22,18 +22,18 @@ var RequestIndex = React.createClass({
 	},
 
 	render: function () {
-    // var user = this.props.user;
-    // var requests = this.state.requests;
-    //
-    // var liString = (requests.map(function (request) {
-    //   return (<RequestIndexItem key={ request.id } request={ request }
-    //     user={ user });
-    // }));
-    //  <ul>
-    // 	 { liString }
-    //  </ul>
+    var user = this.props.user;
+    var requests = this.state.requests;
+
+    var liString = (requests.map(function (request) {
+      return (<RequestIndexItem key={ request.id } request={ request }
+        user={ user }/>);
+    }));
 		return(
-      <h1>greetings from request index</h1>
+      <ul className="friend-request-list">
+        <h1 className="friend-request-header">Friend Requests</h1>
+        { liString }
+      </ul>
 	  );
 	}
 });

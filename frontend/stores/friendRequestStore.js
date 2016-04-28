@@ -30,9 +30,9 @@ var setRequests = function (requests) {
 };
 
 FriendRequestStore.getAllRequests = function () {
-  var requests = {};
+  var requests = [];
   for (var id in _requests){
-    requests[id] = _requests[id];
+    requests.push(_requests[id]);
   }
   return requests;
 };

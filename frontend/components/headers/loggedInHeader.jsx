@@ -10,7 +10,7 @@ var LoggedInHeader = React.createClass({
 					<li><SearchBar user={ this.props.user }/></li>
 					<li><a href="#/" className="header-nav-thumb-logo"/></li>
 				</ul>
-				<NavButtons user={ this.props.user} />
+				<NavButtons id="nav-buttons" user={ this.props.user} />
       </nav>
 		);
   }

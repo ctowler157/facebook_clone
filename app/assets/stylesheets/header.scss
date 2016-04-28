@@ -35,6 +35,8 @@ header {
 	list-style: none;
 	float:right;
 
+  position: relative;
+
   margin: 6px 0 5px 5px;
 }
 
@@ -134,6 +136,7 @@ padding: 3px 4px 7px 3px;
 
 .requests-button {
 	background-position: -4px -671px;
+  position: relative;
 }
 .notifications-button {
 	background-position: -6px -111px;
