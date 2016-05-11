@@ -49,7 +49,9 @@ var Timeline = React.createClass({
 		this.setState({ friends: friends });
 	},
 
-	_onRequestsChange: function() {},
+	_onRequestsChange: function() {
+    FriendUtil.fetchFriends(this.props.params.id);
+  },
 
 	_onSessionChange: function () {
 		var user = SessionStore.getCurrentUser();
@@ -57,12 +59,6 @@ var Timeline = React.createClass({
 	},
 
   render: function () {
-    // var displayString = "";
-    // if (this.state.currentUser.id == this.props.params.id) {
-		// 	displayString = <PostForm
-    //     timelineId={this.props.params.id }
-    //     user={ this.props.user }/>;
-		// }
 
 		return(
 			<div>

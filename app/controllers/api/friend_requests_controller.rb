@@ -1,9 +1,9 @@
 class Api::FriendRequestsController < ApplicationController
 	def show
 		# fix these when you know what the params will actually be
-		@request = FriendRequest.includes(:sender).find_by(
+		@request = FriendRequest.includes(:sender, :target).find_by(
 			sender_id: params[:id], target_id: current_user.id
-			) || FriendRequest.includes(:sender).find_by(
+			) || FriendRequest.includes(:sender, :target).find_by(
 			sender_id: current_user.id, target_id: params[:id]
 			)
 		if @request
@@ -63,7 +63,7 @@ class Api::FriendRequestsController < ApplicationController
             last_name: target.last_name,
             friendshipId: friendship.id,
 
-            new_friend_id: sender_id
+            new_friend_id: sender_id,
           }
 				else
 					render :json => { message: "Friendship failed to create" }

@@ -13,7 +13,6 @@ var setRequest = function (request) {
 
 var removeRequest = function (friend) {
   var removeId;
-  debugger
   for (var id in _requests){
     if (_requests[id].target_id == friend.id && _requests[id].sender_id == friend.new_friend_id) {
       removeId = id;
@@ -46,6 +45,18 @@ FriendRequestStore.getRequest = function () {
   return request;
 };
 
+FriendRequestStore.setRequestStatus = function (timelineId, currentUserId) {
+  var request;
+  debugger
+  for (var id in _requests){
+    request = _requests[id];
+    if ((request.sender_id == timelineId && request.target_id == currentUserId) ||
+      (request.sender_id == currentUserId && request.target_id == timelineId)){
+        _request = request;
+    }
+  }
+};
+
 
 FriendRequestStore.isRequested = function (timelineId) {
 	if (_request.id == "NO REQUEST") {
@@ -72,7 +83,7 @@ FriendRequestStore.__onDispatch = function (payload) {
       break;
     case FriendRequestConstants.REQUEST_ACCEPTED:
 			removeRequest(payload.friend);
-      FriendRequestStore.__emitChange();
+      FriendRequestStore.__emitChange(payload.friend);
       break;
     case FriendRequestConstants.REQUEST_REJECTED:
 			removeRequest(payload.friend);

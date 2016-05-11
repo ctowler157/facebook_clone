@@ -34801,7 +34801,6 @@
 	
 	var removeRequest = function (friend) {
 	  var removeId;
-	  debugger;
 	  for (var id in _requests) {
 	    if (_requests[id].target_id == friend.id && _requests[id].sender_id == friend.new_friend_id) {
 	      removeId = id;
@@ -34834,6 +34833,17 @@
 	  return request;
 	};
 	
+	FriendRequestStore.setRequestStatus = function (timelineId, currentUserId) {
+	  var request;
+	  debugger;
+	  for (var id in _requests) {
+	    request = _requests[id];
+	    if (request.sender_id == timelineId && request.target_id == currentUserId || request.sender_id == currentUserId && request.target_id == timelineId) {
+	      _request = request;
+	    }
+	  }
+	};
+	
 	FriendRequestStore.isRequested = function (timelineId) {
 	  if (_request.id == "NO REQUEST") {
 	    return "no request";
@@ -34858,7 +34868,7 @@
 	      break;
 	    case FriendRequestConstants.REQUEST_ACCEPTED:
 	      removeRequest(payload.friend);
-	      FriendRequestStore.__emitChange();
+	      FriendRequestStore.__emitChange(payload.friend);
 	      break;
 	    case FriendRequestConstants.REQUEST_REJECTED:
 	      removeRequest(payload.friend);
@@ -36329,7 +36339,9 @@
 			this.setState({ friends: friends });
 		},
 	
-		_onRequestsChange: function () {},
+		_onRequestsChange: function () {
+			FriendUtil.fetchFriends(this.props.params.id);
+		},
 	
 		_onSessionChange: function () {
 			var user = SessionStore.getCurrentUser();
@@ -36739,24 +36751,23 @@
 	  displayName: 'TimelineButtons',
 	
 	  getInitialState: function () {
-	    return { requestStatus: "no request", friendshipId: "no friendship",
+	    FriendRequestStore.setRequestStatus(this.props.userId, this.props.currentUserId);
+	    var requestStatus = FriendRequestStore.isRequested(this.props.userId);
+	    return { requestStatus: requestStatus, friendshipId: "no friendship",
 	      editingBio: false };
 	  },
 	
 	  componentDidMount: function () {
-	    // this.friendsListener = FriendStore.addListener(this.addFriends);
-	    // FriendUtil.fetchFriends(this.props.userId);
 	    if (this.props.userId != this.props.currentUser.id) {
 	      this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
-	      FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
 	    }
+	    this.addRequestStatus();
 	  },
 	
 	  componentWillUnmount: function () {
 	    if (this.requestListener) {
 	      this.requestListener.remove();
 	    }
-	    // this.friendsListener.remove();
 	  },
 	
 	  addRequestStatus: function () {
@@ -36777,11 +36788,6 @@
 	    return friendshipId;
 	  },
 	
-	  // addFriends: function () {
-	  //   var friends = FriendStore.getFriendsArr();
-	  //   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
-	  //   this.setState({ friends: friends, friendshipId: friendshipId });
-	  // },
 	  componentWillReceiveProps: function (newProps) {
 	    if (this.props.userId != this.props.currentUser.id) {
 	      var friendshipId = this.getFriendshipId(newProps);
@@ -37004,6 +37010,7 @@
 
 	module.exports = {
 		FRIENDS_RECEIVED: "FRIENDS_RECEIVED",
+		FRIEND_RECEIVED: "FRIEND_RECEIVED",
 		FRIENDSHIP_OVER: "FRIENDSHIP_OVER"
 	};
 

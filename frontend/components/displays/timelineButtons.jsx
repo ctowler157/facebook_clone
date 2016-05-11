@@ -6,24 +6,23 @@ var Modal = require('react-modal');
 
 var TimelineButtons = React.createClass({
 	getInitialState: function () {
-		return ({ requestStatus: "no request", friendshipId: "no friendship",
+    FriendRequestStore.setRequestStatus(this.props.userId, this.props.currentUserId);
+    var requestStatus = FriendRequestStore.isRequested(this.props.userId);
+		return ({ requestStatus: requestStatus, friendshipId: "no friendship",
       editingBio: false });
 	},
 
 	componentDidMount: function () {
-    // this.friendsListener = FriendStore.addListener(this.addFriends);
-    // FriendUtil.fetchFriends(this.props.userId);
     if (this.props.userId != this.props.currentUser.id){
       this.requestListener = FriendRequestStore.addListener(this.addRequestStatus);
-      FriendRequestUtil.fetchRequestsWithUser(this.props.userId);
     }
+    this.addRequestStatus();
 	},
 
 	componentWillUnmount: function () {
 		if (this.requestListener) {
       this.requestListener.remove();
     }
-    // this.friendsListener.remove();
 	},
 
 	addRequestStatus: function () {
@@ -44,11 +43,6 @@ var TimelineButtons = React.createClass({
     return friendshipId;
   },
 
-  // addFriends: function () {
-  //   var friends = FriendStore.getFriendsArr();
-  //   var friendshipId = FriendStore.getFriendshipId(this.props.currentUser.id);
-  //   this.setState({ friends: friends, friendshipId: friendshipId });
-  // },
   componentWillReceiveProps: function (newProps) {
     if (this.props.userId != this.props.currentUser.id){
       var friendshipId = this.getFriendshipId(newProps);
