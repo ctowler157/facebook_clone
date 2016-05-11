@@ -3,6 +3,22 @@ var RequestUtil = require('../../util/friendRequestUtil.js');
 
 var RequestIndexItem = React.createClass({
 
+  confirmRequest: function (e) {
+    e.preventDefault();
+    var req = this.props.request;
+    var response = new FormData();
+    response.append("request[accepted]", true);
+    RequestUtil.updateRequest(response, req.id);
+  },
+
+  deleteRequest: function (e) {
+    e.preventDefault();
+    var req = this.props.request;
+    var response = new FormData();
+    response.append("request[accepted]", false);
+    RequestUtil.updateRequest(response, req.id);
+  },
+
   render: function (){
     var request = this.props.request;
     var sender = request.sender;
@@ -11,10 +27,12 @@ var RequestIndexItem = React.createClass({
 
     return (
       <li className="friend-request-index-item clear-fix">
-        <img className="friend-request-thumb" src={ sender.profile_thumb_url }/>
+        <a href={ senderUrl }><img className="friend-request-thumb" src={ sender.profile_thumb_url }/></a>
         <a href={ senderUrl } className="friend-request-name">{name}</a>
-        <button className="friend-request-delete">Delete Request</button>
-        <button className="friend-request-confirm">Confirm</button>
+        <button onClick={ this.deleteRequest }
+          className="friend-request-delete">Delete Request</button>
+        <button onClick={ this.confirmRequest }
+          className="friend-request-confirm">Confirm</button>
       </li>
     );
   }

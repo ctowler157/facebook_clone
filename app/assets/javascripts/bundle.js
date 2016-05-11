@@ -27988,8 +27988,10 @@
 	    var user = this.props.user;
 	
 	    var requestsClass = " hidden";
+	    var requestsButtonClass = "";
 	    if (this.state.showRequests) {
 	      requestsClass = "";
+	      requestsButtonClass = " displayed";
 	    }
 	
 	    var noFeature = React.createElement(
@@ -28039,7 +28041,7 @@
 	      React.createElement(
 	        'li',
 	        null,
-	        React.createElement('a', { href: '#/requests', className: 'notis requests-button',
+	        React.createElement('a', { href: '#/requests', className: "notis requests-button" + requestsButtonClass,
 	          onClick: this.showRequests })
 	      ),
 	      React.createElement(
@@ -34624,6 +34626,11 @@
 	      'ul',
 	      { className: 'friend-request-list' },
 	      React.createElement(
+	        'div',
+	        { className: 'nub request-nub clear-fix' },
+	        '  '
+	      ),
+	      React.createElement(
 	        'h1',
 	        { className: 'friend-request-header' },
 	        'Friend Requests'
@@ -34795,7 +34802,7 @@
 	var removeRequest = function (friend) {
 	  var removeId;
 	  for (var id in _requests) {
-	    if (_requests[id].target_id == friend.id) {
+	    if (_requests[id].target_id == friend.id || _requests[id].sender_id == friend.id) {
 	      removeId = undefined;
 	    }
 	  }
@@ -34876,6 +34883,22 @@
 	  displayName: 'RequestIndexItem',
 	
 	
+	  confirmRequest: function (e) {
+	    e.preventDefault();
+	    var req = this.props.request;
+	    var response = new FormData();
+	    response.append("request[accepted]", true);
+	    RequestUtil.updateRequest(response, req.id);
+	  },
+	
+	  deleteRequest: function (e) {
+	    e.preventDefault();
+	    var req = this.props.request;
+	    var response = new FormData();
+	    response.append("request[accepted]", false);
+	    RequestUtil.updateRequest(response, req.id);
+	  },
+	
 	  render: function () {
 	    var request = this.props.request;
 	    var sender = request.sender;
@@ -34885,7 +34908,11 @@
 	    return React.createElement(
 	      'li',
 	      { className: 'friend-request-index-item clear-fix' },
-	      React.createElement('img', { className: 'friend-request-thumb', src: sender.profile_thumb_url }),
+	      React.createElement(
+	        'a',
+	        { href: senderUrl },
+	        React.createElement('img', { className: 'friend-request-thumb', src: sender.profile_thumb_url })
+	      ),
 	      React.createElement(
 	        'a',
 	        { href: senderUrl, className: 'friend-request-name' },
@@ -34893,12 +34920,14 @@
 	      ),
 	      React.createElement(
 	        'button',
-	        { className: 'friend-request-delete' },
+	        { onClick: this.deleteRequest,
+	          className: 'friend-request-delete' },
 	        'Delete Request'
 	      ),
 	      React.createElement(
 	        'button',
-	        { className: 'friend-request-confirm' },
+	        { onClick: this.confirmRequest,
+	          className: 'friend-request-confirm' },
 	        'Confirm'
 	      )
 	    );
@@ -35798,7 +35827,6 @@
 	    return React.createElement(
 	      'li',
 	      { className: 'post-list-item' },
-	      React.createElement(ClearOverlay, { open: this.state.dropDownState, closeFunction: this.hideDropDown }),
 	      React.createElement(
 	        Modal,
 	        {
@@ -35855,6 +35883,7 @@
 	          )
 	        )
 	      ),
+	      React.createElement(ClearOverlay, { open: this.state.dropDownState, closeFunction: this.hideDropDown }),
 	      React.createElement(
 	        'section',
 	        { className: 'post-item-header' },

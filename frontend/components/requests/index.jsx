@@ -31,6 +31,7 @@ var RequestIndex = React.createClass({
     }));
 		return(
       <ul className="friend-request-list">
+        <div className="nub request-nub clear-fix">  </div>
         <h1 className="friend-request-header">Friend Requests</h1>
         { liString }
       </ul>

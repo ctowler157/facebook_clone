@@ -70,8 +70,10 @@ var NavButtons = React.createClass({
 		var user = this.props.user;
 
     var requestsClass = " hidden";
+    var requestsButtonClass = "";
     if (this.state.showRequests) {
       requestsClass = "";
+      requestsButtonClass = " displayed";
     }
 
     var noFeature = (
@@ -95,7 +97,7 @@ var NavButtons = React.createClass({
 				<li><a className="left-buttons home-button" href={ "#/" }>Home</a></li>
 				<li className="empty-li"></li>
 				<li>
-					<a href="#/requests" className="notis requests-button"
+					<a href="#/requests" className={"notis requests-button" + requestsButtonClass }
 						onClick={ this.showRequests }></a>
 				</li>
         <div className={ "notifications-container" + requestsClass } onClick={ this.hideRequests }>
