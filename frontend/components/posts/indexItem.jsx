@@ -155,7 +155,7 @@ var PostIndexItem = React.createClass({
         marginRight             : '-50%',
         transform               : 'translate(-50%, -50%)',
         overflow                : 'hidden',
-        borderRadius           : '3px'
+        borderRadius            : '3px'
       },
       overlay : {
         backgroundColor   : 'rgba(95, 95, 95, 0.75)'
@@ -163,7 +163,6 @@ var PostIndexItem = React.createClass({
     };
   		return(
   			<li className="post-list-item">
-          <ClearOverlay open={ this.state.dropDownState } closeFunction={ this.hideDropDown } />
           <Modal
             isOpen={this.state.editing}
             onRequestClose={this.cancelEdit}
@@ -190,6 +189,7 @@ var PostIndexItem = React.createClass({
               </section>
             </form>
           </Modal>
+          <ClearOverlay open={ this.state.dropDownState } closeFunction={ this.hideDropDown } />
 
           <section className="post-item-header">
             <div className="post-author-pic-container clear-fix">
