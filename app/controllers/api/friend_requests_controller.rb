@@ -38,6 +38,8 @@ class Api::FriendRequestsController < ApplicationController
 	def update
 		@request = FriendRequest.find(params[:id])
 		if @request.update(request_params)
+      target = User.find(@request.target_id)
+      sender_id = @request.sender_id
 
 			if @request.accepted
 				# create friendships
@@ -53,8 +55,6 @@ class Api::FriendRequestsController < ApplicationController
 						friendship.save!
 						corresponding_friendship.save!
 				end
-        target = User.find(@request.target_id)
-        sender_id = @request.sender_id
 				if friendship.persisted?
 					@request.destroy!
 					render :json => {
@@ -71,10 +71,12 @@ class Api::FriendRequestsController < ApplicationController
 			else
 				@request.destroy!
         render :json => {
-          id: friend.id,
-          first_name: friend.first_name,
-          last_name: friend.last_name,
-          friendshipId: "no friendship"
+          id: target.id,
+          first_name: target.first_name,
+          last_name: target.last_name,
+          friendshipId: "no friendship",
+
+          new_friend_id: sender_id
         }
 			end
 		else

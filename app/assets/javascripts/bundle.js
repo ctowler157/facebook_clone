@@ -34747,10 +34747,10 @@
 	    });
 	  },
 	
-	  receiveRejectedRequest: function (request) {
+	  receiveRejectedRequest: function (friend) {
 	    Dispatcher.dispatch({
 	      actionType: FriendRequestConstants.REQUEST_REJECTED,
-	      request: request
+	      friend: friend
 	    });
 	  },
 	
@@ -36305,19 +36305,14 @@
 			this.friendsListener = FriendStore.addListener(this._onFriendsChange);
 			FriendUtil.fetchFriends(this.props.params.id);
 	
-			if (this.state.currentUser.id != this.props.params.id) {
-				this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
-			}
+			this.requestsListener = FriendRequestStore.addListener(this._onRequestsChange);
 		},
 	
 		componentWillUnmount: function () {
 			this.postListener.remove();
 			this.sessionListener.remove();
 			this.friendsListener.remove();
-	
-			if (this.friendRequestsListener) {
-				this.requestsListener.remove();
-			}
+			this.requestsListener.remove();
 		},
 	
 		componentWillReceiveProps: function (newProps) {

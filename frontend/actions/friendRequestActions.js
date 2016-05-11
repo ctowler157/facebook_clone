@@ -23,10 +23,10 @@ var FriendRequestActions = {
     });
   },
 
-	receiveRejectedRequest: function (request) {
+	receiveRejectedRequest: function (friend) {
     Dispatcher.dispatch({
       actionType: FriendRequestConstants.REQUEST_REJECTED,
-      request: request
+      friend: friend
     });
   },
 
