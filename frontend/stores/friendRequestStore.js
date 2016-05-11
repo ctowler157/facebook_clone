@@ -13,9 +13,10 @@ var setRequest = function (request) {
 
 var removeRequest = function (friend) {
   var removeId;
+  debugger
   for (var id in _requests){
-    if (_requests[id].target_id == friend.id || _requests[id].sender_id == friend.id) {
-      removeId = undefined;
+    if (_requests[id].target_id == friend.id && _requests[id].sender_id == friend.new_friend_id) {
+      removeId = id;
     }
   }
   _request = { id: "NO REQUEST" };

@@ -34617,11 +34617,11 @@
 	  render: function () {
 	    var user = this.props.user;
 	    var requests = this.state.requests;
-	
 	    var liString = requests.map(function (request) {
 	      return React.createElement(RequestIndexItem, { key: request.id, request: request,
 	        user: user });
 	    });
+	
 	    return React.createElement(
 	      'ul',
 	      { className: 'friend-request-list' },
@@ -34801,9 +34801,10 @@
 	
 	var removeRequest = function (friend) {
 	  var removeId;
+	  debugger;
 	  for (var id in _requests) {
-	    if (_requests[id].target_id == friend.id || _requests[id].sender_id == friend.id) {
-	      removeId = undefined;
+	    if (_requests[id].target_id == friend.id && _requests[id].sender_id == friend.new_friend_id) {
+	      removeId = id;
 	    }
 	  }
 	  _request = { id: "NO REQUEST" };

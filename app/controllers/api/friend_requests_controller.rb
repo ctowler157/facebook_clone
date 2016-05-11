@@ -53,15 +53,17 @@ class Api::FriendRequestsController < ApplicationController
 						friendship.save!
 						corresponding_friendship.save!
 				end
-        friend = User.find(@request.target_id)
-
+        target = User.find(@request.target_id)
+        sender_id = @request.sender_id
 				if friendship.persisted?
 					@request.destroy!
 					render :json => {
-            id: friend.id,
-            first_name: friend.first_name,
-            last_name: friend.last_name,
-            friendshipId: friendship.id
+            id: target.id,
+            first_name: target.first_name,
+            last_name: target.last_name,
+            friendshipId: friendship.id,
+
+            new_friend_id: sender_id
           }
 				else
 					render :json => { message: "Friendship failed to create" }

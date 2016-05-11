@@ -24,11 +24,11 @@ var RequestIndex = React.createClass({
 	render: function () {
     var user = this.props.user;
     var requests = this.state.requests;
-
     var liString = (requests.map(function (request) {
       return (<RequestIndexItem key={ request.id } request={ request }
         user={ user }/>);
     }));
+
 		return(
       <ul className="friend-request-list">
         <div className="nub request-nub clear-fix">  </div>
