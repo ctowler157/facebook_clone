@@ -46,6 +46,10 @@ body, header, a, div, button, p, span {
    color: inherit;
  }
 
+i {
+  font-style: normal;
+}
+
  button {
 
  }

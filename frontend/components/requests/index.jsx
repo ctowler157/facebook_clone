@@ -19,6 +19,7 @@ var RequestIndex = React.createClass({
 
 	_onChange: function () {
 		this.setState({ requests: RequestStore.getAllRequests() });
+    this.props.updateCount(this.state.requests.length);
 	},
 
 	render: function () {
@@ -30,11 +31,11 @@ var RequestIndex = React.createClass({
     }));
 
 		return(
-      <ul className="friend-request-list">
-        <div className="nub request-nub clear-fix">  </div>
-        <h1 className="friend-request-header">Friend Requests</h1>
-        { liString }
-      </ul>
+        <ul className="friend-request-list">
+          <div className="nub request-nub clear-fix">  </div>
+          <h1 className="friend-request-header">Friend Requests</h1>
+          { liString }
+        </ul>
 	  );
 	}
 });

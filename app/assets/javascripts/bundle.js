@@ -53,7 +53,7 @@
 	var hashHistory = __webpack_require__(159).hashHistory;
 	
 	var App = __webpack_require__(220);
-	var Timeline = __webpack_require__(294);
+	var Timeline = __webpack_require__(295);
 	var LogIn = __webpack_require__(222);
 	var SessionStore = __webpack_require__(252);
 	var SessionUtil = __webpack_require__(223);
@@ -25219,11 +25219,11 @@
 
 	var React = __webpack_require__(1);
 	var LoggedOutHeader = __webpack_require__(221);
-	var LoggedInHeader = __webpack_require__(278);
+	var LoggedInHeader = __webpack_require__(279);
 	var SessionStore = __webpack_require__(252);
 	var SessionUtil = __webpack_require__(223);
-	var LoggedInDisplay = __webpack_require__(283);
-	var LoggedOutDisplay = __webpack_require__(288);
+	var LoggedInDisplay = __webpack_require__(284);
+	var LoggedOutDisplay = __webpack_require__(289);
 	
 	module.exports = React.createClass({
 		displayName: 'exports',
@@ -27923,14 +27923,15 @@
 	var SessionStore = __webpack_require__(252);
 	var Modal = __webpack_require__(231);
 	var RequestsIndex = __webpack_require__(270);
-	var NoFeature = __webpack_require__(276);
-	var ClearOverlay = __webpack_require__(277);
+	var NoFeature = __webpack_require__(277);
+	var ClearOverlay = __webpack_require__(278);
+	var NotificationsBadge = __webpack_require__(276);
 	
 	var NavButtons = React.createClass({
 	  displayName: 'NavButtons',
 	
 	  getInitialState: function () {
-	    return { showRequests: false, noFeature: false };
+	    return { showRequests: false, requestCount: 0, noFeature: false };
 	  },
 	
 	  prevDef: function (e) {
@@ -27966,6 +27967,10 @@
 	    // SessionUtil.logOut(function () {
 	    //   router.push("/");
 	    // });
+	  },
+	
+	  updateRequestCount: function (count) {
+	    this.setState({ requestCount: count });
 	  },
 	
 	  render: function () {
@@ -28042,12 +28047,13 @@
 	        'li',
 	        null,
 	        React.createElement('a', { href: '#/requests', className: "notis requests-button" + requestsButtonClass,
-	          onClick: this.showRequests })
+	          onClick: this.showRequests }),
+	        React.createElement(NotificationsBadge, { button: 'friend-requests', count: this.state.requestCount })
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: "notifications-container" + requestsClass, onClick: this.hideRequests },
-	        React.createElement(RequestsIndex, null)
+	        React.createElement(RequestsIndex, { updateCount: this.updateRequestCount })
 	      ),
 	      React.createElement(
 	        'li',
@@ -34612,6 +34618,7 @@
 	
 	  _onChange: function () {
 	    this.setState({ requests: RequestStore.getAllRequests() });
+	    this.props.updateCount(this.state.requests.length);
 	  },
 	
 	  render: function () {
@@ -34835,7 +34842,6 @@
 	
 	FriendRequestStore.setRequestStatus = function (timelineId, currentUserId) {
 	  var request;
-	  debugger;
 	  for (var id in _requests) {
 	    request = _requests[id];
 	    if (request.sender_id == timelineId && request.target_id == currentUserId || request.sender_id == currentUserId && request.target_id == timelineId) {
@@ -34952,6 +34958,33 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	
+	var NotificationsBadge = React.createClass({
+	  displayName: "NotificationsBadge",
+	
+	
+	  render: function () {
+	    var classString = "notifications-badge " + this.props.button;
+	    if (this.props.count === 0) {
+	      classString += " hidden";
+	    }
+	
+	    return React.createElement(
+	      "i",
+	      { className: classString
+	      },
+	      this.props.count
+	    );
+	  }
+	});
+	
+	module.exports = NotificationsBadge;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
 	var Modal = __webpack_require__(231);
 	
 	var NoFeature = React.createClass({
@@ -35005,18 +35038,17 @@
 	module.exports = NoFeature;
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var Modal = __webpack_require__(231);
-	var ClearOverlay = __webpack_require__(277);
+	var ClearOverlay = __webpack_require__(278);
 	
 	var ClearOverlay = React.createClass({
 	  displayName: 'ClearOverlay',
 	
 	  closeModal: function () {
-	    console.log("closing modal ");
 	    this.setState({ open: false });
 	    this.props.closeFunction();
 	  },
@@ -35049,12 +35081,12 @@
 	module.exports = ClearOverlay;
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var NavButtons = __webpack_require__(251);
-	var SearchBar = __webpack_require__(279);
+	var SearchBar = __webpack_require__(280);
 	
 	var LoggedInHeader = React.createClass({
 		displayName: 'LoggedInHeader',
@@ -35085,11 +35117,11 @@
 	module.exports = LoggedInHeader;
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(280);
+	var PostUtil = __webpack_require__(281);
 	var Modal = __webpack_require__(231);
 	
 	// var PostActions = require('../../actions');
@@ -35161,11 +35193,11 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ApiUtil = __webpack_require__(224);
-	var PostActions = __webpack_require__(281);
+	var PostActions = __webpack_require__(282);
 	
 	var PostUtil = {
 		// getCurrentUser: function () {
@@ -35256,11 +35288,11 @@
 	module.exports = PostUtil;
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(226);
-	var PostConstants = __webpack_require__(282);
+	var PostConstants = __webpack_require__(283);
 	
 	var PostActions = {
 	  receiveSinglePost: function (post) {
@@ -35293,7 +35325,7 @@
 	module.exports = PostActions;
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -35304,12 +35336,12 @@
 	};
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(284);
-	var PostIndex = __webpack_require__(285);
+	var PostForm = __webpack_require__(285);
+	var PostIndex = __webpack_require__(286);
 	
 	var LoggedInDisplay = React.createClass({
 		displayName: 'LoggedInDisplay',
@@ -35370,11 +35402,11 @@
 	module.exports = LoggedInDisplay;
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(280);
+	var PostUtil = __webpack_require__(281);
 	var Modal = __webpack_require__(231);
 	// var PostActions = require('../../actions');
 	
@@ -35525,13 +35557,13 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(280);
-	var PostStore = __webpack_require__(286);
-	var PostIndexItem = __webpack_require__(287);
+	var PostUtil = __webpack_require__(281);
+	var PostStore = __webpack_require__(287);
+	var PostIndexItem = __webpack_require__(288);
 	
 	var PostIndex = React.createClass({
 	  displayName: 'PostIndex',
@@ -35577,12 +35609,12 @@
 	module.exports = PostIndex;
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(253).Store;
 	var Dispatcher = __webpack_require__(226);
-	var PostConstants = __webpack_require__(282);
+	var PostConstants = __webpack_require__(283);
 	var PostStore = new Store(Dispatcher);
 	
 	var _posts = {};
@@ -35636,13 +35668,13 @@
 	module.exports = PostStore;
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostUtil = __webpack_require__(280);
+	var PostUtil = __webpack_require__(281);
 	var Modal = __webpack_require__(231);
-	var ClearOverlay = __webpack_require__(277);
+	var ClearOverlay = __webpack_require__(278);
 	
 	var PostIndexItem = React.createClass({
 	  displayName: 'PostIndexItem',
@@ -35938,14 +35970,14 @@
 	module.exports = PostIndexItem;
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(284);
-	var PostIndex = __webpack_require__(285);
-	var ConnectWithFriends = __webpack_require__(289);
-	var SignUp = __webpack_require__(290);
+	var PostForm = __webpack_require__(285);
+	var PostIndex = __webpack_require__(286);
+	var ConnectWithFriends = __webpack_require__(290);
+	var SignUp = __webpack_require__(291);
 	
 	var LoggedOutDisplay = React.createClass({
 		displayName: 'LoggedOutDisplay',
@@ -35971,7 +36003,7 @@
 	module.exports = LoggedOutDisplay;
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -36037,11 +36069,11 @@
 	module.exports = ConnectWithFriends;
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(291);
+	var UserUtil = __webpack_require__(292);
 	var SessionUtil = __webpack_require__(223);
 	
 	var SignUp = React.createClass({
@@ -36187,12 +36219,12 @@
 	module.exports = SignUp;
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ApiUtil = __webpack_require__(224);
 	var SessionActions = __webpack_require__(225);
-	var UserActions = __webpack_require__(292);
+	var UserActions = __webpack_require__(293);
 	
 	var UserUtil = {
 		fetchTimelineUser: function (id) {
@@ -36249,11 +36281,11 @@
 	module.exports = UserUtil;
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(226);
-	var UserConstants = __webpack_require__(293);
+	var UserConstants = __webpack_require__(294);
 	
 	var UserActions = {
 	  receiveTimelineUser: function (user) {
@@ -36274,7 +36306,7 @@
 	module.exports = UserActions;
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36283,21 +36315,21 @@
 	};
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PostForm = __webpack_require__(284);
-	var PostIndex = __webpack_require__(285);
-	var TimelineSidebar = __webpack_require__(295);
-	var TimelineHeader = __webpack_require__(297);
+	var PostForm = __webpack_require__(285);
+	var PostIndex = __webpack_require__(286);
+	var TimelineSidebar = __webpack_require__(296);
+	var TimelineHeader = __webpack_require__(298);
 	
-	var UserUtil = __webpack_require__(291);
-	var UserStore = __webpack_require__(304);
+	var UserUtil = __webpack_require__(292);
+	var UserStore = __webpack_require__(305);
 	var SessionStore = __webpack_require__(252);
-	var FriendUtil = __webpack_require__(300);
+	var FriendUtil = __webpack_require__(301);
 	var FriendRequestUtil = __webpack_require__(271);
-	var FriendStore = __webpack_require__(305);
+	var FriendStore = __webpack_require__(306);
 	var FriendRequestStore = __webpack_require__(274);
 	
 	var Timeline = React.createClass({
@@ -36374,12 +36406,12 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(291);
-	var FriendBox = __webpack_require__(296);
+	var UserUtil = __webpack_require__(292);
+	var FriendBox = __webpack_require__(297);
 	
 	var TimelineSidebar = React.createClass({
 	  displayName: 'TimelineSidebar',
@@ -36400,7 +36432,7 @@
 	module.exports = TimelineSidebar;
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -36481,15 +36513,15 @@
 	module.exports = FriendBox;
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(291);
-	var TimelineTabs = __webpack_require__(298);
-	var TimelineButtons = __webpack_require__(299);
+	var UserUtil = __webpack_require__(292);
+	var TimelineTabs = __webpack_require__(299);
+	var TimelineButtons = __webpack_require__(300);
 	var Modal = __webpack_require__(231);
-	var FileUploadForm = __webpack_require__(303);
+	var FileUploadForm = __webpack_require__(304);
 	
 	var TimelineHeader = React.createClass({
 	  displayName: 'TimelineHeader',
@@ -36619,11 +36651,11 @@
 	module.exports = TimelineHeader;
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(291);
+	var UserUtil = __webpack_require__(292);
 	var Modal = __webpack_require__(231);
 	
 	var TimelineTabs = React.createClass({
@@ -36738,13 +36770,13 @@
 	module.exports = TimelineTabs;
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var FriendRequestUtil = __webpack_require__(271);
 	var FriendRequestStore = __webpack_require__(274);
-	var FriendUtil = __webpack_require__(300);
+	var FriendUtil = __webpack_require__(301);
 	var Modal = __webpack_require__(231);
 	
 	var TimelineButtons = React.createClass({
@@ -36944,11 +36976,11 @@
 	module.exports = TimelineButtons;
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ApiUtil = __webpack_require__(224);
-	var FriendActions = __webpack_require__(301);
+	var FriendActions = __webpack_require__(302);
 	
 	var FriendUtil = {
 		fetchFriends: function (userId) {
@@ -36980,11 +37012,11 @@
 	module.exports = FriendUtil;
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dispatcher = __webpack_require__(226);
-	var FriendConstants = __webpack_require__(302);
+	var FriendConstants = __webpack_require__(303);
 	
 	var FriendActions = {
 	  receiveFriends: function (friends) {
@@ -37005,7 +37037,7 @@
 	module.exports = FriendActions;
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -37015,11 +37047,11 @@
 	};
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var UserUtil = __webpack_require__(291);
+	var UserUtil = __webpack_require__(292);
 	
 	var UploadForm = React.createClass({
 	  displayName: "UploadForm",
@@ -37115,12 +37147,12 @@
 	module.exports = UploadForm;
 
 /***/ },
-/* 304 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(253).Store;
 	var Dispatcher = __webpack_require__(226);
-	var UserConstants = __webpack_require__(293);
+	var UserConstants = __webpack_require__(294);
 	var UserStore = new Store(Dispatcher);
 	
 	var timelineUserFetched = false;
@@ -37185,12 +37217,12 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(253).Store;
 	var Dispatcher = __webpack_require__(226);
-	var FriendConstants = __webpack_require__(302);
+	var FriendConstants = __webpack_require__(303);
 	var FriendRequestConstants = __webpack_require__(273);
 	var FriendStore = new Store(Dispatcher);
 	

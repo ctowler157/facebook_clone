@@ -4,7 +4,6 @@ var ClearOverlay = require('../windows/clearOverlay.jsx');
 
 var ClearOverlay = React.createClass({
   closeModal: function () {
-    console.log("closing modal ");
     this.setState({ open: false });
     this.props.closeFunction();
   },

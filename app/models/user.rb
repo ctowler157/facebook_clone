@@ -24,17 +24,6 @@ class User < ActiveRecord::Base
 
   after_initialize :ensure_session_token
 
-
-# # dynamically create attributes for timeline methods
-#   def self.method_missing(method_sym, *arguments, &block)
-#     # the first argument is a Symbol, so you need to_s it if you want to pattern match
-#     if method_sym.to_s =~ /^find_by_(.*)$/
-#       find($1.to_sym => arguments.first)
-#     else
-#       super
-#     end
-#   end
-
 	def is_friends_with?(user_id)
 		friends.include?(User.find(user_id))
 	end

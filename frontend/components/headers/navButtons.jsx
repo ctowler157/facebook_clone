@@ -5,10 +5,11 @@ var Modal = require('react-modal');
 var RequestsIndex = require('../requests/index');
 var NoFeature = require('../windows/no_feature.jsx');
 var ClearOverlay = require('../windows/clearOverlay.jsx');
+var NotificationsBadge = require('./notificationsBadge.jsx');
 
 var NavButtons = React.createClass({
   getInitialState: function () {
-    return { showRequests: false, noFeature: false }
+    return { showRequests: false, requestCount: 0, noFeature: false }
   },
 
 	prevDef: function (e) {
@@ -48,6 +49,10 @@ var NavButtons = React.createClass({
 
 
 	},
+
+  updateRequestCount: function (count) {
+    this.setState({ requestCount: count });
+  },
 
 	render: function () {
 
@@ -99,9 +104,10 @@ var NavButtons = React.createClass({
 				<li>
 					<a href="#/requests" className={"notis requests-button" + requestsButtonClass }
 						onClick={ this.showRequests }></a>
+          <NotificationsBadge button="friend-requests" count={ this.state.requestCount }/>
 				</li>
         <div className={ "notifications-container" + requestsClass } onClick={ this.hideRequests }>
-          <RequestsIndex />
+          <RequestsIndex updateCount={ this.updateRequestCount }/>
         </div>
 				<li>
 					<a href="#/messages" className="notis messages-button"

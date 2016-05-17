@@ -47,7 +47,6 @@ FriendRequestStore.getRequest = function () {
 
 FriendRequestStore.setRequestStatus = function (timelineId, currentUserId) {
   var request;
-  debugger
   for (var id in _requests){
     request = _requests[id];
     if ((request.sender_id == timelineId && request.target_id == currentUserId) ||
