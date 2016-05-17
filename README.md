@@ -30,7 +30,7 @@ From here, you can easily use the form to create a new status update.
 Your new post will appear without needing to refresh the page!
 <img src="app/assets/images/05_posted.png" alt="" style="width: 500px; height: auto"/>
 
-Clicking the arrow in the top-right corner will open your post options menu.
+Clicking the arrow in the top-right corner will open your post options drop-down menu.<br />
 <img src="app/assets/images/06_post_options.png" alt="" style="width: 500px; height: auto"/>
 
 Clicking the "Edit post" option will open a modal editing window.
@@ -40,7 +40,7 @@ To delete the post, you can click the delete option, and it will be removed with
 <img src="app/assets/images/08_delete_post.png" alt="" style="width: 300px; height: auto"/>
 <img src="app/assets/images/09_post_deleted.png" alt="" style="width: 300px; height: auto"/>
 
-At the top of the screen, you may notice a notifications bar.
+At the top of the screen, you may notice a notifications bar.<br />
 <img src="app/assets/images/10_notifications_bar.png" alt=""/>
 
 If you have notifications, clicking the button will cause a drop-down to appear!
